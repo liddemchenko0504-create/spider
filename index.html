@@ -2431,31 +2431,725 @@ body.custom-cursor-active .overlay *{
   display:none !important;
 }
 
+
+/* =========================================================
+   SPIDER YARD PREMIUM HEADER
+   ========================================================= */
+
+.sy-header{
+  position:relative;
+  z-index:1200;
+
+  padding:10px 14px 8px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8,4,3,.38),
+      rgba(8,4,3,.08)
+    );
+}
+
+.sy-header__frame{
+  min-height:66px;
+
+  display:flex;
+  align-items:center;
+
+  gap:16px;
+
+  padding:9px 14px;
+
+  border-radius:20px;
+
+  position:relative;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(116,72,42,.48),
+      rgba(45,23,14,.60)
+    );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    inset 0 0 0 1px rgba(70,39,24,.8),
+    0 12px 28px rgba(0,0,0,.32);
+}
+
+.sy-header__frame::before{
+  content:"";
+
+  position:absolute;
+  inset:5px;
+
+  border-radius:16px;
+
+  background:
+    radial-gradient(
+      circle at 50% 10%,
+      rgba(21,92,79,.14),
+      transparent 34%
+    ),
+    linear-gradient(
+      180deg,
+      #071d1a,
+      #031512
+    );
+
+  box-shadow:
+    inset 0 0 0 1px rgba(226,190,111,.14),
+    inset 0 0 28px rgba(0,0,0,.30);
+}
+
+.sy-header__frame > *{
+  position:relative;
+  z-index:1;
+}
+
+
+/* Brand */
+
+.sy-brand{
+  display:flex;
+  align-items:center;
+
+  gap:11px;
+
+  flex:0 0 auto;
+}
+
+.sy-brand__icon{
+  width:36px;
+  height:36px;
+
+  display:grid;
+  place-items:center;
+
+  color:#e8c77d;
+
+  filter:
+    drop-shadow(0 2px 5px rgba(0,0,0,.35));
+}
+
+.sy-brand__icon svg{
+  width:31px;
+  height:31px;
+
+  fill:currentColor;
+  stroke:currentColor;
+
+  stroke-width:2;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.sy-brand__title{
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:26px;
+  line-height:1;
+
+  letter-spacing:.15px;
+
+  color:#efd89c;
+
+  text-shadow:
+    0 1px 0 rgba(0,0,0,.5);
+}
+
+.sy-brand__ornament{
+  position:relative;
+
+  width:82px;
+  height:8px;
+
+  margin-top:6px;
+}
+
+.sy-brand__ornament::before{
+  content:"";
+
+  position:absolute;
+
+  left:0;
+  right:0;
+  top:4px;
+
+  height:1px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(218,176,86,.85),
+      transparent
+    );
+}
+
+.sy-brand__ornament::after{
+  content:"";
+
+  position:absolute;
+
+  left:50%;
+  top:1px;
+
+  width:6px;
+  height:6px;
+
+  transform:
+    translateX(-50%)
+    rotate(45deg);
+
+  border:
+    1px solid rgba(218,176,86,.85);
+
+  background:#08201c;
+}
+
+
+/* Divider */
+
+.sy-divider{
+  width:1px;
+  height:38px;
+
+  flex:0 0 auto;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(238,210,148,.18),
+      transparent
+    );
+}
+
+
+/* Stats */
+
+.sy-stats{
+  display:flex;
+  align-items:center;
+
+  gap:24px;
+
+  flex:1 1 auto;
+
+  min-width:0;
+}
+
+.sy-stat{
+  display:flex;
+  align-items:baseline;
+
+  gap:6px;
+
+  position:relative;
+
+  white-space:nowrap;
+}
+
+.sy-stat:not(:last-child)::after{
+  content:"";
+
+  position:absolute;
+
+  right:-13px;
+  top:50%;
+
+  width:1px;
+  height:20px;
+
+  transform:
+    translateY(-50%);
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(238,210,148,.16),
+      transparent
+    );
+}
+
+.sy-stat__label{
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:13px;
+
+  color:#e7deca;
+
+  opacity:.9;
+}
+
+.sy-stat__value{
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:15px;
+  font-weight:700;
+
+  color:#e8c77d;
+}
+
+
+/* Controls */
+
+.sy-controls{
+  display:flex;
+  align-items:center;
+
+  gap:8px;
+
+  flex:0 0 auto;
+}
+
+
+/* Difficulty */
+
+.sy-segmented{
+  display:flex;
+
+  gap:3px;
+
+  padding:3px;
+
+  border-radius:14px;
+
+  background:
+    rgba(0,0,0,.22);
+
+  border:
+    1px solid rgba(226,190,111,.12);
+}
+
+.sy-segmented__btn{
+  min-width:64px;
+  height:38px;
+
+  padding:0 11px;
+
+  border-radius:10px;
+
+  border:1px solid transparent;
+
+  background:transparent;
+
+  color:#ded3bd;
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:12px;
+
+  transition:
+    background .15s ease,
+    border-color .15s ease,
+    color .15s ease,
+    transform .15s ease;
+}
+
+.sy-segmented__btn:hover{
+  background:
+    rgba(255,255,255,.035);
+}
+
+.sy-segmented__btn.active{
+  color:#fff2cf;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(18,79,68,.95),
+      rgba(7,43,37,.98)
+    );
+
+  border-color:
+    rgba(230,194,112,.48);
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    0 5px 12px rgba(0,0,0,.20);
+}
+
+
+/* Buttons */
+
+.sy-btn{
+  height:38px;
+
+  padding:0 12px;
+
+  display:inline-flex;
+  align-items:center;
+
+  gap:7px;
+
+  border-radius:11px;
+
+  border:
+    1px solid rgba(226,190,111,.13);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.04),
+      rgba(255,255,255,.012)
+    );
+
+  color:#e8deca;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:13px;
+
+  transition:
+    transform .15s ease,
+    background .15s ease,
+    border-color .15s ease,
+    box-shadow .15s ease;
+}
+
+.sy-btn:hover{
+  transform:
+    translateY(-1px);
+
+  border-color:
+    rgba(226,190,111,.25);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.065),
+      rgba(255,255,255,.018)
+    );
+
+  box-shadow:
+    0 6px 14px rgba(0,0,0,.18);
+}
+
+.sy-btn:active{
+  transform:none;
+}
+
+
+/* New game */
+
+.sy-btn--primary{
+  height:42px;
+
+  padding:0 22px;
+
+  border-radius:12px;
+
+  font-size:16px;
+  font-weight:700;
+
+  color:#2b1a08;
+
+  border-color:#e1bd66;
+
+  background:
+    linear-gradient(
+      180deg,
+      #f1d997,
+      #d6ac51 58%,
+      #b78330
+    );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    0 7px 16px rgba(0,0,0,.25);
+}
+
+.sy-btn--primary:hover{
+  background:
+    linear-gradient(
+      180deg,
+      #f5dfa5,
+      #ddb75f 58%,
+      #be8c38
+    );
+}
+
+
+/* Button icons */
+
+.sy-btn__svg{
+  width:15px;
+  height:15px;
+
+  display:grid;
+  place-items:center;
+
+  color:#ddbd72;
+}
+
+.sy-btn__svg svg{
+  width:15px;
+  height:15px;
+
+  fill:none;
+  stroke:currentColor;
+
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+
+/* Premium status */
+
+.sy-mode-pill{
+  height:38px;
+
+  padding:0 14px;
+
+  display:inline-flex;
+  align-items:center;
+
+  gap:6px;
+
+  border-radius:12px;
+
+  border:
+    1px solid rgba(132,190,143,.23);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(13,58,48,.96),
+      rgba(7,37,31,.98)
+    );
+
+  color:#eaf0dc;
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:13px;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.04),
+    0 6px 14px rgba(0,0,0,.18);
+}
+
+.sy-mode-pill__moon{
+  color:#e5c875;
+  font-size:16px;
+}
+
+.sy-mode-pill__check{
+  color:#a8ddb2;
+
+  font-weight:700;
+}
+
+
+/* Desktop scaling */
+
+@media(max-width:1500px){
+
+  .sy-header{
+    padding-left:8px;
+    padding-right:8px;
+  }
+
+  .sy-header__frame{
+    gap:10px;
+    padding-left:10px;
+    padding-right:10px;
+  }
+
+  .sy-brand__title{
+    font-size:22px;
+  }
+
+  .sy-brand__icon{
+    width:31px;
+  }
+
+  .sy-stats{
+    gap:17px;
+  }
+
+  .sy-stat__label{
+    font-size:11px;
+  }
+
+  .sy-stat__value{
+    font-size:13px;
+  }
+
+  .sy-controls{
+    gap:5px;
+  }
+
+  .sy-btn{
+    padding:0 9px;
+    font-size:11px;
+  }
+
+  .sy-btn--primary{
+    padding:0 16px;
+    font-size:14px;
+  }
+
+  .sy-segmented__btn{
+    min-width:53px;
+    padding:0 7px;
+    font-size:11px;
+  }
+
+  .sy-mode-pill{
+    padding:0 10px;
+    font-size:11px;
+  }
+}
+
+
+/* Keep your existing mobile UI */
+@media(max-width:700px){
+
+  .sy-header{
+    display:none !important;
+  }
+
+}
+
 </style>
 </head>
 <body>
 <div id="app">
-  <header>
-    <h1>Spider <span>Yard</span></h1>
-    <div class="stats">
-      <div>Moves: <b id="stat-moves">0</b></div>
-      <div>Sets completed: <b id="stat-sets">0</b></div>
-      <div>Wins: <b id="stat-wins">0</b></div>
-    </div>
-    <div class="controls">
-      <div class="difficulty-segmented" id="difficulty">
-        <button type="button" class="difficulty-option" data-suits="1">1 Suit</button>
-        <button type="button" class="difficulty-option" data-suits="2">2 Suits</button>
-        <button type="button" class="difficulty-option active" data-suits="4">4 Suits</button>
+  
+<header class="sy-header">
+  <div class="sy-header__frame">
+
+    <div class="sy-brand">
+      <div class="sy-brand__icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64">
+          <circle cx="32" cy="18" r="8"></circle>
+          <ellipse cx="32" cy="35" rx="13" ry="15"></ellipse>
+          <path d="M21 19 L11 11"></path>
+          <path d="M43 19 L53 11"></path>
+          <path d="M20 28 L8 24"></path>
+          <path d="M44 28 L56 24"></path>
+          <path d="M19 39 L8 42"></path>
+          <path d="M45 39 L56 42"></path>
+          <path d="M22 48 L13 54"></path>
+          <path d="M42 48 L51 54"></path>
+        </svg>
       </div>
-      <button id="new-game" class="primary">New Game</button>
-      <button id="undo-btn">Undo</button>
-      <button id="hint-btn">Hint</button>
-      <button id="skins-btn">Themes</button>
-      <button id="gallery-btn">Gallery<span class="badge" id="gallery-badge" style="display:none;">0</span></button>
-      <button id="premium-btn">Premium</button>
+
+      <div class="sy-brand__text">
+        <div class="sy-brand__title">Spider Yard</div>
+        <div class="sy-brand__ornament"></div>
+      </div>
     </div>
-  </header>
+
+    <div class="sy-divider"></div>
+
+    <div class="sy-stats">
+      <div class="sy-stat">
+        <span class="sy-stat__label">Moves</span>
+        <span class="sy-stat__value" id="stat-moves">0</span>
+      </div>
+
+      <div class="sy-stat">
+        <span class="sy-stat__label">Sets completed</span>
+        <span class="sy-stat__value" id="stat-sets">0</span>
+      </div>
+
+      <div class="sy-stat">
+        <span class="sy-stat__label">Wins</span>
+        <span class="sy-stat__value" id="stat-wins">0</span>
+      </div>
+    </div>
+
+    <div class="sy-controls">
+
+      <div class="sy-segmented" id="difficulty">
+        <button type="button" class="difficulty-option sy-segmented__btn" data-suits="1">1 Suit</button>
+        <button type="button" class="difficulty-option sy-segmented__btn" data-suits="2">2 Suits</button>
+        <button type="button" class="difficulty-option sy-segmented__btn active" data-suits="4">4 Suits</button>
+      </div>
+
+      <button id="new-game" class="sy-btn sy-btn--primary" type="button">
+        New Game
+      </button>
+
+      <button id="undo-btn" class="sy-btn sy-btn--icon" type="button">
+        <span class="sy-btn__svg">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 7H4V2"></path>
+            <path d="M4 7c2.2-2.8 5-4 8.5-4C18 3 21 7 21 12s-3 9-8 9c-3.1 0-5.8-1.1-7.9-3.2"></path>
+          </svg>
+        </span>
+        <span>Undo</span>
+      </button>
+
+      <button id="hint-btn" class="sy-btn sy-btn--icon" type="button">
+        <span class="sy-btn__svg">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M9 18h6"></path>
+            <path d="M10 21h4"></path>
+            <path d="M12 3a7 7 0 0 0-4 12.8c.7.5 1.2 1.2 1.4 2.2h5.2c.2-1 .7-1.7 1.4-2.2A7 7 0 0 0 12 3z"></path>
+          </svg>
+        </span>
+        <span>Hint</span>
+      </button>
+
+      <button id="skins-btn" class="sy-btn sy-btn--icon" type="button">
+        <span class="sy-btn__svg">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="8"></circle>
+            <circle cx="9" cy="10" r="1"></circle>
+            <circle cx="15" cy="9" r="1"></circle>
+            <circle cx="16" cy="14" r="1"></circle>
+            <path d="M8 15c0 1.1.9 2 2 2h1"></path>
+          </svg>
+        </span>
+        <span>Themes</span>
+      </button>
+
+      <button id="gallery-btn" class="sy-btn sy-btn--icon" type="button">
+        <span class="sy-btn__svg">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+            <circle cx="9" cy="10" r="1.5"></circle>
+            <path d="M5.5 17l5-5 3.2 3.2 2.1-2.1 2.7 3.9"></path>
+          </svg>
+        </span>
+        <span>Gallery</span>
+        <span class="badge" id="gallery-badge" style="display:none;">0</span>
+      </button>
+
+      <button id="premium-btn" class="sy-mode-pill" type="button">
+        <span class="sy-mode-pill__moon">☾</span>
+        <span class="sy-mode-pill__text">After Dark</span>
+        <span class="sy-mode-pill__check">✓</span>
+      </button>
+
+    </div>
+
+  </div>
+</header>
+
 
   <div id="table">
     <div class="top-row">

@@ -1562,6 +1562,258 @@
   }
 }
 
+
+/* =========================================================
+   PREMIUM HINT + THEMED CURSOR
+   ========================================================= */
+
+/* old arrow is no longer used */
+#hint-arrow-layer{
+  display:none !important;
+}
+
+/* flying hint card */
+.hint-ghost{
+  position:fixed;
+  z-index:9999;
+
+  pointer-events:none;
+
+  margin:0;
+
+  opacity:.92;
+
+  transform-origin:center;
+
+  box-shadow:
+    0 18px 40px rgba(0,0,0,.35),
+    0 0 0 1px rgba(232,217,160,.28);
+
+  filter:brightness(1.04);
+}
+
+.card.hint-source{
+  animation:hintSourceLift .7s ease;
+}
+
+@keyframes hintSourceLift{
+  0%{
+    transform:translateY(0);
+  }
+
+  35%{
+    transform:translateY(-8px);
+    box-shadow:
+      0 14px 32px rgba(0,0,0,.32),
+      0 0 0 1px rgba(232,217,160,.28);
+  }
+
+  100%{
+    transform:translateY(0);
+  }
+}
+
+.column.hint-destination{
+  animation:hintDestination 1s ease;
+}
+
+@keyframes hintDestination{
+  0%{
+    filter:none;
+  }
+
+  45%{
+    filter:
+      drop-shadow(0 0 10px rgba(232,217,160,.34))
+      brightness(1.08);
+  }
+
+  100%{
+    filter:none;
+  }
+}
+
+
+/* =========================================================
+   CUSTOM THEMED CURSOR
+   ========================================================= */
+
+.themed-cursor{
+  position:fixed;
+
+  left:0;
+  top:0;
+
+  z-index:10000;
+
+  width:28px;
+  height:28px;
+
+  pointer-events:none;
+
+  opacity:0;
+
+  transform:
+    translate3d(-100px,-100px,0)
+    translate(-50%,-50%);
+
+  transition:
+    opacity .18s ease,
+    width .15s ease,
+    height .15s ease;
+
+  will-change:transform;
+}
+
+body.custom-cursor-active,
+body.custom-cursor-active button,
+body.custom-cursor-active .card,
+body.custom-cursor-active .stock-pile,
+body.custom-cursor-active .skin-card,
+body.custom-cursor-active .difficulty-option{
+  cursor:none !important;
+}
+
+
+/* DICK CURSOR — minimal / stylized */
+
+.themed-cursor.cursor-dick{
+  width:24px;
+  height:35px;
+}
+
+.themed-cursor.cursor-dick::before{
+  content:"";
+
+  position:absolute;
+
+  left:8px;
+  top:4px;
+
+  width:9px;
+  height:24px;
+
+  border-radius:7px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #efd1c0,
+      #d9a895
+    );
+
+  box-shadow:
+    0 3px 10px rgba(0,0,0,.24);
+}
+
+.themed-cursor.cursor-dick::after{
+  content:"";
+
+  position:absolute;
+
+  left:4px;
+  bottom:2px;
+
+  width:17px;
+  height:10px;
+
+  border-radius:50%;
+
+  background:#d5a18e;
+
+  box-shadow:
+    0 3px 8px rgba(0,0,0,.18);
+}
+
+
+/* PUSSY CURSOR — abstract premium shape */
+
+.themed-cursor.cursor-pussy{
+  width:29px;
+  height:34px;
+}
+
+.themed-cursor.cursor-pussy::before{
+  content:"";
+
+  position:absolute;
+
+  inset:2px 5px;
+
+  border-radius:
+    70% 70% 65% 65% /
+    55% 55% 80% 80%;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      #b85c79 0 12%,
+      #d98aa4 14% 28%,
+      #efbfd0 34% 65%,
+      #d392aa 70%
+    );
+
+  box-shadow:
+    0 5px 14px rgba(0,0,0,.20);
+}
+
+.themed-cursor.cursor-pussy::after{
+  content:"";
+
+  position:absolute;
+
+  left:50%;
+  top:8px;
+
+  width:1px;
+  height:18px;
+
+  background:rgba(111,45,68,.55);
+
+  transform:translateX(-50%);
+
+  border-radius:999px;
+}
+
+
+/* elegant neutral cursor */
+
+.themed-cursor.cursor-luxe{
+  width:15px;
+  height:15px;
+
+  border-radius:50%;
+
+  border:1px solid rgba(240,223,189,.85);
+
+  background:rgba(201,162,39,.22);
+
+  box-shadow:
+    0 0 12px rgba(232,217,160,.30);
+}
+
+
+/* hover reaction */
+
+.themed-cursor.cursor-hover{
+  width:34px;
+  height:34px;
+}
+
+
+/* do not use fake cursor on touch */
+@media (hover:none), (pointer:coarse), (max-width:700px){
+
+  .themed-cursor{
+    display:none !important;
+  }
+
+  body.custom-cursor-active,
+  body.custom-cursor-active *{
+    cursor:auto !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1773,6 +2025,13 @@
   </div>
 </div>
 
+
+<div
+  id="themed-cursor"
+  class="themed-cursor cursor-luxe"
+  aria-hidden="true"
+></div>
+
 <script>
 (function(){
   "use strict";
@@ -1877,12 +2136,133 @@ const SKINS = [
   function isPremium(){ return localStorage.getItem(PREMIUM_KEY) === "true"; }
   function setPremium(val){ localStorage.setItem(PREMIUM_KEY, val ? "true" : "false"); }
 
+
+  /* ---------- Theme cursor ---------- */
+
+  const CURSOR_BY_SKIN = {
+
+    emerald: "luxe",
+
+    midnight: "dick",
+
+    rose: "pussy",
+
+    harbor: "luxe"
+
+  };
+
+
+  function updateThemedCursor(skinId){
+
+    const cursor =
+      document.getElementById(
+        "themed-cursor"
+      );
+
+    if(!cursor) return;
+
+
+    const cursorType =
+      CURSOR_BY_SKIN[skinId] || "luxe";
+
+
+    cursor.className =
+      `themed-cursor cursor-${cursorType}`;
+
+
+    document.body.classList.add(
+      "custom-cursor-active"
+    );
+
+  }
+
+
+  const themedCursor =
+    document.getElementById(
+      "themed-cursor"
+    );
+
+
+  let cursorX = -100;
+  let cursorY = -100;
+
+
+  document.addEventListener(
+    "mousemove",
+    e => {
+
+      if(!themedCursor) return;
+
+      cursorX = e.clientX;
+      cursorY = e.clientY;
+
+      themedCursor.style.opacity = "1";
+
+      themedCursor.style.transform =
+        `translate3d(${cursorX}px,${cursorY}px,0) translate(-50%,-50%)`;
+
+    }
+  );
+
+
+  document.addEventListener(
+    "mouseleave",
+    () => {
+
+      if(themedCursor){
+        themedCursor.style.opacity = "0";
+      }
+
+    }
+  );
+
+
+  document.addEventListener(
+    "mouseover",
+    e => {
+
+      if(
+        e.target.closest(
+          "button, .card, .skin-card, .stock-pile, .difficulty-option"
+        )
+      ){
+        themedCursor?.classList.add(
+          "cursor-hover"
+        );
+      }
+
+    }
+  );
+
+
+  document.addEventListener(
+    "mouseout",
+    e => {
+
+      if(
+        e.target.closest(
+          "button, .card, .skin-card, .stock-pile, .difficulty-option"
+        )
+      ){
+        themedCursor?.classList.remove(
+          "cursor-hover"
+        );
+      }
+
+    }
+  );
+
+
   function applySkin(skinId){
     const skin = SKINS.find(s => s.id === skinId) || SKINS[0];
     if(skin.premium && !isPremium()) return false;
     Object.entries(skin.vars).forEach(([k,v]) => document.documentElement.style.setProperty(k, v));
     localStorage.setItem(SKIN_KEY, skinId);
+
+    updateThemedCursor(skinId);
+
     renderSkinsPanel();
+
     return true;
   }
 
@@ -2424,7 +2804,7 @@ const SKINS = [
           if(toCol === fromCol) continue;
           if(canPlace(stack, toCol)){
             setStatus(`Hint: move ${stack[0].rank}${stack[0].suit} from column ${fromCol+1} to column ${toCol+1}.`);
-            drawHintArrow(fromCol, idx, toCol);
+            animateHintMove(fromCol, idx, toCol);
             return;
           }
         }
@@ -2432,6 +2812,139 @@ const SKINS = [
     }
     setStatus("No obvious moves found — try dealing cards from the deck.");
   }
+
+
+  /* ---------- Premium visual hint ---------- */
+
+  function animateHintMove(fromCol, cardIdx, toCol){
+
+    const source =
+      document.querySelector(
+        `.card[data-col="${fromCol}"][data-idx="${cardIdx}"]`
+      );
+
+    const destination =
+      document.querySelector(
+        `.column[data-col="${toCol}"]`
+      );
+
+    if(!source || !destination) return;
+
+
+    const destinationCards =
+      destination.querySelectorAll(".card");
+
+    const target =
+      destinationCards.length
+        ? destinationCards[destinationCards.length - 1]
+        : destination;
+
+
+    const startRect =
+      source.getBoundingClientRect();
+
+    const endRect =
+      target.getBoundingClientRect();
+
+
+    source.classList.add("hint-source");
+
+    destination.classList.add("hint-destination");
+
+
+    const ghost =
+      source.cloneNode(true);
+
+    ghost.classList.remove(
+      "selected",
+      "movable-hint",
+      "placed-glow",
+      "hint-source"
+    );
+
+    ghost.classList.add("hint-ghost");
+
+
+    ghost.style.left =
+      startRect.left + "px";
+
+    ghost.style.top =
+      startRect.top + "px";
+
+    ghost.style.width =
+      startRect.width + "px";
+
+    ghost.style.height =
+      startRect.height + "px";
+
+
+    document.body.appendChild(ghost);
+
+
+    const dx =
+      endRect.left +
+      endRect.width / 2 -
+      (
+        startRect.left +
+        startRect.width / 2
+      );
+
+    const dy =
+      endRect.top +
+      Math.min(endRect.height * .35, 36) -
+      (
+        startRect.top +
+        startRect.height * .25
+      );
+
+
+    const animation =
+      ghost.animate(
+        [
+          {
+            transform:
+              "translate3d(0,0,0) scale(1)",
+            opacity:.90
+          },
+
+          {
+            transform:
+              `translate3d(${dx * .5}px, ${dy * .40 - 28}px, 0) scale(1.055)`,
+            opacity:.96,
+            offset:.48
+          },
+
+          {
+            transform:
+              `translate3d(${dx}px, ${dy}px, 0) scale(.98)`,
+            opacity:.20
+          }
+        ],
+
+        {
+          duration:900,
+          easing:"cubic-bezier(.22,.75,.22,1)",
+          fill:"forwards"
+        }
+      );
+
+
+    animation.onfinish = () => {
+
+      ghost.remove();
+
+      source.classList.remove("hint-source");
+
+      setTimeout(() => {
+        destination.classList.remove(
+          "hint-destination"
+        );
+      }, 350);
+
+    };
+
+  }
+
 
   function drawHintArrow(fromCol, cardIdx, toCol){
     const table = document.getElementById("table");

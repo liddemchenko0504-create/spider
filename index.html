@@ -10935,12 +10935,44 @@ function getArtworkForCard(card, skinId){
     document.getElementById("status-bar").textContent = msg;
   }
 
-  function isSequential(cards){
-    // cards: array top-to-bottom in visual order i.e. cards[0] is higher up; must be descending rank, same suit
+  function isDescendingSequence(cards){
+    /*
+      Movable stack:
+      Q-J-10-9 etc.
+
+      Suit does NOT block moving the stack.
+    */
     for(let i=0;i<cards.length-1;i++){
-      if(cards[i].suit !== cards[i+1].suit) return false;
-      if(cards[i].rankIdx !== cards[i+1].rankIdx + 1) return false;
+      if(
+        cards[i].rankIdx !==
+        cards[i+1].rankIdx + 1
+      ){
+        return false;
+      }
     }
+
+    return true;
+  }
+
+
+  function isCompleteSameSuitSequence(cards){
+    /*
+      Completed Spider foundation:
+      K through A AND all cards must have the same suit.
+    */
+    if(!isDescendingSequence(cards)){
+      return false;
+    }
+
+    for(let i=0;i<cards.length-1;i++){
+      if(
+        cards[i].suit !==
+        cards[i+1].suit
+      ){
+        return false;
+      }
+    }
+
     return true;
   }
 
@@ -10957,7 +10989,7 @@ function getArtworkForCard(card, skinId){
     const col = state.columns[colIdx];
     const stack = col.slice(cardIdx);
     if(!stack[0].faceUp) return null;
-    if(!isSequential(stack)) return null;
+    if(!isDescendingSequence(stack)) return null;
     return stack;
   }
 
@@ -10965,7 +10997,7 @@ function getArtworkForCard(card, skinId){
     const col = state.columns[colIdx];
     if(col.length < 13) return;
     const top13 = col.slice(col.length-13);
-    if(!isSequential(top13)) return;
+    if(!isCompleteSameSuitSequence(top13)) return;
     if(top13[0].rankIdx !== 12) return; // must start with King
     if(top13[12].rankIdx !== 0) return; // ends with Ace
     // remove
@@ -11197,7 +11229,7 @@ function getArtworkForCard(card, skinId){
       return;
     }
     const stack = getMovableStack(col, idx);
-    if(!stack){ setStatus("You can only select an ordered sequence of the same suit."); return; }
+    if(!stack){ setStatus("You can only select a descending sequence of cards."); return; }
     selection = { col, index: idx };
     render();
   }
@@ -11674,56 +11706,48 @@ function getArtworkForCard(card, skinId){
 
   }
 
-
   function hint(){
 
-    if(!state)
+    if(!state){
       return;
+    }
 
-
-    resetHintMemoryIfBoardChanged();
 
     clearDeckHint();
 
+
+    /*
+      collectMeaningfulHints() already ranks moves.
+      We ONLY use the best one.
+
+      Important:
+      repeated Hint clicks on an unchanged board
+      show the SAME recommended move.
+    */
 
     const hints =
       collectMeaningfulHints();
 
 
-    /*
-      Find best meaningful move the player
-      has not already been shown on this board.
-    */
+    if(hints.length > 0){
 
-    const next =
-      hints.find(
-        move =>
-          !shownHintKeys.has(
-            move.groupKey
-          )
-      );
-
-
-    if(next){
-
-      shownHintKeys.add(
-        next.groupKey
-      );
+      const best =
+        hints[0];
 
 
       const card =
-        next.stack[0];
+        best.stack[0];
 
 
       setStatus(
-        `Hint: move ${card.rank}${card.suit} from column ${next.fromCol + 1} to column ${next.toCol + 1}.`
+        `Hint: move ${card.rank}${card.suit} from column ${best.fromCol + 1} to column ${best.toCol + 1}.`
       );
 
 
       animateHintMove(
-        next.fromCol,
-        next.cardIdx,
-        next.toCol
+        best.fromCol,
+        best.cardIdx,
+        best.toCol
       );
 
 
@@ -11732,17 +11756,14 @@ function getArtworkForCard(card, skinId){
 
 
     /*
-      No NEW meaningful moves remain.
-      If Spider rules allow dealing,
-      the deck becomes the next action.
+      ONLY when there are literally no legal
+      tableau moves do we recommend the deck.
     */
 
-    if(
-      canDealNextRow()
-    ){
+    if(canDealNextRow()){
 
       setStatus(
-        "No more useful moves — deal the next row."
+        "No available moves — deal the next row."
       );
 
 
@@ -11753,31 +11774,29 @@ function getArtworkForCard(card, skinId){
 
 
     /*
-      Stock exists, but an empty column blocks dealing.
+      Spider rule:
+      cannot deal while a column is empty.
     */
 
     if(
       state.stock.length >= 10 &&
       state.columns.some(
-        col =>
-          col.length === 0
+        col => col.length === 0
       )
     ){
 
       setStatus(
-        "Fill the empty column before dealing the next row."
+        "No available moves. Fill the empty column before dealing."
       );
 
       return;
     }
 
 
-    if(
-      state.stock.length === 0
-    ){
+    if(state.stock.length === 0){
 
       setStatus(
-        "No more useful moves and the deck is empty."
+        "No available moves — the deck is empty."
       );
 
       return;
@@ -11785,13 +11804,14 @@ function getArtworkForCard(card, skinId){
 
 
     setStatus(
-      "No useful move is available."
+      "No available moves."
     );
 
   }
 
 
   /* ---------- Premium visual hint ---------- */
+
 
 
   function animateHintMove(fromCol, cardIdx, toCol){

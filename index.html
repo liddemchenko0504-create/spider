@@ -1572,6 +1572,58 @@
   display:none !important;
 }
 
+/* CLEAN PHOTO CARD */
+
+.card.adult-art-card{
+  background-size:cover !important;
+  background-position:center !important;
+  background-repeat:no-repeat !important;
+
+  background-color:#111 !important;
+
+  overflow:hidden;
+}
+
+/* убираем затемняющую "вуаль" */
+.card.adult-art-card::before{
+  display:none !important;
+}
+
+/* скрываем центральную большую масть */
+.card.adult-art-card .pip{
+  display:none !important;
+}
+
+/* оставляем только верхний левый угол */
+.card.adult-art-card .corner{
+  position:absolute !important;
+
+  top:6px;
+  left:6px;
+
+  width:auto !important;
+
+  padding:4px 6px;
+
+  border-radius:6px;
+
+  background:rgba(245,238,224,.96) !important;
+
+  color:#17120f !important;
+
+  box-shadow:
+    0 2px 8px rgba(0,0,0,.22);
+
+  backdrop-filter:none !important;
+
+  z-index:5;
+}
+
+/* нижний зеркальный угол убрать */
+.card.adult-art-card .corner.bottom{
+  display:none !important;
+}
+
 /* flying hint card */
 .hint-ghost{
   position:fixed;
@@ -3415,7 +3467,7 @@ function getCollectionImages(skinId){
         getCurrentSkinId();
 
       const artwork =
-        getArtworkForSkin(currentSkin);
+  getArtworkForCard(card, currentSkin);
 
       if(
         artwork &&

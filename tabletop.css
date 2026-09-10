@@ -9115,3 +9115,53 @@
 
 }
 
+
+
+/* ==========================================================
+   ADULT ART CARDS — RANK ONLY
+   No suit symbol over artwork
+   ========================================================== */
+
+.card.adult-art-card .art-rank-only{
+  min-width:26px;
+
+  display:flex !important;
+
+  align-items:center !important;
+  justify-content:center !important;
+
+  padding:
+    5px 7px !important;
+
+  font-size:
+    14px !important;
+
+  line-height:
+    1 !important;
+
+  color:
+    #17120f !important;
+
+  background:
+    rgba(248,241,228,.94) !important;
+
+  border:
+    1px solid
+    rgba(65,45,28,.16);
+
+  border-radius:
+    7px !important;
+
+  box-shadow:
+    0 2px 7px
+    rgba(0,0,0,.22);
+}
+
+
+/* absolutely no suit graphics on artwork cards */
+
+.card.adult-art-card .pip,
+.card.adult-art-card .corner.bottom{
+  display:none !important;
+}
+

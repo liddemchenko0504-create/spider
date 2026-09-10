@@ -10937,10 +10937,8 @@ function getArtworkForCard(card, skinId){
 
   function isDescendingSequence(cards){
     /*
-      Movable stack:
+      Rank order only:
       Q-J-10-9 etc.
-
-      Suit does NOT block moving the stack.
     */
     for(let i=0;i<cards.length-1;i++){
       if(
@@ -10955,11 +10953,20 @@ function getArtworkForCard(card, skinId){
   }
 
 
-  function isCompleteSameSuitSequence(cards){
+  function isMovableSpiderSequence(cards){
     /*
-      Completed Spider foundation:
-      K through A AND all cards must have the same suit.
+      STANDARD SPIDER RULE:
+
+      A multi-card stack may be moved together
+      only when it is descending AND all cards
+      are the same suit.
+
+      Example:
+      Q♥ J♥ 10♥  -> movable
+
+      Q♥ J♣ 10♣  -> NOT movable as one stack
     */
+
     if(!isDescendingSequence(cards)){
       return false;
     }
@@ -10976,6 +10983,16 @@ function getArtworkForCard(card, skinId){
     return true;
   }
 
+
+  function isCompleteSameSuitSequence(cards){
+    /*
+      Completed K-to-A run also requires
+      one continuous suit.
+    */
+
+    return isMovableSpiderSequence(cards);
+  }
+
   function canPlace(movingCards, destCol){
     const dest = state.columns[destCol];
     if(dest.length === 0) return true;
@@ -10989,7 +11006,7 @@ function getArtworkForCard(card, skinId){
     const col = state.columns[colIdx];
     const stack = col.slice(cardIdx);
     if(!stack[0].faceUp) return null;
-    if(!isDescendingSequence(stack)) return null;
+    if(!isMovableSpiderSequence(stack)) return null;
     return stack;
   }
 
@@ -11119,15 +11136,57 @@ function getArtworkForCard(card, skinId){
     }
 
     if(card.faceUp){
-      div.innerHTML = `
-        <div class="corner"><span>${card.rank}</span><span>${card.suit}</span></div>
-        <div class="pip">${card.suit}</div>
-        <div class="corner bottom"><span>${card.rank}</span><span>${card.suit}</span></div>
-      `;
+
+      /*
+        Adult artwork cards intentionally have
+        NO suit symbols on top of the artwork.
+
+        We keep only the rank so the game
+        remains readable.
+      */
+
+      if(
+        div.classList.contains(
+          "adult-art-card"
+        )
+      ){
+
+        div.innerHTML = `
+          <div class="corner art-rank-only">
+            <span>${card.rank}</span>
+          </div>
+        `;
+
+      }else{
+
+        div.innerHTML = `
+          <div class="corner">
+            <span>${card.rank}</span>
+            <span>${card.suit}</span>
+          </div>
+
+          <div class="pip">
+            ${card.suit}
+          </div>
+
+          <div class="corner bottom">
+            <span>${card.rank}</span>
+            <span>${card.suit}</span>
+          </div>
+        `;
+
+      }
+
       div.draggable = true;
-      div.classList.add("movable-hint");
+
+      div.classList.add(
+        "movable-hint"
+      );
+
     } else {
+
       div.draggable = false;
+
     }
     return div;
   }
@@ -11229,7 +11288,7 @@ function getArtworkForCard(card, skinId){
       return;
     }
     const stack = getMovableStack(col, idx);
-    if(!stack){ setStatus("You can only select a descending sequence of cards."); return; }
+    if(!stack){ setStatus("You can only move a descending sequence of the same suit."); return; }
     selection = { col, index: idx };
     render();
   }

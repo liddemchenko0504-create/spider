@@ -4123,3 +4123,852 @@
   }
 
 }
+
+
+/* ==========================================================
+   SPIDER YARD — FULLSCREEN OPEN BOOK EXPERIENCE V5
+   ========================================================== */
+
+@media(min-width:701px){
+
+  /* --------------------------------------------------------
+     FULLSCREEN CINEMATIC OVERLAY
+     -------------------------------------------------------- */
+
+  #skins-overlay{
+    position:fixed !important;
+    inset:0 !important;
+
+    z-index:9500 !important;
+
+    display:flex !important;
+
+    align-items:center !important;
+    justify-content:center !important;
+
+    padding:
+      28px
+      34px
+      34px !important;
+
+    overflow:hidden !important;
+
+    background:
+      rgba(12,7,4,.48) !important;
+
+    backdrop-filter:
+      blur(7px)
+      brightness(.60)
+      saturate(.72)
+      !important;
+
+    opacity:1;
+
+    transition:
+      opacity 280ms ease,
+      backdrop-filter 280ms ease;
+  }
+
+
+  #skins-overlay.hidden{
+    display:none !important;
+  }
+
+
+  /* closing state stays visible while animation runs */
+  #skins-overlay.sy-book-closing{
+    display:flex !important;
+
+    pointer-events:none !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     BOOK ITSELF
+     -------------------------------------------------------- */
+
+  #skins-overlay .after-dark-modal{
+    position:relative !important;
+
+    inset:auto !important;
+
+    width:
+      min(
+        1320px,
+        calc(100vw - 70px)
+      ) !important;
+
+    height:
+      min(
+        820px,
+        calc(100vh - 65px)
+      ) !important;
+
+    max-width:none !important;
+    max-height:none !important;
+
+    margin:0 !important;
+
+    padding:0 !important;
+
+    overflow:visible !important;
+
+    border:none !important;
+
+    border-radius:0 !important;
+
+    background:
+      url("/assets/tabletop/theme-book.webp")
+      center / contain
+      no-repeat
+      !important;
+
+    box-shadow:none !important;
+
+    transform-origin:
+      87% 91%;
+
+    will-change:
+      transform,
+      opacity,
+      filter;
+
+    animation:
+      syBookEnterFullscreen
+      720ms
+      cubic-bezier(.16,.84,.22,1)
+      both;
+  }
+
+
+
+  /* --------------------------------------------------------
+     CINEMATIC OPEN ANIMATION
+     closed book -> lift -> unfold -> settle
+     -------------------------------------------------------- */
+
+  @keyframes syBookEnterFullscreen{
+
+    0%{
+      opacity:0;
+
+      transform:
+        translate(
+          39vw,
+          36vh
+        )
+        rotate(-14deg)
+        scale(.16, .10);
+
+      filter:
+        brightness(.62)
+        blur(2px);
+    }
+
+
+    24%{
+      opacity:1;
+
+      transform:
+        translate(
+          23vw,
+          19vh
+        )
+        rotate(-8deg)
+        scale(.32, .17);
+
+      filter:
+        brightness(.78)
+        blur(1px);
+    }
+
+
+    52%{
+      transform:
+        translate(
+          6vw,
+          4vh
+        )
+        rotate(-3deg)
+        scale(.72, .48);
+
+      filter:
+        brightness(.94)
+        blur(0);
+    }
+
+
+    78%{
+      transform:
+        translate(
+          -.8vw,
+          -.5vh
+        )
+        rotate(.4deg)
+        scale(1.025, .96);
+    }
+
+
+    100%{
+      opacity:1;
+
+      transform:
+        translate(0,0)
+        rotate(0deg)
+        scale(1,1);
+
+      filter:
+        brightness(1);
+    }
+
+  }
+
+
+
+  /* --------------------------------------------------------
+     CLOSING ANIMATION
+     exact opposite feeling
+     -------------------------------------------------------- */
+
+  #skins-overlay.sy-book-closing
+  .after-dark-modal{
+
+    animation:
+      syBookExitFullscreen
+      620ms
+      cubic-bezier(.55,.02,.72,.28)
+      both
+      !important;
+  }
+
+
+  @keyframes syBookExitFullscreen{
+
+    0%{
+      opacity:1;
+
+      transform:
+        translate(0,0)
+        rotate(0deg)
+        scale(1,1);
+
+      filter:
+        brightness(1);
+    }
+
+
+    22%{
+      transform:
+        translate(
+          -.5vw,
+          0
+        )
+        rotate(-.3deg)
+        scale(.98,.92);
+    }
+
+
+    48%{
+      transform:
+        translate(
+          7vw,
+          5vh
+        )
+        rotate(-3deg)
+        scale(.70,.43);
+
+      filter:
+        brightness(.90);
+    }
+
+
+    72%{
+      transform:
+        translate(
+          24vw,
+          20vh
+        )
+        rotate(-9deg)
+        scale(.34,.16);
+
+      filter:
+        brightness(.72);
+    }
+
+
+    100%{
+      opacity:0;
+
+      transform:
+        translate(
+          41vw,
+          38vh
+        )
+        rotate(-15deg)
+        scale(.13,.07);
+
+      filter:
+        brightness(.52)
+        blur(2px);
+    }
+
+  }
+
+
+
+  /* --------------------------------------------------------
+     PAGE CONTENT — NOW WE HAVE REAL SPACE
+     -------------------------------------------------------- */
+
+  #skins-overlay .collection-header{
+    position:absolute !important;
+
+    top:
+      15.5% !important;
+
+    left:
+      19% !important;
+
+    right:
+      19% !important;
+
+    width:auto !important;
+
+    margin:0 !important;
+
+    text-align:center !important;
+
+    z-index:20;
+  }
+
+
+  #skins-overlay .collection-eyebrow{
+    font-size:
+      clamp(8px,.65vw,11px)
+      !important;
+
+    letter-spacing:
+      2px !important;
+
+    color:
+      rgba(72,45,25,.56)
+      !important;
+  }
+
+
+  #skins-overlay
+  .collection-header h2{
+    margin:
+      5px 0 5px
+      !important;
+
+    font-size:
+      clamp(25px,2vw,35px)
+      !important;
+
+    line-height:1 !important;
+
+    color:
+      #352216 !important;
+  }
+
+
+  #skins-overlay
+  .collection-subtitle{
+    max-width:
+      610px !important;
+
+    margin:
+      0 auto !important;
+
+    font-size:
+      clamp(10px,.75vw,13px)
+      !important;
+
+    line-height:
+      1.35 !important;
+
+    color:
+      rgba(59,37,21,.60)
+      !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     UNLOCK CTA
+     -------------------------------------------------------- */
+
+  #skins-overlay .unlock-cta{
+    position:absolute !important;
+
+    top:
+      28.5% !important;
+
+    left:50% !important;
+
+    transform:
+      translateX(-50%)
+      !important;
+
+    z-index:30;
+
+    min-width:
+      235px !important;
+
+    height:
+      42px !important;
+
+    margin:0 !important;
+
+    font-size:
+      12px !important;
+
+    border-radius:
+      999px !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     2 x 2 THEMES INSIDE BOTH PAGES
+     -------------------------------------------------------- */
+
+  #skins-grid{
+    position:absolute !important;
+
+    top:
+      37% !important;
+
+    left:
+      17% !important;
+
+    right:
+      17% !important;
+
+    bottom:
+      16% !important;
+
+    width:auto !important;
+    height:auto !important;
+
+    margin:0 !important;
+
+    display:grid !important;
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr))
+      !important;
+
+    grid-template-rows:
+      repeat(2,minmax(0,1fr))
+      !important;
+
+    column-gap:
+      8.5% !important;
+
+    row-gap:
+      6% !important;
+
+    z-index:25;
+  }
+
+
+
+  #skins-overlay .skin-card{
+    position:relative !important;
+
+    width:100% !important;
+    height:100% !important;
+
+    min-height:0 !important;
+
+    padding:
+      8px !important;
+
+    overflow:hidden !important;
+
+    border:
+      1px solid
+      rgba(84,51,27,.16)
+      !important;
+
+    border-radius:
+      8px !important;
+
+    background:
+      rgba(255,249,234,.12)
+      !important;
+
+    box-shadow:
+      0 4px 10px
+      rgba(58,34,18,.11)
+      !important;
+
+    transform:none !important;
+
+    transition:
+      transform 160ms ease,
+      box-shadow 160ms ease
+      !important;
+  }
+
+
+  #skins-overlay
+  .skin-card:hover{
+    transform:
+      translateY(-5px)
+      scale(1.015)
+      !important;
+
+    box-shadow:
+      0 12px 22px
+      rgba(57,33,17,.19)
+      !important;
+
+    z-index:40;
+  }
+
+
+
+  /* image */
+  #skins-overlay
+  .skin-card .swatch{
+    height:
+      68% !important;
+
+    margin:
+      0 0 7px !important;
+
+    border-radius:
+      7px !important;
+
+    overflow:hidden !important;
+  }
+
+
+  #skins-overlay
+  .skin-preview-image{
+    width:100% !important;
+    height:100% !important;
+
+    object-fit:cover !important;
+  }
+
+
+
+  /* title */
+  #skins-overlay .sname{
+    font-size:
+      clamp(
+        11px,
+        .9vw,
+        15px
+      ) !important;
+
+    line-height:
+      1.1 !important;
+
+    color:
+      #352216 !important;
+  }
+
+
+
+  #skins-overlay
+  .skin-description,
+
+  #skins-overlay
+  .skin-note,
+
+  #skins-overlay
+  .skin-action-text,
+
+  #skins-overlay
+  .locked-copy{
+    display:none !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     LOCK LABELS
+     -------------------------------------------------------- */
+
+  #skins-overlay
+  .skin-preview-lock{
+    position:absolute !important;
+
+    left:50% !important;
+    top:50% !important;
+
+    transform:
+      translate(-50%,-50%)
+      !important;
+
+    min-width:
+      82px !important;
+
+    min-height:
+      57px !important;
+
+    padding:
+      9px 12px
+      !important;
+
+    border-radius:
+      14px !important;
+  }
+
+
+  #skins-overlay
+  .skin-preview-lock svg{
+    width:
+      16px !important;
+
+    height:
+      16px !important;
+  }
+
+
+  #skins-overlay
+  .skin-preview-lock-label{
+    font-size:
+      8px !important;
+
+    letter-spacing:
+      1.2px !important;
+  }
+
+
+
+  #skins-overlay
+  .skin-card.locked
+  .skin-audience-badge{
+    display:none !important;
+  }
+
+
+
+  #skins-overlay
+  .skin-card:not(.locked)
+  .skin-audience-badge{
+    display:flex !important;
+
+    left:
+      8px !important;
+
+    bottom:
+      8px !important;
+
+    padding:
+      4px 8px
+      !important;
+
+    font-size:
+      8px !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     FREE/PREMIUM BADGES
+     -------------------------------------------------------- */
+
+  #skins-overlay .skin-badge{
+    right:
+      8px !important;
+
+    bottom:
+      8px !important;
+
+    padding:
+      4px 8px
+      !important;
+
+    font-size:
+      8px !important;
+  }
+
+
+  #skins-overlay
+  .apply-theme-btn{
+    left:
+      8px !important;
+
+    bottom:
+      8px !important;
+
+    min-height:
+      25px !important;
+
+    padding:
+      4px 8px
+      !important;
+
+    font-size:
+      8px !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     CLOSE X
+     -------------------------------------------------------- */
+
+  #skins-close{
+    position:absolute !important;
+
+    top:
+      11% !important;
+
+    right:
+      12% !important;
+
+    left:auto !important;
+    bottom:auto !important;
+
+    width:
+      36px !important;
+
+    height:
+      36px !important;
+
+    min-width:
+      36px !important;
+
+    min-height:
+      36px !important;
+
+    padding:0 !important;
+
+    border-radius:
+      50% !important;
+
+    font-size:0 !important;
+
+    background:
+      rgba(48,30,17,.76)
+      !important;
+
+    border:
+      1px solid
+      rgba(230,197,124,.35)
+      !important;
+
+    box-shadow:
+      0 5px 12px
+      rgba(0,0,0,.18)
+      !important;
+
+    z-index:100;
+  }
+
+
+  #skins-close::before{
+    content:"×";
+
+    font-size:
+      24px;
+
+    line-height:1;
+
+    color:
+      #f1d9a7;
+  }
+
+
+  #skins-close:hover{
+    transform:
+      scale(1.08)
+      !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     subtle page opening illusion
+     content appears after book expands
+     -------------------------------------------------------- */
+
+  #skins-overlay:not(.sy-book-closing)
+  .collection-header,
+
+  #skins-overlay:not(.sy-book-closing)
+  .unlock-cta,
+
+  #skins-overlay:not(.sy-book-closing)
+  #skins-grid,
+
+  #skins-overlay:not(.sy-book-closing)
+  #skins-close{
+    animation:
+      syBookContentAppear
+      480ms
+      230ms
+      ease
+      both;
+  }
+
+
+  @keyframes syBookContentAppear{
+
+    from{
+      opacity:0;
+
+      transform:
+        translateY(8px);
+    }
+
+    to{
+      opacity:1;
+
+      transform:
+        translateY(0);
+    }
+
+  }
+
+
+
+  /* content disappears first when closing */
+  #skins-overlay.sy-book-closing
+  .collection-header,
+
+  #skins-overlay.sy-book-closing
+  .unlock-cta,
+
+  #skins-overlay.sy-book-closing
+  #skins-grid,
+
+  #skins-overlay.sy-book-closing
+  #skins-close{
+    opacity:0 !important;
+
+    transition:
+      opacity 110ms ease
+      !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     responsive laptop
+     -------------------------------------------------------- */
+
+  @media(max-width:1200px){
+
+    #skins-overlay .after-dark-modal{
+      width:
+        calc(100vw - 38px)
+        !important;
+
+      height:
+        calc(100vh - 38px)
+        !important;
+    }
+
+  }
+
+}

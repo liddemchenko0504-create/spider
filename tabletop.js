@@ -438,3 +438,225 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 });
+
+
+/* ==========================================================
+   SPIDER YARD — CINEMATIC BOOK CLOSE CONTROLLER V5
+   ========================================================== */
+
+(() => {
+
+  const CLOSE_DURATION = 620;
+
+
+  function getBookOverlay(){
+
+    return document.getElementById(
+      "skins-overlay"
+    );
+
+  }
+
+
+  function bookIsOpen(){
+
+    const overlay =
+      getBookOverlay();
+
+
+    return (
+      overlay &&
+      !overlay.classList.contains(
+        "hidden"
+      )
+    );
+
+  }
+
+
+
+  function animatedCloseBook(){
+
+    const overlay =
+      getBookOverlay();
+
+
+    if(!overlay) return;
+
+
+    if(
+      overlay.classList.contains(
+        "hidden"
+      )
+    ){
+      return;
+    }
+
+
+    if(
+      overlay.classList.contains(
+        "sy-book-closing"
+      )
+    ){
+      return;
+    }
+
+
+    /*
+      Step 1
+      Keep overlay visible.
+    */
+
+    overlay.classList.add(
+      "sy-book-closing"
+    );
+
+
+    document.body.classList.remove(
+      "skins-open"
+    );
+
+
+    /*
+      Step 2
+      After animation ends,
+      actually hide it.
+    */
+
+    window.setTimeout(
+      () => {
+
+        overlay.classList.add(
+          "hidden"
+        );
+
+
+        overlay.classList.remove(
+          "sy-book-closing"
+        );
+
+      },
+      CLOSE_DURATION
+    );
+
+  }
+
+
+
+  /* ========================================================
+     ESCAPE
+
+     capture:true is important:
+     we intercept BEFORE the old game Escape handler.
+     ======================================================== */
+
+  document.addEventListener(
+    "keydown",
+    event => {
+
+      if(
+        event.key !==
+        "Escape"
+      ){
+        return;
+      }
+
+
+      if(
+        !bookIsOpen()
+      ){
+        return;
+      }
+
+
+      event.preventDefault();
+
+      event.stopPropagation();
+
+      event.stopImmediatePropagation();
+
+
+      animatedCloseBook();
+
+    },
+    true
+  );
+
+
+
+  /* ========================================================
+     CLOSE BUTTON
+     ======================================================== */
+
+  document.addEventListener(
+    "click",
+    event => {
+
+      const close =
+        event.target.closest(
+          "#skins-close"
+        );
+
+
+      if(!close){
+        return;
+      }
+
+
+      if(
+        !bookIsOpen()
+      ){
+        return;
+      }
+
+
+      event.preventDefault();
+
+      event.stopPropagation();
+
+      event.stopImmediatePropagation();
+
+
+      animatedCloseBook();
+
+    },
+    true
+  );
+
+
+
+  /* ========================================================
+     PREPARE EVERY NEW OPEN
+
+     When old app removes .hidden,
+     clear stale closing state.
+     ======================================================== */
+
+  document.addEventListener(
+    "click",
+    () => {
+
+      const overlay =
+        getBookOverlay();
+
+
+      if(!overlay) return;
+
+
+      if(
+        !overlay.classList.contains(
+          "hidden"
+        )
+      ){
+
+        overlay.classList.remove(
+          "sy-book-closing"
+        );
+
+      }
+
+    }
+  );
+
+
+})();

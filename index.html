@@ -4305,6 +4305,21 @@ body.custom-cursor-active .overlay *{
 
 }
 
+
+/* =========================================================
+   AUTH STATE VISIBILITY FIX
+   ========================================================= */
+
+#auth-signed-out.hidden,
+#auth-signed-in.hidden{
+  display:none !important;
+}
+
+#auth-signed-out:not(.hidden),
+#auth-signed-in:not(.hidden){
+  display:block;
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -5270,32 +5285,101 @@ function getArtworkForCard(card, skinId){
       null;
 
 
+    /*
+      SIGNED OUT
+    */
     if(!currentUser){
 
-      accountPremium = null;
+      accountPremium = false;
 
       localStorage.removeItem(
         ACCOUNT_PREMIUM_CACHE
       );
 
-      updateAccountUI();
-      updatePremiumButton();
+      /*
+        Remove old browser-only Premium.
+        The account is now authoritative.
+      */
+      localStorage.removeItem(
+        PREMIUM_KEY
+      );
 
-      if(state){
-        render();
+
+      updateAccountUI();
+
+
+      /*
+        A signed-out customer must not
+        remain inside a Premium theme.
+      */
+      const activeSkin =
+        SKINS.find(
+          skin =>
+            skin.id ===
+            getCurrentSkinId()
+        );
+
+
+      if(
+        activeSkin &&
+        activeSkin.premium
+      ){
+
+        applySkin("emerald");
+
+      }else{
+
+        updatePremiumButton();
+        renderSkinsPanel();
+
+        if(state){
+          render();
+        }
+
       }
 
       return;
     }
 
 
+    /*
+      SIGNED IN
+    */
+
     await loadAccountProfile();
 
     updateAccountUI();
     updatePremiumButton();
+    renderSkinsPanel();
 
     if(state){
       render();
+    }
+
+
+    /*
+      Clean auth callback fragment
+      after Supabase has processed it.
+    */
+    if(
+      window.location.hash &&
+      (
+        window.location.hash.includes(
+          "access_token"
+        ) ||
+        window.location.hash.includes(
+          "refresh_token"
+        )
+      )
+    ){
+
+      window.history.replaceState(
+        {},
+        "",
+        window.location.pathname +
+        window.location.search
+      );
+
     }
 
   }
@@ -5364,24 +5448,13 @@ function getArtworkForCard(card, skinId){
   function isPremium(){
 
     /*
-      Logged-in customers:
-      database account is authoritative.
-    */
-
-    if(currentUser){
-      return accountPremium === true;
-    }
-
-
-    /*
-      Temporary legacy fallback while
-      Stripe-account migration is unfinished.
+      Premium belongs to the signed-in
+      Supabase account only.
     */
 
     return (
-      localStorage.getItem(
-        PREMIUM_KEY
-      ) === "true"
+      !!currentUser &&
+      accountPremium === true
     );
 
   }
@@ -5481,36 +5554,92 @@ function getArtworkForCard(card, skinId){
         "auth-signed-in"
       );
 
+    const title =
+      document.getElementById(
+        "auth-title"
+      );
 
+    const subtitle =
+      document.getElementById(
+        "auth-subtitle"
+      );
+
+
+    /*
+      SIGNED OUT UI
+    */
     if(!currentUser){
 
       accountBtn?.classList.remove(
         "signed-in"
       );
 
+
       if(accountLabel){
         accountLabel.textContent =
           "Sign in";
       }
 
-      if(signedOut){
-        signedOut.classList.remove(
-          "hidden"
-        );
+
+      if(accountAvatar){
+
+        accountAvatar.innerHTML = `
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <circle
+              cx="12"
+              cy="8"
+              r="4"
+            ></circle>
+
+            <path
+              d="M4.5 20c.9-4 3.4-6 7.5-6s6.6 2 7.5 6"
+            ></path>
+          </svg>
+        `;
+
       }
 
-      if(signedIn){
-        signedIn.classList.add(
-          "hidden"
-        );
+
+      signedOut?.classList.remove(
+        "hidden"
+      );
+
+      signedIn?.classList.add(
+        "hidden"
+      );
+
+
+      if(title){
+        title.textContent =
+          "Private Access";
+      }
+
+      if(subtitle){
+        subtitle.textContent =
+          "Sign in to keep your collection and Premium access available across devices.";
       }
 
       return;
     }
 
 
+    /*
+      SIGNED IN UI
+    */
+
     accountBtn?.classList.add(
       "signed-in"
+    );
+
+    signedOut?.classList.add(
+      "hidden"
+    );
+
+    signedIn?.classList.remove(
+      "hidden"
     );
 
 
@@ -5518,6 +5647,8 @@ function getArtworkForCard(card, skinId){
       currentUser.email ||
       "Account";
 
+    const username =
+      email.split("@")[0];
 
     const initial =
       email
@@ -5527,9 +5658,8 @@ function getArtworkForCard(card, skinId){
 
     if(accountLabel){
       accountLabel.textContent =
-        email.split("@")[0];
+        username;
     }
-
 
     if(accountAvatar){
       accountAvatar.innerHTML =
@@ -5537,16 +5667,18 @@ function getArtworkForCard(card, skinId){
     }
 
 
-    if(signedOut){
-      signedOut.classList.add(
-        "hidden"
-      );
+    if(title){
+      title.textContent =
+        "Your Account";
     }
 
-    if(signedIn){
-      signedIn.classList.remove(
-        "hidden"
-      );
+    if(subtitle){
+
+      subtitle.textContent =
+        accountPremium
+          ? "Your Premium collection is connected to this account."
+          : "Your Spider Yard collection is connected to this account.";
+
     }
 
 
@@ -5735,12 +5867,61 @@ function getArtworkForCard(card, skinId){
       return;
 
 
-    await supabaseClient
-      .auth
-      .signOut();
+    try{
+
+      await supabaseClient
+        .auth
+        .signOut();
+
+    }finally{
+
+      currentUser = null;
+      accountPremium = false;
 
 
-    closeAuthModal();
+      /*
+        Remove legacy Premium cache.
+      */
+      localStorage.removeItem(
+        PREMIUM_KEY
+      );
+
+      localStorage.removeItem(
+        ACCOUNT_PREMIUM_CACHE
+      );
+
+
+      /*
+        Return signed-out customer
+        to the free theme.
+      */
+      const activeSkin =
+        SKINS.find(
+          skin =>
+            skin.id ===
+            getCurrentSkinId()
+        );
+
+      if(
+        activeSkin &&
+        activeSkin.premium
+      ){
+        applySkin("emerald");
+      }
+
+
+      updateAccountUI();
+      updatePremiumButton();
+      renderSkinsPanel();
+
+      if(state){
+        render();
+      }
+
+
+      closeAuthModal();
+
+    }
 
   }
 

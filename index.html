@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Паучий Двор — Spider Solitaire</title>
+<style>
+  :root{
+    --felt-dark: #10221c;
+    --felt: #16332a;
+    --felt-light: #1f4438;
+    --gold: #c9a227;
+    --gold-soft: #e8d9a0;
+    --paper: #f3ead8;
+    --ink: #1b1410;
+    --card-red: #8c2f2f;
+    --card-black: #1c1c1c;
+    --wood: #3a2416;
+    --rose: #e35a90;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0; padding:0; height:100%;
+    background:
+      radial-gradient(ellipse at 50% -10%, rgba(255,255,255,0.05), transparent 60%),
+      var(--felt-dark);
+    font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+    color: var(--paper);
+    overflow:hidden;
+    user-select:none;
+  }
+  #app{ height:100vh; display:flex; flex-direction:column; }
+
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 10px 22px;
+    background: linear-gradient(180deg, var(--wood), #2a1810);
+    border-bottom: 3px solid var(--gold);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+    z-index: 5;
+  }
+  header h1{
+    font-size: 20px; margin:0; letter-spacing:1px; color: var(--gold-soft);
+    font-weight: 600;
+  }
+  header h1 span{ color: var(--gold); }
+  .stats{ display:flex; gap:22px; font-size:14px; color: var(--paper); opacity:0.9; }
+  .stats b{ color: var(--gold-soft); }
+  .controls{ display:flex; gap:10px; align-items:center; }
+  select, button{
+    font-family: inherit;
+    background: var(--felt-light);
+    color: var(--paper);
+    border: 1px solid var(--gold);
+    border-radius: 5px;
+    padding: 6px 12px;
+    cursor:pointer;
+    font-size: 13px;
+  }
+  button:hover, select:hover{ background: #2a5a49; }
+  button:active{ transform: translateY(1px); }
+  button.primary{ background: var(--gold); color: var(--ink); font-weight:700; border-color: var(--gold-soft); }
+  button.primary:hover{ background: var(--gold-soft); }
+
+  #table{
+    flex:1; position:relative; padding: 18px 26px 26px;
+    display:flex; flex-direction:column; gap:14px; overflow:hidden;
+  }
+
+  .top-row{ display:flex; justify-content:space-between; align-items:flex-start; }
+  .stock-area{ display:flex; gap:10px; }
+  .stock-pile{
+    width:64px; height:92px; border-radius:6px;
+    background: repeating-linear-gradient(135deg, var(--felt-light), var(--felt-light) 6px, #245445 6px, #245445 12px);
+    border: 2px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size:11px; text-align:center; color: var(--gold-soft);
+    cursor:pointer; position:relative;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  }
+  .stock-pile.empty{ opacity:0.35; cursor:default; }
+  .stock-pile .count{ position:absolute; bottom:-20px; font-size:11px; color:var(--paper); white-space:nowrap;}
+
+  .foundations{ display:flex; gap:6px; flex-wrap:wrap; max-width:420px; justify-content:flex-end; }
+  .foundation-slot{
+    width:44px; height:64px; border-radius:5px;
+    border: 1px solid rgba(232,217,160,0.4);
+    background: rgba(0,0,0,0.15);
+    display:flex; align-items:center; justify-content:center;
+    font-size: 22px; color: var(--gold);
+  }
+
+  .board{
+    flex:1; display:flex; gap: 14px; justify-content:center;
+    padding-top: 4px;
+  }
+  .column{
+    position:relative; width: 92px; min-height:120px;
+  }
+  .card{
+    position:absolute; left:0; width:92px; height:128px;
+    border-radius:8px;
+    background: var(--paper);
+    border: 1px solid #00000030;
+    box-shadow: 0 2px 3px rgba(0,0,0,0.35);
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding:6px 7px;
+    font-weight:700;
+    cursor:pointer;
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+  .card.red{ color: var(--card-red); }
+  .card.black{ color: var(--card-black); }
+  .card .corner{ font-size:15px; line-height:1; display:flex; flex-direction:column; align-items:center; }
+  .card .corner.bottom{ align-self:flex-end; transform: rotate(180deg); }
+  .card .pip{ font-size: 26px; align-self:center; opacity:0.85; }
+  .card.face-down{
+    background: repeating-linear-gradient(135deg, var(--felt-light), var(--felt-light) 6px, #245445 6px, #245445 12px);
+    border: 1px solid var(--gold);
+    cursor: default;
+  }
+  .card.selected{ box-shadow: 0 0 0 3px var(--gold), 0 4px 10px rgba(0,0,0,0.5); transform: translateY(-4px); }
+  .card.movable-hint:hover{ box-shadow: 0 0 0 2px rgba(232,217,160,0.7), 0 4px 10px rgba(0,0,0,0.5); }
+  .card.dragging{ opacity:0.85; z-index:999; }
+  .drop-target{ outline: 2px dashed var(--gold-soft); border-radius: 10px; }
+
+  .empty-slot{
+    position:absolute; top:0; left:0; width:92px; height:128px;
+    border: 1.5px dashed rgba(232,217,160,0.35); border-radius:8px;
+  }
+
+  #status-bar{
+    padding: 8px 22px; background: rgba(0,0,0,0.35); font-size:13px;
+    color: var(--gold-soft); border-top: 1px solid rgba(201,162,39,0.3);
+    min-height: 18px;
+  }
+
+  /* overlay screens */
+  .overlay{
+    position:fixed; inset:0; background: rgba(6,12,10,0.88);
+    display:flex; align-items:center; justify-content:center; z-index:50;
+    flex-direction:column; gap: 16px; text-align:center; padding: 20px;
+  }
+  .overlay.hidden{ display:none; }
+  .win-card{
+    background: linear-gradient(180deg, #1f4438, #123027);
+    border: 2px solid var(--gold);
+    border-radius: 14px;
+    padding: 30px 40px;
+    max-width: 460px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+  .win-card h2{ color: var(--gold-soft); margin-top:0; font-size: 26px; }
+  .portrait{
+    width: 180px; height: 240px; margin: 14px auto;
+    border-radius: 10px; border: 3px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-size: 15px; color: var(--paper); text-align:center;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    position:relative; overflow:hidden;
+  }
+  .portrait svg{ width:100%; height:100%; }
+  .portrait .name-tag{
+    position:absolute; bottom:0; left:0; right:0;
+    background: rgba(0,0,0,0.55); padding: 5px 0; font-size:13px; color: var(--gold-soft);
+  }
+
+  #gallery-btn{ position:relative; }
+  .badge{
+    position:absolute; top:-6px; right:-6px; background: var(--gold);
+    color: var(--ink); font-size:10px; font-weight:800; border-radius:50%;
+    width:16px; height:16px; display:flex; align-items:center; justify-content:center;
+  }
+
+  #gallery-grid{
+    display:grid; grid-template-columns: repeat(4, 1fr); gap:14px;
+    max-width: 640px; max-height: 60vh; overflow-y:auto; padding: 6px;
+  }
+  .gallery-item{
+    width: 120px; height:160px; border-radius:8px; border:2px solid var(--gold);
+    position:relative; overflow:hidden; opacity: 0.25; filter: grayscale(1);
+  }
+  .gallery-item.unlocked{ opacity:1; filter:none; }
+  .gallery-item svg{ width:100%; height:100%; }
+  .gallery-item .gname{
+    position:absolute; bottom:0; left:0; right:0; background: rgba(0,0,0,0.6);
+    font-size:11px; padding: 3px 0; color: var(--gold-soft);
+  }
+  .gallery-item.locked::after{
+    content: "?"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size: 34px; color: var(--gold-soft);
+  }
+
+  /* --- correct-placement glow --- */
+  @keyframes placedGlow{
+    0%{ box-shadow: 0 0 0 0 rgba(201,162,39,0.95), 0 2px 3px rgba(0,0,0,0.35); }
+    55%{ box-shadow: 0 0 20px 9px rgba(201,162,39,0.85), 0 2px 3px rgba(0,0,0,0.35); }
+    100%{ box-shadow: 0 0 0 0 rgba(201,162,39,0), 0 2px 3px rgba(0,0,0,0.35); }
+  }
+  .card.placed-glow{ animation: placedGlow 0.9s ease-out; }
+
+  /* --- hint arrows --- */
+  #hint-arrow-layer{
+    position:absolute; inset:0; pointer-events:none; z-index:30;
+    opacity:0; transition: opacity 0.3s;
+  }
+  #hint-arrow-layer.active{ opacity:1; }
+  #hint-arrow-layer path{
+    stroke: var(--rose, #e35a90); stroke-width:3.5; fill:none;
+    filter: drop-shadow(0 0 4px rgba(227,90,144,0.8));
+    stroke-dasharray: 8 6;
+    animation: dashMove 0.6s linear infinite;
+  }
+  @keyframes dashMove{ to{ stroke-dashoffset: -28; } }
+
+  /* --- premium / skins --- */
+  #premium-btn{ background: linear-gradient(135deg, #7b3f6b, #e35a90); color:#fff; border-color:#e35a90; font-weight:700; }
+  #premium-btn:hover{ filter:brightness(1.1); }
+  #premium-btn.owned{ background: linear-gradient(135deg, #2f6b4a, #4fae7a); border-color:#4fae7a; }
+
+  #skins-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:16px; max-width:520px; }
+  .skin-card{
+    border:2px solid var(--gold); border-radius:10px; padding:14px; text-align:left;
+    cursor:pointer; position:relative; transition: transform 0.15s;
+  }
+  .skin-card:hover{ transform: translateY(-2px); }
+  .skin-card.active{ box-shadow: 0 0 0 3px var(--gold-soft); }
+  .skin-card .swatch{ height:44px; border-radius:6px; margin-bottom:8px; }
+  .skin-card .sname{ font-size:14px; color: var(--gold-soft); }
+  .skin-card .lock-tag{
+    position:absolute; top:8px; right:8px; background: rgba(0,0,0,0.55);
+    color: var(--gold-soft); font-size:11px; padding:2px 7px; border-radius:10px;
+  }
+  .skin-card.locked{ opacity:0.75; }
+  #checkout-msg{ font-size:13px; color: var(--gold-soft); min-height:18px; }
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>Паучий <span>Двор</span></h1>
+    <div class="stats">
+      <div>Ходы: <b id="stat-moves">0</b></div>
+      <div>Наборы собрано: <b id="stat-sets">0</b></div>
+      <div>Побед: <b id="stat-wins">0</b></div>
+    </div>
+    <div class="controls">
+      <select id="difficulty">
+        <option value="1">1 масть (лёгкая)</option>
+        <option value="2">2 масти (средняя)</option>
+        <option value="4" selected>4 масти (сложная)</option>
+      </select>
+      <button id="new-game" class="primary">Новая игра</button>
+      <button id="undo-btn">Отменить</button>
+      <button id="hint-btn">Подсказка</button>
+      <button id="skins-btn">Скины</button>
+      <button id="gallery-btn">Галерея<span class="badge" id="gallery-badge" style="display:none;">0</span></button>
+      <button id="premium-btn">Премиум</button>
+    </div>
+  </header>
+
+  <div id="table">
+    <div class="top-row">
+      <div class="stock-area">
+        <div class="stock-pile" id="stock-pile">
+          <div>Колода</div>
+          <div class="count" id="stock-count"></div>
+        </div>
+      </div>
+      <div class="foundations" id="foundations"></div>
+    </div>
+    <div class="board" id="board"></div>
+    <svg id="hint-arrow-layer">
+      <defs>
+        <marker id="hintArrowHead" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+          <path d="M0,0 L0,6 L9,3 z" fill="var(--rose)"/>
+        </marker>
+      </defs>
+      <path id="hint-arrow-path" d=""/>
+    </svg>
+  </div>
+
+  <div id="status-bar">Перетащите или кликните последовательность карт, чтобы переместить её.</div>
+</div>
+
+<div class="overlay hidden" id="win-overlay">
+  <div class="win-card">
+    <h2>Партия выиграна!</h2>
+    <p id="win-portrait-name-wrap">Открыт новый портрет:</p>
+    <div class="portrait" id="win-portrait"></div>
+    <button class="primary" id="win-continue">Отлично!</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="skins-overlay">
+  <div class="win-card" style="max-width:600px;">
+    <h2>Скины стола и рубашки карт</h2>
+    <div id="skins-grid"></div>
+    <div id="checkout-msg"></div>
+    <button class="primary" id="skins-close" style="margin-top:10px;">Закрыть</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="gallery-overlay">
+  <div class="win-card" style="max-width:700px;">
+    <h2>Галерея</h2>
+    <div id="gallery-grid"></div>
+    <button class="primary" id="gallery-close">Закрыть</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Character gallery (placeholder art, tasteful SVG portraits) ---------- */
+  const PALETTES = [
+    ["#f6c9c9","#7b3f61","#2e1a2f"], ["#c9e4f6","#3f6b7b","#1a262f"],
+    ["#e8f6c9","#6b7b3f","#262f1a"], ["#f6e0c9","#7b5a3f","#2f2419"],
+    ["#d9c9f6","#5a3f7b","#241a2f"], ["#c9f6e0","#3f7b5a","#1a2f24"],
+    ["#f6c9e8","#7b3f6b","#2f1a26"], ["#c9d9f6","#3f5a7b","#1a242f"]
+  ];
+  const NAMES = ["Юки","Сакура","Рин","Мидори","Ая","Хана","Кику","Нацуки",
+                 "Момо","Цубаки","Рэй","Соноко","Иори","Мичи","Кохару","Аой"];
+
+  function makePortraitSVG(seed){
+    const pal = PALETTES[seed % PALETTES.length];
+    const hairShapes = seed % 3;
+    let hair = "";
+    if(hairShapes === 0){
+      hair = `<path d="M20 70 Q50 10 80 70 Q80 40 50 30 Q20 40 20 70 Z" fill="${pal[1]}"/>`;
+    } else if(hairShapes === 1){
+      hair = `<path d="M15 75 Q20 20 50 20 Q80 20 85 75 L85 55 Q75 30 50 28 Q25 30 15 55 Z" fill="${pal[1]}"/>`;
+    } else {
+      hair = `<path d="M18 65 Q22 15 50 18 Q78 15 82 65 Q70 45 50 42 Q30 45 18 65 Z" fill="${pal[1]}"/>`;
+    }
+    return `
+    <svg viewBox="0 0 100 130" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="130" fill="${pal[2]}"/>
+      <circle cx="50" cy="55" r="26" fill="#ffe3c9"/>
+      <path d="M0 130 Q50 95 100 130 Z" fill="${pal[0]}"/>
+      ${hair}
+      <circle cx="41" cy="55" r="2.4" fill="#2b2b2b"/>
+      <circle cx="59" cy="55" r="2.4" fill="#2b2b2b"/>
+      <path d="M42 66 Q50 70 58 66" stroke="#a15c5c" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    </svg>`;
+  }
+
+  const GALLERY = NAMES.map((n,i)=>({ id:i, name:n, svg: makePortraitSVG(i) }));
+
+  /* ---------- Premium & skins ---------- */
+  // IMPORTANT: these two endpoints must point at your own deployed backend
+  // (see /api folder in the repo + README for Vercel deploy instructions).
+  const API_BASE = ""; // e.g. "https://your-app.vercel.app" — leave "" if backend is same-origin
+
+  const SKINS = [
+    { id:"emerald", name:"Изумрудный двор", premium:false,
+      vars:{ "--felt-dark":"#10221c", "--felt":"#16332a", "--felt-light":"#1f4438", "--gold":"#c9a227", "--gold-soft":"#e8d9a0", "--wood":"#3a2416" } },
+    { id:"midnight", name:"Полуночный бархат", premium:true,
+      vars:{ "--felt-dark":"#120a1f", "--felt":"#1e1033", "--felt-light":"#2c1a4d", "--gold":"#b48ce0", "--gold-soft":"#e3d3f7", "--wood":"#241433" } },
+    { id:"rose", name:"Розовый сад", premium:true,
+      vars:{ "--felt-dark":"#2a1420", "--felt":"#3d1b30", "--felt-light":"#5a2a47", "--gold":"#e6a4c4", "--gold-soft":"#f6dce9", "--wood":"#3d1b2c" } },
+    { id:"harbor", name:"Золотая гавань", premium:true,
+      vars:{ "--felt-dark":"#0b1a2b", "--felt":"#132a42", "--felt-light":"#1c3f61", "--gold":"#e0b84a", "--gold-soft":"#f3e0ad", "--wood":"#122236" } }
+  ];
+  const PREMIUM_KEY = "spider_yard_premium_v1";
+  const SKIN_KEY = "spider_yard_skin_v1";
+
+  function isPremium(){ return localStorage.getItem(PREMIUM_KEY) === "true"; }
+  function setPremium(val){ localStorage.setItem(PREMIUM_KEY, val ? "true" : "false"); }
+
+  function applySkin(skinId){
+    const skin = SKINS.find(s => s.id === skinId) || SKINS[0];
+    if(skin.premium && !isPremium()) return false;
+    Object.entries(skin.vars).forEach(([k,v]) => document.documentElement.style.setProperty(k, v));
+    localStorage.setItem(SKIN_KEY, skinId);
+    renderSkinsPanel();
+    return true;
+  }
+
+  function renderSkinsPanel(){
+    const grid = document.getElementById("skins-grid");
+    if(!grid) return;
+    grid.innerHTML = "";
+    const current = localStorage.getItem(SKIN_KEY) || "emerald";
+    SKINS.forEach(skin=>{
+      const locked = skin.premium && !isPremium();
+      const div = document.createElement("div");
+      div.className = "skin-card" + (locked ? " locked" : "") + (current === skin.id ? " active" : "");
+      div.innerHTML = `
+        <div class="swatch" style="background: linear-gradient(135deg, ${skin.vars["--felt-light"]}, ${skin.vars["--felt-dark"]});"></div>
+        <div class="sname">${skin.name}</div>
+        ${locked ? '<div class="lock-tag">Премиум</div>' : ''}
+      `;
+      div.addEventListener("click", ()=>{
+        if(locked){
+          document.getElementById("checkout-msg").textContent = "Этот скин доступен в премиуме — оформи подписку ниже.";
+          return;
+        }
+        applySkin(skin.id);
+      });
+      grid.appendChild(div);
+    });
+    updatePremiumButton();
+  }
+
+  function updatePremiumButton(){
+    const btn = document.getElementById("premium-btn");
+    if(!btn) return;
+    if(isPremium()){
+      btn.textContent = "Премиум ✓";
+      btn.classList.add("owned");
+    } else {
+      btn.textContent = "Купить премиум";
+      btn.classList.remove("owned");
+    }
+  }
+
+  async function startCheckout(){
+    const msg = document.getElementById("checkout-msg");
+    msg.textContent = "Открываю окно оплаты...";
+    try{
+      const res = await fetch(API_BASE + "/api/create-checkout-session", { method:"POST" });
+      if(!res.ok) throw new Error("backend-not-deployed");
+      const data = await res.json();
+      if(data.url){
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || "no-url");
+      }
+    }catch(e){
+      msg.textContent = "Бэкенд оплаты ещё не задеплоен. Разверни /api на Vercel (см. README) и вставь свои ключи Stripe.";
+    }
+  }
+
+  async function verifyPendingSession(){
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    if(!sessionId) return;
+    try{
+      const res = await fetch(API_BASE + "/api/verify-session?session_id=" + encodeURIComponent(sessionId));
+      const data = await res.json();
+      if(data.valid){
+        setPremium(true);
+        setStatus("Оплата подтверждена — премиум-скины разблокированы!");
+      }
+    }catch(e){
+      // backend not deployed yet — silently ignore
+    } finally {
+      params.delete("session_id");
+      params.delete("premium");
+      const newUrl = window.location.pathname + (params.toString() ? "?" + params.toString() : "");
+      window.history.replaceState({}, "", newUrl);
+      updatePremiumButton();
+      renderSkinsPanel();
+    }
+  }
+
+  const LS_KEY = "spider_yard_save_v1";
+  function loadSave(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return { unlocked: [], moves:0, sets:0, wins:0 };
+  }
+  function saveSave(s){
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(s)); }catch(e){}
+  }
+  let save = loadSave();
+
+  function unlockRandomPortrait(){
+    const locked = GALLERY.filter(g => !save.unlocked.includes(g.id));
+    if(locked.length === 0) return GALLERY[Math.floor(Math.random()*GALLERY.length)];
+    const pick = locked[Math.floor(Math.random()*locked.length)];
+    save.unlocked.push(pick.id);
+    saveSave(save);
+    return pick;
+  }
+
+  function renderGallery(){
+    const grid = document.getElementById("gallery-grid");
+    grid.innerHTML = "";
+    GALLERY.forEach(g=>{
+      const unlocked = save.unlocked.includes(g.id);
+      const div = document.createElement("div");
+      div.className = "gallery-item " + (unlocked ? "unlocked" : "locked");
+      if(unlocked){
+        div.innerHTML = g.svg + `<div class="gname">${g.name}</div>`;
+      }
+      grid.appendChild(div);
+    });
+    const badge = document.getElementById("gallery-badge");
+    if(save.unlocked.length > 0){
+      badge.style.display = "flex";
+      badge.textContent = save.unlocked.length;
+    } else {
+      badge.style.display = "none";
+    }
+  }
+
+  /* ---------- Card / game model ---------- */
+  const SUITS = ["♠","♥","♦","♣"];
+  const SUIT_COLOR = {"♠":"black","♣":"black","♥":"red","♦":"red"};
+  const RANKS = ["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
+
+  function buildDeck(numSuits){
+    // Spider uses 104 cards = 8 copies of 13 ranks, with suit variety controlled by numSuits
+    let suitsToUse;
+    if(numSuits === 1) suitsToUse = ["♠","♠","♠","♠","♠","♠","♠","♠"];
+    else if(numSuits === 2) suitsToUse = ["♠","♥","♠","♥","♠","♥","♠","♥"];
+    else suitsToUse = ["♠","♥","♦","♣","♠","♥","♦","♣"];
+    const deck = [];
+    let uid = 0;
+    suitsToUse.forEach(suit=>{
+      RANKS.forEach((rank, idx)=>{
+        deck.push({ id: uid++, suit, rank, rankIdx: idx, faceUp:false });
+      });
+    });
+    return deck;
+  }
+
+  function shuffle(arr){
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [arr[i],arr[j]] = [arr[j],arr[i]];
+    }
+    return arr;
+  }
+
+  let state = null;
+  let history = [];
+  let selection = null; // { col, index }
+
+  function newGame(numSuits){
+    const deck = shuffle(buildDeck(numSuits));
+    const columns = Array.from({length:10}, ()=>[]);
+    let ci = 0;
+    // 54 cards dealt to tableau (4 columns of 6, 6 columns of 5), 50 remain in stock
+    const dealCounts = [6,6,6,6,5,5,5,5,5,5];
+    dealCounts.forEach((count, colIdx)=>{
+      for(let k=0;k<count;k++){
+        columns[colIdx].push(deck[ci++]);
+      }
+      columns[colIdx][columns[colIdx].length-1].faceUp = true;
+    });
+    const stock = deck.slice(ci); // remaining cards, dealt 10 at a time
+    state = {
+      numSuits, columns, stock,
+      foundations: [], // completed sets (array of {suit})
+      moves: 0, selection: null
+    };
+    history = [];
+    selection = null;
+    document.getElementById("win-overlay").classList.add("hidden");
+    render();
+    setStatus("Новая игра началась. Удачи!");
+  }
+
+  function snapshot(){
+    return JSON.parse(JSON.stringify({
+      columns: state.columns, stock: state.stock, foundations: state.foundations, moves: state.moves
+    }));
+  }
+  function pushHistory(){
+    history.push(snapshot());
+    if(history.length > 60) history.shift();
+  }
+  function undo(){
+    if(history.length === 0){ setStatus("Нечего отменять."); return; }
+    const snap = history.pop();
+    state.columns = snap.columns;
+    state.stock = snap.stock;
+    state.foundations = snap.foundations;
+    state.moves = snap.moves;
+    selection = null;
+    render();
+    setStatus("Ход отменён.");
+  }
+
+  function setStatus(msg){
+    document.getElementById("status-bar").textContent = msg;
+  }
+
+  function isSequential(cards){
+    // cards: array top-to-bottom in visual order i.e. cards[0] is higher up; must be descending rank, same suit
+    for(let i=0;i<cards.length-1;i++){
+      if(cards[i].suit !== cards[i+1].suit) return false;
+      if(cards[i].rankIdx !== cards[i+1].rankIdx + 1) return false;
+    }
+    return true;
+  }
+
+  function canPlace(movingCards, destCol){
+    const dest = state.columns[destCol];
+    if(dest.length === 0) return true;
+    const destTop = dest[dest.length-1];
+    if(!destTop.faceUp) return false;
+    const first = movingCards[0];
+    return destTop.rankIdx === first.rankIdx + 1;
+  }
+
+  function getMovableStack(colIdx, cardIdx){
+    const col = state.columns[colIdx];
+    const stack = col.slice(cardIdx);
+    if(!stack[0].faceUp) return null;
+    if(!isSequential(stack)) return null;
+    return stack;
+  }
+
+  function checkAndRemoveCompletedSets(colIdx){
+    const col = state.columns[colIdx];
+    if(col.length < 13) return;
+    const top13 = col.slice(col.length-13);
+    if(!isSequential(top13)) return;
+    if(top13[0].rankIdx !== 12) return; // must start with King
+    if(top13[12].rankIdx !== 0) return; // ends with Ace
+    // remove
+    state.foundations.push({ suit: top13[0].suit });
+    col.splice(col.length-13, 13);
+    save.sets = (save.sets||0) + 1;
+    saveSave(save);
+    if(col.length > 0) col[col.length-1].faceUp = true;
+    setStatus("Полный набор от короля до туза собран!");
+    checkWin();
+  }
+
+  function checkWin(){
+    if(state.foundations.length === 8){
+      save.wins = (save.wins||0) + 1;
+      saveSave(save);
+      const portrait = unlockRandomPortrait();
+      showWin(portrait);
+    }
+  }
+
+  function showWin(portrait){
+    const overlay = document.getElementById("win-overlay");
+    const portDiv = document.getElementById("win-portrait");
+    portDiv.innerHTML = portrait.svg + `<div class="name-tag">${portrait.name}</div>`;
+    overlay.classList.remove("hidden");
+    renderStats();
+  }
+
+  function dealFromStock(){
+    if(state.stock.length === 0){ setStatus("Колода пуста."); return; }
+    if(state.columns.some(c => c.length === 0)){
+      setStatus("Нельзя брать карты из колоды, пока есть пустая колонка.");
+      return;
+    }
+    pushHistory();
+    for(let i=0;i<10;i++){
+      const card = state.stock.pop();
+      card.faceUp = true;
+      state.columns[i].push(card);
+    }
+    state.moves++;
+    for(let i=0;i<10;i++) checkAndRemoveCompletedSets(i);
+    render();
+    setStatus("Роздано 10 карт из колоды.");
+  }
+
+  function tryMove(fromCol, cardIdx, toCol){
+    if(fromCol === toCol) return false;
+    const stack = getMovableStack(fromCol, cardIdx);
+    if(!stack){ setStatus("Эта последовательность не может двигаться вместе."); return false; }
+    if(!canPlace(stack, toCol)){ setStatus("Сюда нельзя положить эту карту."); return false; }
+    pushHistory();
+    const landedBeneath = state.columns[toCol].length > 0 ? state.columns[toCol][state.columns[toCol].length-1] : null;
+    state.columns[fromCol].splice(cardIdx, stack.length);
+    state.columns[toCol].push(...stack);
+    if(state.columns[fromCol].length > 0){
+      state.columns[fromCol][state.columns[fromCol].length-1].faceUp = true;
+    }
+    state.moves++;
+    checkAndRemoveCompletedSets(toCol);
+    render();
+    glowPlacement(toCol, stack.length, landedBeneath);
+    return true;
+  }
+
+  function glowPlacement(colIdx, movedCount, landedBeneath){
+    // glow the moved stack itself
+    requestAnimationFrame(()=>{
+      const colEl = document.querySelector(`.column[data-col="${colIdx}"]`);
+      if(!colEl) return;
+      const cardEls = colEl.querySelectorAll(".card");
+      const total = cardEls.length;
+      for(let i = total - movedCount; i < total; i++){
+        if(cardEls[i]) cardEls[i].classList.add("placed-glow");
+      }
+      // also glow the card it landed on ("нижняя карта"), if any
+      if(landedBeneath && total - movedCount - 1 >= 0){
+        const beneathEl = cardEls[total - movedCount - 1];
+        if(beneathEl) beneathEl.classList.add("placed-glow");
+      }
+      setTimeout(()=>{
+        cardEls.forEach(el => el.classList.remove("placed-glow"));
+      }, 900);
+    });
+  }
+
+  /* ---------- Rendering ---------- */
+  function cardEl(card, colIdx, idxInCol, topOffset){
+    const div = document.createElement("div");
+    div.className = "card " + (card.faceUp ? SUIT_COLOR[card.suit] : "face-down");
+    div.style.top = topOffset + "px";
+    div.dataset.col = colIdx;
+    div.dataset.idx = idxInCol;
+    if(card.faceUp){
+      div.innerHTML = `
+        <div class="corner"><span>${card.rank}</span><span>${card.suit}</span></div>
+        <div class="pip">${card.suit}</div>
+        <div class="corner bottom"><span>${card.rank}</span><span>${card.suit}</span></div>
+      `;
+      div.draggable = true;
+      div.classList.add("movable-hint");
+    } else {
+      div.draggable = false;
+    }
+    return div;
+  }
+
+  function render(){
+    const board = document.getElementById("board");
+    board.innerHTML = "";
+    state.columns.forEach((col, colIdx)=>{
+      const colDiv = document.createElement("div");
+      colDiv.className = "column";
+      colDiv.dataset.col = colIdx;
+      const emptySlot = document.createElement("div");
+      emptySlot.className = "empty-slot";
+      colDiv.appendChild(emptySlot);
+
+      const OFFSET_DOWN = 10;
+      const OFFSET_UP = 26;
+      let top = 0;
+      col.forEach((card, idx)=>{
+        const el = cardEl(card, colIdx, idx, top);
+        if(selection && selection.col === colIdx && idx >= selection.index){
+          el.classList.add("selected");
+        }
+        colDiv.appendChild(el);
+        top += card.faceUp ? OFFSET_UP : OFFSET_DOWN;
+      });
+      colDiv.style.minHeight = (128 + top) + "px";
+      board.appendChild(colDiv);
+    });
+
+    // stock
+    const stockPile = document.getElementById("stock-pile");
+    const remaining = Math.floor(state.stock.length / 10);
+    document.getElementById("stock-count").textContent = state.stock.length > 0 ? (remaining + " раздач") : "пусто";
+    stockPile.classList.toggle("empty", state.stock.length === 0);
+
+    // foundations
+    const fDiv = document.getElementById("foundations");
+    fDiv.innerHTML = "";
+    for(let i=0;i<8;i++){
+      const slot = document.createElement("div");
+      slot.className = "foundation-slot";
+      if(state.foundations[i]){
+        slot.textContent = state.foundations[i].suit;
+        slot.style.color = SUIT_COLOR[state.foundations[i].suit] === "red" ? "#e08a8a" : "#e8d9a0";
+      }
+      fDiv.appendChild(slot);
+    }
+
+    renderStats();
+    attachHandlers();
+  }
+
+  function renderStats(){
+    document.getElementById("stat-moves").textContent = state.moves;
+    document.getElementById("stat-sets").textContent = save.sets || 0;
+    document.getElementById("stat-wins").textContent = save.wins || 0;
+    renderGallery();
+  }
+
+  /* ---------- Interaction: click-to-select and drag-and-drop ---------- */
+  let dragData = null;
+
+  function attachHandlers(){
+    const board = document.getElementById("board");
+
+    board.querySelectorAll(".card").forEach(el=>{
+      el.addEventListener("click", onCardClick);
+      el.addEventListener("dragstart", onDragStart);
+      el.addEventListener("dragend", onDragEnd);
+    });
+    board.querySelectorAll(".column").forEach(el=>{
+      el.addEventListener("dragover", onDragOver);
+      el.addEventListener("dragleave", onDragLeave);
+      el.addEventListener("drop", onDrop);
+      el.addEventListener("click", onColumnClick);
+    });
+  }
+
+  function onCardClick(e){
+    e.stopPropagation();
+    const el = e.currentTarget;
+    const col = parseInt(el.dataset.col,10);
+    const idx = parseInt(el.dataset.idx,10);
+    const card = state.columns[col][idx];
+
+    if(!card.faceUp) return;
+
+    if(selection){
+      if(selection.col === col){
+        // reselect within same column
+        selection = { col, index: idx };
+        render();
+        return;
+      }
+      const moved = tryMove(selection.col, selection.index, col);
+      selection = null;
+      if(!moved) render();
+      return;
+    }
+    const stack = getMovableStack(col, idx);
+    if(!stack){ setStatus("Можно выбрать только упорядоченную последовательность одной масти."); return; }
+    selection = { col, index: idx };
+    render();
+  }
+
+  function onColumnClick(e){
+    const col = parseInt(e.currentTarget.dataset.col, 10);
+    if(selection && selection.col !== col){
+      const moved = tryMove(selection.col, selection.index, col);
+      selection = null;
+      if(!moved) render();
+    } else if(selection && selection.col === col){
+      selection = null;
+      render();
+    }
+  }
+
+  function onDragStart(e){
+    const el = e.currentTarget;
+    const col = parseInt(el.dataset.col,10);
+    const idx = parseInt(el.dataset.idx,10);
+    const stack = getMovableStack(col, idx);
+    if(!stack){ e.preventDefault(); return; }
+    dragData = { col, idx };
+    el.classList.add("dragging");
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", "spider-card");
+  }
+  function onDragEnd(e){
+    e.currentTarget.classList.remove("dragging");
+    document.querySelectorAll(".drop-target").forEach(el=>el.classList.remove("drop-target"));
+  }
+  function onDragOver(e){
+    e.preventDefault();
+    e.currentTarget.classList.add("drop-target");
+  }
+  function onDragLeave(e){
+    e.currentTarget.classList.remove("drop-target");
+  }
+  function onDrop(e){
+    e.preventDefault();
+    e.currentTarget.classList.remove("drop-target");
+    if(!dragData) return;
+    const toCol = parseInt(e.currentTarget.dataset.col,10);
+    tryMove(dragData.col, dragData.idx, toCol);
+    selection = null;
+    dragData = null;
+  }
+
+  function hint(){
+    for(let fromCol=0; fromCol<10; fromCol++){
+      const col = state.columns[fromCol];
+      for(let idx=0; idx<col.length; idx++){
+        if(!col[idx].faceUp) continue;
+        const stack = getMovableStack(fromCol, idx);
+        if(!stack) continue;
+        for(let toCol=0; toCol<10; toCol++){
+          if(toCol === fromCol) continue;
+          if(canPlace(stack, toCol)){
+            setStatus(`Подсказка: переместите ${stack[0].rank}${stack[0].suit} из колонки ${fromCol+1} в колонку ${toCol+1}.`);
+            drawHintArrow(fromCol, idx, toCol);
+            return;
+          }
+        }
+      }
+    }
+    setStatus("Явных ходов не найдено — возможно, стоит взять карты из колоды.");
+  }
+
+  function drawHintArrow(fromCol, cardIdx, toCol){
+    const table = document.getElementById("table");
+    const layer = document.getElementById("hint-arrow-layer");
+    const path = document.getElementById("hint-arrow-path");
+    const tableRect = table.getBoundingClientRect();
+
+    const fromEl = document.querySelector(`.card[data-col="${fromCol}"][data-idx="${cardIdx}"]`);
+    const toColEl = document.querySelector(`.column[data-col="${toCol}"]`);
+    if(!fromEl || !toColEl) return;
+
+    const fromRect = fromEl.getBoundingClientRect();
+    const toCards = toColEl.querySelectorAll(".card");
+    const toRect = toCards.length > 0
+      ? toCards[toCards.length-1].getBoundingClientRect()
+      : toColEl.getBoundingClientRect();
+
+    const x1 = fromRect.left + fromRect.width/2 - tableRect.left;
+    const y1 = fromRect.top - tableRect.top;
+    const x2 = toRect.left + toRect.width/2 - tableRect.left;
+    const y2 = toRect.top + toRect.height * 0.35 - tableRect.top;
+
+    layer.setAttribute("viewBox", `0 0 ${tableRect.width} ${tableRect.height}`);
+    layer.setAttribute("width", tableRect.width);
+    layer.setAttribute("height", tableRect.height);
+
+    const midX = (x1 + x2) / 2;
+    const midY = Math.min(y1, y2) - 60;
+    path.setAttribute("d", `M ${x1} ${y1} Q ${midX} ${midY} ${x2} ${y2}`);
+    path.setAttribute("marker-end", "url(#hintArrowHead)");
+
+    layer.classList.add("active");
+    clearTimeout(drawHintArrow._t);
+    drawHintArrow._t = setTimeout(()=>{ layer.classList.remove("active"); }, 2600);
+  }
+
+  /* ---------- Wire up UI ---------- */
+  document.getElementById("new-game").addEventListener("click", ()=>{
+    const numSuits = parseInt(document.getElementById("difficulty").value,10);
+    newGame(numSuits);
+  });
+  document.getElementById("stock-pile").addEventListener("click", dealFromStock);
+  document.getElementById("undo-btn").addEventListener("click", undo);
+  document.getElementById("hint-btn").addEventListener("click", hint);
+  document.getElementById("win-continue").addEventListener("click", ()=>{
+    document.getElementById("win-overlay").classList.add("hidden");
+  });
+  document.getElementById("gallery-btn").addEventListener("click", ()=>{
+    renderGallery();
+    document.getElementById("gallery-overlay").classList.remove("hidden");
+  });
+  document.getElementById("gallery-close").addEventListener("click", ()=>{
+    document.getElementById("gallery-overlay").classList.add("hidden");
+  });
+  document.getElementById("skins-btn").addEventListener("click", ()=>{
+    renderSkinsPanel();
+    document.getElementById("checkout-msg").textContent = "";
+    document.getElementById("skins-overlay").classList.remove("hidden");
+  });
+  document.getElementById("skins-close").addEventListener("click", ()=>{
+    document.getElementById("skins-overlay").classList.add("hidden");
+  });
+  document.getElementById("premium-btn").addEventListener("click", ()=>{
+    if(isPremium()){
+      renderSkinsPanel();
+      document.getElementById("skins-overlay").classList.remove("hidden");
+    } else {
+      startCheckout();
+    }
+  });
+
+  applySkin(localStorage.getItem(SKIN_KEY) || "emerald");
+  verifyPendingSession();
+  updatePremiumButton();
+  newGame(4);
+})();
+</script>
+</body>
+</html>

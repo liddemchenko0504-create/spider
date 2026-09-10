@@ -1,0 +1,9 @@
+{
+  "name": "spider-yard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Spider Solitaire desktop/web game with unlockable skins and a Stripe-powered premium subscription.",
+  "dependencies": {
+    "stripe": "^16.0.0"
+  }
+}

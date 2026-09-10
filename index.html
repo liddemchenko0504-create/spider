@@ -3032,6 +3032,41 @@ body.custom-cursor-active .overlay *{
 
 }
 
+
+/* SPIDER YARD BRAND IMAGE */
+
+.sy-brand__icon{
+  width:42px !important;
+  height:42px !important;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  flex:0 0 42px;
+
+  color:unset !important;
+  filter:none !important;
+}
+
+.sy-brand__image{
+  display:block;
+
+  width:100%;
+  height:100%;
+
+  object-fit:contain;
+
+  user-select:none;
+
+  filter:
+    drop-shadow(0 2px 5px rgba(0,0,0,.30));
+}
+
+.sy-brand__icon svg{
+  display:none !important;
+}
+
 </style>
 </head>
 <body>
@@ -3041,20 +3076,16 @@ body.custom-cursor-active .overlay *{
   <div class="sy-header__frame">
 
     <div class="sy-brand">
-      <div class="sy-brand__icon" aria-hidden="true">
-        <svg viewBox="0 0 64 64">
-          <circle cx="32" cy="18" r="8"></circle>
-          <ellipse cx="32" cy="35" rx="13" ry="15"></ellipse>
-          <path d="M21 19 L11 11"></path>
-          <path d="M43 19 L53 11"></path>
-          <path d="M20 28 L8 24"></path>
-          <path d="M44 28 L56 24"></path>
-          <path d="M19 39 L8 42"></path>
-          <path d="M45 39 L56 42"></path>
-          <path d="M22 48 L13 54"></path>
-          <path d="M42 48 L51 54"></path>
-        </svg>
-      </div>
+      
+<div class="sy-brand__icon">
+  <img
+    src="/47282.png"
+    alt="Spider Yard"
+    class="sy-brand__image"
+    draggable="false"
+  >
+</div>
+
 
       <div class="sy-brand__text">
         <div class="sy-brand__title">Spider Yard</div>

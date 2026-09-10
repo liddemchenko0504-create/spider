@@ -446,7 +446,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 (() => {
 
-  const CLOSE_DURATION = 620;
+  const CLOSE_DURATION = 740;
 
 
   function getBookOverlay(){
@@ -754,3 +754,72 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 })();
+
+
+
+/* ==========================================================
+   SPIDER YARD — CLOSED BOOK LAYER V7
+   ========================================================== */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    const modal =
+      document.querySelector(
+        "#skins-overlay .after-dark-modal"
+      );
+
+
+    if(!modal){
+      return;
+    }
+
+
+    /*
+      Add closed leather book representation.
+    */
+
+    if(
+      !modal.querySelector(
+        ".sy-closed-book"
+      )
+    ){
+
+      const closedBook =
+        document.createElement(
+          "img"
+        );
+
+
+      closedBook.className =
+        "sy-closed-book";
+
+
+      closedBook.src =
+        "/assets/tabletop/leather-book.webp";
+
+
+      closedBook.alt =
+        "";
+
+
+      closedBook.draggable =
+        false;
+
+
+      closedBook.setAttribute(
+        "aria-hidden",
+        "true"
+      );
+
+
+      modal.appendChild(
+        closedBook
+      );
+
+    }
+
+  }
+);
+

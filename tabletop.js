@@ -1,598 +1,440 @@
 /* ==========================================================
-   SPIDER YARD — TABLETOP UX V2
-   Presentation helpers only.
+   SPIDER YARD — TABLETOP UX V3
+   SAFE VERSION — NO MUTATION LOOPS
+   Presentation only.
    ========================================================== */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+document.addEventListener("DOMContentLoaded", () => {
 
-    if(
-      window.innerWidth <= 700
-    ){
-      return;
-    }
+  if (window.innerWidth <= 700) return;
 
 
-    /* ======================================================
-       DESK PROPS
-       ====================================================== */
+  /* ========================================================
+     1. DESK PROPS
+     ======================================================== */
 
-    const props = [
-
-      {
-        id:"prop-lamp",
-        src:"/assets/tabletop/lamp.webp"
-      },
-
-      {
-        id:"prop-ivy-left",
-        src:"/assets/tabletop/ivy.webp"
-      },
-
-      {
-        id:"prop-books",
-        src:"/assets/tabletop/books.webp"
-      },
-
-      {
-        id:"prop-coffee",
-        src:"/assets/tabletop/coffee.webp"
-      },
-
-      {
-        id:"prop-leather-book",
-        src:"/assets/tabletop/leather-book.webp"
-      }
-
-    ];
+  const props = [
+    ["prop-lamp", "/assets/tabletop/lamp.webp"],
+    ["prop-ivy-left", "/assets/tabletop/ivy.webp"],
+    ["prop-books", "/assets/tabletop/books.webp"],
+    ["prop-coffee", "/assets/tabletop/coffee.webp"],
+    ["prop-leather-book", "/assets/tabletop/leather-book.webp"]
+  ];
 
 
-    props.forEach(
-      item => {
+  props.forEach(([id, src]) => {
 
-        if(
-          document.getElementById(
-            item.id
-          )
-        ){
-          return;
-        }
+    if (document.getElementById(id)) return;
 
+    const img = document.createElement("img");
 
-        const img =
-          document.createElement(
-            "img"
-          );
+    img.id = id;
+    img.className = "tabletop-prop";
+    img.src = src;
+    img.alt = "";
+    img.draggable = false;
+    img.setAttribute("aria-hidden", "true");
 
+    document.body.appendChild(img);
 
-        img.id =
-          item.id;
-
-
-        img.className =
-          "tabletop-prop";
-
-
-        img.src =
-          item.src;
-
-
-        img.alt = "";
-
-
-        img.draggable =
-          false;
-
-
-        img.setAttribute(
-          "aria-hidden",
-          "true"
-        );
-
-
-        document.body.appendChild(
-          img
-        );
-
-      }
-    );
+  });
 
 
 
-    /* ======================================================
-       FOUNDATION COUNTER
-       ====================================================== */
+  /* ========================================================
+     2. FOUNDATION COUNTER
+     IMPORTANT:
+     We observe CONTENT only.
+     We do NOT observe attributes because we ourselves
+     change data-completed.
+     ======================================================== */
 
-    const foundations =
-      document.querySelector(
-        ".foundations"
+  const foundations =
+    document.querySelector(".foundations");
+
+
+  let previousCompleted = -1;
+
+
+  function countCompletedFoundations() {
+
+    if (!foundations) return 0;
+
+    const slots =
+      [...foundations.querySelectorAll(".foundation-slot")];
+
+
+    return slots.filter(slot => {
+
+      return (
+        slot.children.length > 0 ||
+        slot.textContent.trim() !== "" ||
+        slot.classList.contains("completed") ||
+        slot.classList.contains("filled")
       );
 
+    }).length;
 
-    let previousCompleted =
-      0;
-
-
-    function foundationCompletedCount(){
-
-      if(!foundations){
-        return 0;
-      }
+  }
 
 
-      const slots =
-        [
-          ...foundations.querySelectorAll(
-            ".foundation-slot"
-          )
-        ];
+  function updateFoundationCounter() {
+
+    if (!foundations) return;
+
+    const completed =
+      countCompletedFoundations();
 
 
-      return slots.filter(
-        slot => {
-
-          /*
-            Different versions of the game
-            can render a completed foundation
-            using text, children or a class.
-          */
-
-          return (
-            slot.children.length > 0 ||
-            slot.textContent.trim() !== "" ||
-            slot.classList.contains(
-              "completed"
-            ) ||
-            slot.classList.contains(
-              "filled"
-            )
-          );
-
-        }
-      ).length;
-
+    /*
+      Only write when value actually changed.
+    */
+    if (
+      foundations.dataset.completed !==
+      String(completed)
+    ) {
+      foundations.dataset.completed =
+        String(completed);
     }
 
 
-    function updateFoundations(){
+    if (
+      previousCompleted >= 0 &&
+      completed > previousCompleted
+    ) {
 
-      if(!foundations){
-        return;
-      }
-
-
-      const completed =
-        foundationCompletedCount();
-
-
-      foundations.dataset.completed =
-        String(completed);
-
-
-      if(
-        completed >
-        previousCompleted
-      ){
-
-        const slots =
-          [
-            ...foundations.querySelectorAll(
-              ".foundation-slot"
-            )
-          ];
+      const filledSlots =
+        [...foundations.querySelectorAll(".foundation-slot")]
+          .filter(slot =>
+            slot.children.length > 0 ||
+            slot.textContent.trim() !== "" ||
+            slot.classList.contains("completed") ||
+            slot.classList.contains("filled")
+          );
 
 
-        const newest =
-          slots.findLast
-            ? slots.findLast(
-                slot =>
-                  slot.children.length > 0 ||
-                  slot.textContent.trim() !== ""
-              )
-            : slots
-                .slice()
-                .reverse()
-                .find(
-                  slot =>
-                    slot.children.length > 0 ||
-                    slot.textContent.trim() !== ""
-                );
+      const newest =
+        filledSlots[filledSlots.length - 1];
 
 
-        if(newest){
+      if (newest) {
+
+        newest.classList.remove(
+          "sy-foundation-pop"
+        );
+
+        void newest.offsetWidth;
+
+        newest.classList.add(
+          "sy-foundation-pop"
+        );
+
+
+        window.setTimeout(() => {
 
           newest.classList.remove(
             "sy-foundation-pop"
           );
 
-
-          void newest.offsetWidth;
-
-
-          newest.classList.add(
-            "sy-foundation-pop"
-          );
-
-
-          setTimeout(
-            () => {
-
-              newest.classList.remove(
-                "sy-foundation-pop"
-              );
-
-            },
-            600
-          );
-
-        }
+        }, 600);
 
       }
 
-
-      previousCompleted =
-        completed;
-
     }
 
 
-    if(foundations){
+    previousCompleted = completed;
 
-      updateFoundations();
+  }
 
 
-      const foundationObserver =
-        new MutationObserver(
-          updateFoundations
+  if (foundations) {
+
+    updateFoundationCounter();
+
+
+    const foundationObserver =
+      new MutationObserver(() => {
+
+        /*
+          Collapse multiple render mutations
+          into one update.
+        */
+        requestAnimationFrame(
+          updateFoundationCounter
         );
 
-
-      foundationObserver.observe(
-        foundations,
-        {
-          childList:true,
-          subtree:true,
-          characterData:true,
-          attributes:true
-        }
-      );
-
-    }
-
-
-
-    /* ======================================================
-       THEMES / ADULT AUDIENCE UX
-       ====================================================== */
-
-    const skinsOverlay =
-      document.getElementById(
-        "skins-overlay"
-      );
-
-
-    function getAudience(
-      text
-    ){
-
-      const lower =
-        (
-          text ||
-          ""
-        ).toLowerCase();
-
-
-      if(
-        lower.includes(
-          "midnight velvet"
-        )
-      ){
-        return "Straight";
-      }
-
-
-      if(
-        lower.includes(
-          "rose garden"
-        )
-      ){
-        return "Gay";
-      }
-
-
-      if(
-        lower.includes(
-          "golden harbor"
-        )
-      ){
-        return "Lesbian";
-      }
-
-
-      return "";
-    }
-
-
-
-    function decorateThemeCards(){
-
-      document
-        .querySelectorAll(
-          "#skins-grid .skin-card"
-        )
-        .forEach(
-          card => {
-
-            const audience =
-              getAudience(
-                card.textContent
-              );
-
-
-            if(!audience){
-              return;
-            }
-
-
-            /*
-              Store semantically but do not show
-              outside the actual Themes book.
-            */
-
-            card.dataset.audience =
-              audience;
-
-
-            const swatch =
-              card.querySelector(
-                ".swatch"
-              );
-
-
-            if(!swatch){
-              return;
-            }
-
-
-            let badge =
-              swatch.querySelector(
-                ".skin-audience-badge"
-              );
-
-
-            if(!badge){
-
-              badge =
-                document.createElement(
-                  "span"
-                );
-
-
-              badge.className =
-                "skin-audience-badge";
-
-
-              swatch.appendChild(
-                badge
-              );
-
-            }
-
-
-            badge.textContent =
-              audience;
-
-
-            const lock =
-              swatch.querySelector(
-                ".skin-preview-lock"
-              );
-
-
-            if(lock){
-
-              let label =
-                lock.querySelector(
-                  ".skin-preview-lock-label"
-                );
-
-
-              if(!label){
-
-                label =
-                  document.createElement(
-                    "span"
-                  );
-
-
-                label.className =
-                  "skin-preview-lock-label";
-
-
-                lock.appendChild(
-                  label
-                );
-
-              }
-
-
-              label.textContent =
-                audience;
-
-            }
-
-          }
-        );
-
-    }
-
-
-    decorateThemeCards();
-
-
-
-    const skinsGrid =
-      document.getElementById(
-        "skins-grid"
-      );
-
-
-    if(skinsGrid){
-
-      const themeObserver =
-        new MutationObserver(
-          decorateThemeCards
-        );
-
-
-      themeObserver.observe(
-        skinsGrid,
-        {
-          childList:true,
-          subtree:true
-        }
-      );
-
-    }
-
-
-
-    /* ======================================================
-       KNOW WHEN THE BOOK IS OPEN
-       ====================================================== */
-
-    function syncBookState(){
-
-      if(!skinsOverlay){
-        return;
-      }
-
-
-      const open =
-        !skinsOverlay
-          .classList
-          .contains(
-            "hidden"
-          );
-
-
-      document.body
-        .classList
-        .toggle(
-          "skins-open",
-          open
-        );
-
-    }
-
-
-    if(skinsOverlay){
-
-      syncBookState();
-
-
-      const overlayObserver =
-        new MutationObserver(
-          syncBookState
-        );
-
-
-      overlayObserver.observe(
-        skinsOverlay,
-        {
-          attributes:true,
-          attributeFilter:[
-            "class",
-            "style"
-          ]
-        }
-      );
-
-    }
-
-
-
-    /* ======================================================
-       ESCAPE CLOSE FEEL
-       Existing game handler can still perform closing.
-       We only add animation state.
-       ====================================================== */
-
-    document.addEventListener(
-      "keydown",
-      event => {
-
-        if(
-          event.key !==
-          "Escape"
-        ){
-          return;
-        }
-
-
-        document.body
-          .classList
-          .remove(
-            "skins-open"
-          );
-
+      });
+
+
+    foundationObserver.observe(
+      foundations,
+      {
+        childList: true,
+        subtree: true,
+        characterData: true
+
+        /*
+          NO attributes:true
+          This prevents feedback loop.
+        */
       }
     );
 
+  }
 
 
-    /* ======================================================
-       TACTILE POINTER DEPTH
-       ====================================================== */
 
-    document
-      .querySelectorAll(
-        ".sy-btn, .stock-pile"
-      )
-      .forEach(
-        element => {
+  /* ========================================================
+     3. THEME CATEGORIES
+     SAFE — NO SUBTREE OBSERVER
+     ======================================================== */
 
-          element.addEventListener(
-            "pointerdown",
-            () => {
-
-              element.classList.add(
-                "sy-pressed"
-              );
-
-            }
-          );
+  const skinsOverlay =
+    document.getElementById("skins-overlay");
 
 
-          const release = () => {
+  function audienceFor(card) {
 
-            element.classList.remove(
-              "sy-pressed"
-            );
-
-          };
+    const text =
+      (card.textContent || "")
+        .toLowerCase();
 
 
-          element.addEventListener(
-            "pointerup",
-            release
-          );
+    if (text.includes("midnight velvet")) {
+      return "Straight";
+    }
 
+    if (text.includes("rose garden")) {
+      return "Gay";
+    }
 
-          element.addEventListener(
-            "pointercancel",
-            release
-          );
+    if (text.includes("golden harbor")) {
+      return "Lesbian";
+    }
 
-
-          element.addEventListener(
-            "pointerleave",
-            release
-          );
-
-        }
-      );
+    return "";
 
   }
-);
+
+
+  function decorateThemeCards() {
+
+    const cards =
+      document.querySelectorAll(
+        "#skins-grid .skin-card"
+      );
+
+
+    cards.forEach(card => {
+
+      const audience =
+        audienceFor(card);
+
+
+      if (!audience) return;
+
+
+      card.dataset.audience =
+        audience;
+
+
+      const swatch =
+        card.querySelector(".swatch");
+
+
+      if (!swatch) return;
+
+
+      /*
+        Exactly ONE category badge.
+      */
+      let badge =
+        swatch.querySelector(
+          ":scope > .skin-audience-badge"
+        );
+
+
+      if (!badge) {
+
+        badge =
+          document.createElement("span");
+
+        badge.className =
+          "skin-audience-badge";
+
+        swatch.appendChild(badge);
+
+      }
+
+
+      if (badge.textContent !== audience) {
+        badge.textContent = audience;
+      }
+
+
+      /*
+        Exactly ONE label inside lock.
+      */
+      const lock =
+        swatch.querySelector(
+          ".skin-preview-lock"
+        );
+
+
+      if (lock) {
+
+        let label =
+          lock.querySelector(
+            ".skin-preview-lock-label"
+          );
+
+
+        if (!label) {
+
+          label =
+            document.createElement("span");
+
+          label.className =
+            "skin-preview-lock-label";
+
+          lock.appendChild(label);
+
+        }
+
+
+        if (label.textContent !== audience) {
+          label.textContent = audience;
+        }
+
+      }
+
+    });
+
+  }
+
+
+
+  /* ========================================================
+     4. BOOK STATE
+     Observe ONLY overlay class.
+     Changing BODY class cannot retrigger this observer.
+     ======================================================== */
+
+  function syncBookState() {
+
+    if (!skinsOverlay) return;
+
+
+    const isOpen =
+      !skinsOverlay.classList.contains(
+        "hidden"
+      );
+
+
+    document.body.classList.toggle(
+      "skins-open",
+      isOpen
+    );
+
+
+    if (isOpen) {
+
+      /*
+        Allow existing renderSkinsPanel()
+        to finish first.
+      */
+      requestAnimationFrame(() => {
+
+        requestAnimationFrame(
+          decorateThemeCards
+        );
+
+      });
+
+    }
+
+  }
+
+
+  if (skinsOverlay) {
+
+    syncBookState();
+
+
+    const overlayObserver =
+      new MutationObserver(
+        syncBookState
+      );
+
+
+    overlayObserver.observe(
+      skinsOverlay,
+      {
+        attributes: true,
+        attributeFilter: ["class"]
+      }
+    );
+
+  }
+
+
+
+  /*
+    Also decorate once on initial load.
+  */
+  decorateThemeCards();
+
+
+
+  /* ========================================================
+     5. TACTILE BUTTON PRESS
+     ======================================================== */
+
+  document.addEventListener(
+    "pointerdown",
+    event => {
+
+      const element =
+        event.target.closest(
+          ".sy-btn, .stock-pile"
+        );
+
+
+      if (!element) return;
+
+
+      element.classList.add(
+        "sy-pressed"
+      );
+
+  });
+
+
+  const releasePressed = () => {
+
+    document
+      .querySelectorAll(".sy-pressed")
+      .forEach(element => {
+
+        element.classList.remove(
+          "sy-pressed"
+        );
+
+      });
+
+  };
+
+
+  document.addEventListener(
+    "pointerup",
+    releasePressed
+  );
+
+
+  document.addEventListener(
+    "pointercancel",
+    releasePressed
+  );
+
+});

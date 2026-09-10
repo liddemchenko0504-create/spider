@@ -3067,6 +3067,540 @@ body.custom-cursor-active .overlay *{
   display:none !important;
 }
 
+
+/* =========================================================
+   HEADER PREMIUM MINIMAL V3
+   ========================================================= */
+
+.sy-header{
+  position:relative;
+  z-index:1200;
+
+  padding:10px 16px 8px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8,5,7,.18),
+      rgba(8,5,7,0)
+    );
+}
+
+.sy-header__frame{
+  min-height:58px !important;
+
+  display:flex;
+  align-items:center;
+
+  gap:18px;
+
+  padding:8px 14px !important;
+
+  border-radius:16px !important;
+
+  position:relative;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(6,27,24,.98),
+      rgba(4,20,18,.98)
+    ) !important;
+
+  border:
+    1px solid rgba(203,171,103,.22) !important;
+
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.26),
+    inset 0 1px 0 rgba(255,255,255,.025) !important;
+}
+
+.sy-header__frame::before{
+  display:none !important;
+}
+
+/* ---------------------------------------------------------
+   BRAND
+   --------------------------------------------------------- */
+
+.sy-brand{
+  display:flex;
+  align-items:center;
+
+  gap:10px;
+
+  flex:0 0 auto;
+
+  padding-right:4px;
+}
+
+.sy-brand__icon{
+  width:34px !important;
+  height:34px !important;
+
+  flex:0 0 34px !important;
+
+  opacity:.92;
+}
+
+.sy-brand__image{
+  width:100%;
+  height:100%;
+
+  object-fit:contain;
+
+  filter:
+    drop-shadow(0 2px 4px rgba(0,0,0,.28)) !important;
+}
+
+.sy-brand__title{
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size:24px !important;
+  line-height:1;
+
+  letter-spacing:.05px;
+
+  color:#ecd599 !important;
+
+  text-shadow:none !important;
+}
+
+.sy-brand__ornament{
+  width:52px !important;
+  height:6px !important;
+
+  margin-top:5px !important;
+}
+
+.sy-brand__ornament::before{
+  opacity:.45;
+}
+
+.sy-brand__ornament::after{
+  width:5px !important;
+  height:5px !important;
+  top:0 !important;
+
+  border-color:
+    rgba(220,184,102,.55) !important;
+
+  background:#071d1a !important;
+}
+
+/* ---------------------------------------------------------
+   DIVIDER
+   --------------------------------------------------------- */
+
+.sy-divider{
+  width:1px;
+  height:30px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      transparent,
+      rgba(235,211,157,.13),
+      transparent
+    ) !important;
+}
+
+/* ---------------------------------------------------------
+   STATS — quieter / editorial
+   --------------------------------------------------------- */
+
+.sy-stats{
+  display:flex;
+  align-items:center;
+
+  gap:20px !important;
+
+  flex:1 1 auto;
+
+  min-width:0;
+}
+
+.sy-stat{
+  gap:5px !important;
+}
+
+.sy-stat:not(:last-child)::after{
+  display:none !important;
+}
+
+.sy-stat__label{
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    "Segoe UI",
+    sans-serif !important;
+
+  font-size:10px !important;
+
+  text-transform:uppercase;
+
+  letter-spacing:.65px;
+
+  color:
+    rgba(231,222,202,.46) !important;
+}
+
+.sy-stat__value{
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Segoe UI",
+    sans-serif !important;
+
+  font-size:13px !important;
+
+  font-weight:650 !important;
+
+  color:#e5c77b !important;
+}
+
+/* ---------------------------------------------------------
+   CONTROLS
+   --------------------------------------------------------- */
+
+.sy-controls{
+  display:flex;
+  align-items:center;
+
+  gap:7px !important;
+
+  flex:0 0 auto;
+}
+
+/* Difficulty segmented — calm */
+.sy-segmented{
+  display:flex;
+
+  gap:2px !important;
+
+  padding:3px !important;
+
+  border-radius:11px !important;
+
+  background:
+    rgba(255,255,255,.025) !important;
+
+  border:
+    1px solid rgba(232,217,160,.08) !important;
+
+  box-shadow:none !important;
+}
+
+.sy-segmented__btn{
+  min-width:58px !important;
+  height:34px !important;
+
+  padding:0 9px !important;
+
+  border-radius:8px !important;
+
+  border:1px solid transparent !important;
+
+  background:transparent !important;
+
+  color:
+    rgba(234,225,207,.58) !important;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    "Segoe UI",
+    sans-serif !important;
+
+  font-size:11px !important;
+
+  font-weight:500;
+
+  transition:
+    background .14s ease,
+    color .14s ease,
+    border-color .14s ease,
+    transform .14s ease;
+}
+
+.sy-segmented__btn:hover{
+  color:
+    rgba(247,240,224,.88) !important;
+
+  background:
+    rgba(255,255,255,.035) !important;
+}
+
+.sy-segmented__btn.active{
+  color:#f4ead5 !important;
+
+  background:
+    rgba(216,180,93,.10) !important;
+
+  border-color:
+    rgba(216,180,93,.30) !important;
+
+  box-shadow:none !important;
+}
+
+/* ---------------------------------------------------------
+   SECONDARY TOOL BUTTONS
+   --------------------------------------------------------- */
+
+.sy-btn{
+  height:34px !important;
+
+  padding:0 10px !important;
+
+  gap:6px !important;
+
+  border-radius:9px !important;
+
+  border:
+    1px solid transparent !important;
+
+  background:
+    transparent !important;
+
+  color:
+    rgba(235,226,208,.62) !important;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    "Segoe UI",
+    sans-serif !important;
+
+  font-size:11px !important;
+
+  font-weight:500;
+
+  box-shadow:none !important;
+
+  transition:
+    background .14s ease,
+    color .14s ease,
+    transform .14s ease,
+    border-color .14s ease;
+}
+
+.sy-btn:hover{
+  transform:none !important;
+
+  color:
+    rgba(250,244,231,.92) !important;
+
+  background:
+    rgba(255,255,255,.035) !important;
+
+  border-color:
+    rgba(232,217,160,.07) !important;
+
+  box-shadow:none !important;
+}
+
+.sy-btn:active{
+  transform:scale(.98) !important;
+}
+
+.sy-btn__svg{
+  width:14px !important;
+  height:14px !important;
+
+  color:
+    rgba(220,187,111,.72) !important;
+}
+
+.sy-btn__svg svg{
+  width:14px !important;
+  height:14px !important;
+
+  stroke-width:1.65 !important;
+}
+
+/* ---------------------------------------------------------
+   NEW GAME — only strong CTA
+   --------------------------------------------------------- */
+
+.sy-btn--primary{
+  height:38px !important;
+
+  padding:0 19px !important;
+
+  margin-left:2px;
+
+  border-radius:10px !important;
+
+  border:
+    1px solid rgba(241,209,131,.76) !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      #e6c46f,
+      #cda146
+    ) !important;
+
+  color:#25170a !important;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif !important;
+
+  font-size:15px !important;
+
+  font-weight:700 !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.32),
+    0 5px 12px rgba(0,0,0,.20) !important;
+}
+
+.sy-btn--primary:hover{
+  background:
+    linear-gradient(
+      180deg,
+      #edd080,
+      #d6aa50
+    ) !important;
+
+  border-color:
+    rgba(247,221,155,.86) !important;
+}
+
+/* ---------------------------------------------------------
+   AFTER DARK STATUS — separate and quiet
+   --------------------------------------------------------- */
+
+.sy-mode-pill{
+  height:34px !important;
+
+  padding:0 11px !important;
+
+  margin-left:4px;
+
+  gap:6px !important;
+
+  border-radius:9px !important;
+
+  border:
+    1px solid rgba(121,179,136,.20) !important;
+
+  background:
+    rgba(35,91,65,.16) !important;
+
+  color:
+    rgba(220,239,223,.84) !important;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    "Segoe UI",
+    sans-serif !important;
+
+  font-size:11px !important;
+
+  font-weight:600;
+
+  box-shadow:none !important;
+}
+
+.sy-mode-pill:hover{
+  background:
+    rgba(35,91,65,.23) !important;
+
+  border-color:
+    rgba(121,179,136,.30) !important;
+}
+
+.sy-mode-pill__moon{
+  font-size:13px !important;
+
+  color:
+    rgba(229,200,117,.82) !important;
+}
+
+.sy-mode-pill__check{
+  color:
+    rgba(164,220,176,.92) !important;
+}
+
+/* ---------------------------------------------------------
+   Slight breathing room on wide desktop
+   --------------------------------------------------------- */
+
+@media(min-width:1500px){
+
+  .sy-header{
+    padding-left:18px;
+    padding-right:18px;
+  }
+
+  .sy-header__frame{
+    padding-left:16px !important;
+    padding-right:16px !important;
+  }
+
+  .sy-controls{
+    gap:8px !important;
+  }
+
+}
+
+/* ---------------------------------------------------------
+   Mid desktop
+   --------------------------------------------------------- */
+
+@media(max-width:1350px){
+
+  .sy-header__frame{
+    gap:11px !important;
+  }
+
+  .sy-brand__title{
+    font-size:21px !important;
+  }
+
+  .sy-stats{
+    gap:13px !important;
+  }
+
+  .sy-stat__label{
+    font-size:9px !important;
+  }
+
+  .sy-btn{
+    padding:0 8px !important;
+  }
+
+  .sy-btn span:not(.sy-btn__svg){
+    font-size:10px;
+  }
+
+  .sy-mode-pill{
+    padding:0 9px !important;
+  }
+
+}
+
+/* Mobile remains your dedicated mobile UI */
+@media(max-width:700px){
+
+  .sy-header{
+    display:none !important;
+  }
+
+}
+
 </style>
 </head>
 <body>

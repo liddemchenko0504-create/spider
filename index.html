@@ -1681,20 +1681,12 @@ body.custom-cursor-active .difficulty-option{
   width:30px;
   height:30px;
 
-  background-image:url("data:image/png;base64,PASTE_BASE64_HERE");
+  background-image:url("/assets/adult/velvet-vice/sex.png");
   background-size:contain;
   background-position:center;
   background-repeat:no-repeat;
 
-  filter:
-    drop-shadow(0 4px 8px rgba(0,0,0,.25));
-
-  transform-origin:center;
-}
-
-.themed-cursor.cursor-dick::before,
-.themed-cursor.cursor-dick::after{
-  display:none;
+  border-radius:50%;
 }
 
 
@@ -2112,8 +2104,7 @@ const SKINS = [
   /* ---------- Theme cursor ---------- */
 
   const CURSOR_BY_SKIN = {
-
-    emerald: "luxe",
+  emerald: "luxe",
   midnight: "dick",
   rose: "pussy",
   harbor: "luxe"
@@ -2122,27 +2113,19 @@ const SKINS = [
 
   function updateThemedCursor(skinId){
 
-    const cursor =
-      document.getElementById(
-        "themed-cursor"
-      );
+  const cursor = document.getElementById("themed-cursor");
+  if(!cursor) return;
 
-    if(!cursor) return;
+  const cursorType = CURSOR_BY_SKIN[skinId] || "luxe";
 
+  cursor.className = `themed-cursor cursor-${cursorType}`;
 
-    const cursorType =
-      CURSOR_BY_SKIN[skinId] || "luxe";
-
-
-    cursor.className =
-      `themed-cursor cursor-${cursorType}`;
-
-
-    document.body.classList.add(
-      "custom-cursor-active"
-    );
-
+  if(window.matchMedia("(hover:hover) and (pointer:fine)").matches){
+    document.body.classList.add("custom-cursor-active");
+  } else {
+    document.body.classList.remove("custom-cursor-active");
   }
+}
 
 
   const themedCursor =

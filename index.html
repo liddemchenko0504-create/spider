@@ -3620,6 +3620,235 @@ body.custom-cursor-active .overlay *{
 }
 
 
+
+/* =========================================================
+   REAL PREMIUM THEME PREVIEWS
+   ========================================================= */
+
+/* Center the title section */
+#skins-overlay .collection-header{
+  display:block !important;
+  text-align:center !important;
+}
+
+#skins-overlay .collection-header > div{
+  width:100% !important;
+}
+
+#skins-overlay .collection-eyebrow{
+  text-align:center !important;
+}
+
+#skins-overlay .collection-header h2{
+  text-align:center !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+}
+
+#skins-overlay .collection-subtitle{
+  max-width:560px !important;
+  margin-left:auto !important;
+  margin-right:auto !important;
+  text-align:center !important;
+}
+
+/* Purchase CTA centered too */
+#skins-overlay .unlock-cta{
+  margin:16px auto 0 !important;
+}
+
+
+/* ---------- Theme preview ---------- */
+
+.skin-card .swatch{
+  position:relative !important;
+
+  height:116px !important;
+
+  overflow:hidden !important;
+
+  border-radius:12px !important;
+
+  background-size:cover !important;
+  background-position:center !important;
+  background-repeat:no-repeat !important;
+
+  border:
+    1px solid rgba(232,217,160,.14) !important;
+}
+
+
+/* image layer */
+.skin-preview-image{
+  position:absolute;
+
+  inset:0;
+
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+  transition:
+    filter .25s ease,
+    transform .25s ease,
+    opacity .25s ease;
+}
+
+
+/* Unlocked preview */
+.skin-card:not(.locked) .skin-preview-image{
+  filter:none;
+  opacity:1;
+}
+
+
+/* subtle hover */
+.skin-card:not(.locked):hover .skin-preview-image{
+  transform:scale(1.025);
+}
+
+
+/* LOCKED:
+   real photo visible but protected by blur */
+.skin-card.locked .skin-preview-image{
+  filter:
+    blur(14px)
+    brightness(.52)
+    saturate(.72);
+
+  transform:scale(1.10);
+
+  opacity:.92;
+}
+
+
+/* dark protection layer */
+.skin-preview-shade{
+  position:absolute;
+
+  inset:0;
+
+  display:none;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8,5,5,.12),
+      rgba(8,5,5,.32)
+    );
+
+  pointer-events:none;
+}
+
+.skin-card.locked .skin-preview-shade{
+  display:block;
+}
+
+
+/* premium lock */
+.skin-preview-lock{
+  position:absolute;
+
+  left:50%;
+  top:50%;
+
+  transform:
+    translate(-50%,-50%);
+
+  width:44px;
+  height:44px;
+
+  display:none;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  background:
+    rgba(18,13,11,.72);
+
+  border:
+    1px solid rgba(232,201,128,.42);
+
+  box-shadow:
+    0 8px 28px rgba(0,0,0,.38),
+    inset 0 1px rgba(255,255,255,.05);
+
+  backdrop-filter:
+    blur(8px);
+
+  color:#ead092;
+
+  z-index:5;
+}
+
+.skin-card.locked .skin-preview-lock{
+  display:flex;
+}
+
+.skin-preview-lock svg{
+  width:19px;
+  height:19px;
+
+  fill:none;
+  stroke:currentColor;
+
+  stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+
+/* small Premium label over preview */
+.skin-preview-premium-label{
+  position:absolute;
+
+  right:9px;
+  top:9px;
+
+  z-index:4;
+
+  padding:5px 8px;
+
+  border-radius:999px;
+
+  background:
+    rgba(13,10,9,.60);
+
+  border:
+    1px solid rgba(235,205,137,.22);
+
+  color:
+    rgba(244,224,178,.90);
+
+  font-size:9px;
+
+  letter-spacing:.55px;
+  text-transform:uppercase;
+
+  backdrop-filter:
+    blur(7px);
+}
+
+
+/* Gradient-only themes remain polished */
+.skin-preview-gradient{
+  position:absolute;
+  inset:0;
+
+  background-size:cover;
+}
+
+
+/* Active image gets a subtle gold edge */
+.skin-card.active .swatch{
+  box-shadow:
+    0 0 0 1px rgba(223,188,107,.40),
+    0 8px 24px rgba(0,0,0,.15);
+}
+
+
 </style>
 </head>
 <body>
@@ -4226,6 +4455,39 @@ const ADULT_COLLECTIONS = {
   }
 };
 
+
+function getThemePreviewImage(skinId){
+
+  const collection =
+    ADULT_COLLECTIONS[skinId];
+
+  if(
+    !collection ||
+    !collection.count
+  ){
+    return null;
+  }
+
+  /*
+    If customer selected an image in Gallery,
+    use that as the theme preview.
+  */
+  const selected =
+    getArtworkForSkin(skinId);
+
+  if(selected){
+    return selected;
+  }
+
+  /*
+    Otherwise use the first gallery image.
+  */
+  return (
+    `${collection.folder}/1.${collection.extension}`
+  );
+}
+
+
 function getCollectionImages(skinId){
   const collection = ADULT_COLLECTIONS[skinId];
 
@@ -4584,12 +4846,110 @@ function getArtworkForCard(card, skinId){
         );
 
 
+      const previewImage =
+        getThemePreviewImage(
+          skin.id
+        );
+
+
+      const previewHTML =
+        previewImage
+
+          ? `
+            <div class="swatch">
+
+              <img
+                class="skin-preview-image"
+                src="${previewImage}"
+                alt="${skin.name} preview"
+                draggable="false"
+              >
+
+              <div
+                class="skin-preview-shade"
+              ></div>
+
+              ${
+                skin.premium
+                  ? `
+                    <div
+                      class="skin-preview-premium-label"
+                    >
+                      After Dark
+                    </div>
+                  `
+                  : ""
+              }
+
+              <div
+                class="skin-preview-lock"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24">
+                  <rect
+                    x="5"
+                    y="10"
+                    width="14"
+                    height="10"
+                    rx="2"
+                  ></rect>
+
+                  <path
+                    d="M8 10V7a4 4 0 0 1 8 0v3"
+                  ></path>
+                </svg>
+              </div>
+
+            </div>
+          `
+
+          : `
+            <div
+              class="swatch"
+            >
+              <div
+                class="skin-preview-gradient"
+                style="background:${swatch};"
+              ></div>
+
+              ${
+                skin.premium
+                  ? `
+                    <div
+                      class="skin-preview-premium-label"
+                    >
+                      After Dark
+                    </div>
+                  `
+                  : ""
+              }
+
+              <div
+                class="skin-preview-lock"
+                aria-hidden="true"
+              >
+                <svg viewBox="0 0 24 24">
+                  <rect
+                    x="5"
+                    y="10"
+                    width="14"
+                    height="10"
+                    rx="2"
+                  ></rect>
+
+                  <path
+                    d="M8 10V7a4 4 0 0 1 8 0v3"
+                  ></path>
+                </svg>
+              </div>
+
+            </div>
+          `;
+
+
       div.innerHTML = `
 
-        <div
-          class="swatch"
-          style="background:${swatch};"
-        ></div>
+        ${previewHTML}
 
         <div class="skin-topline">
 
@@ -4664,6 +5024,51 @@ function getArtworkForCard(card, skinId){
         </div>
       `;
 
+
+
+      const previewElement =
+        div.querySelector(
+          ".skin-preview-image"
+        );
+
+      if(previewElement){
+
+        previewElement.addEventListener(
+          "error",
+          () => {
+
+            const holder =
+              previewElement.closest(
+                ".swatch"
+              );
+
+            previewElement.remove();
+
+            if(holder){
+
+              const fallback =
+                document.createElement(
+                  "div"
+                );
+
+              fallback.className =
+                "skin-preview-gradient";
+
+              fallback.style.background =
+                swatch;
+
+              holder.prepend(
+                fallback
+              );
+
+            }
+
+          }
+        );
+
+      }
+
+      /* THEME PREVIEW IMAGE FALLBACK */
 
       const applyBtn =
         div.querySelector(

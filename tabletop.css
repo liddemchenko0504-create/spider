@@ -9051,3 +9051,67 @@
   }
 
 }
+
+
+
+/* ==========================================================
+   SPIDER YARD — REAL FELT MATERIAL
+   Keep the seamless felt texture visible.
+   ========================================================== */
+
+@media(min-width:701px){
+
+  #table{
+
+    background-color:
+      #0b432f !important;
+
+    /*
+      First layer = subtle table lighting.
+      Second layer = actual generated felt texture.
+
+      The felt is intentionally tiled instead of stretched
+      across the entire board.
+    */
+
+    background-image:
+      radial-gradient(
+        ellipse at 46% 18%,
+        rgba(255,255,255,.035) 0%,
+        rgba(255,255,255,.012) 34%,
+        rgba(0,0,0,.08) 100%
+      ),
+      url("/assets/tabletop/felt.webp")
+      !important;
+
+    background-size:
+      100% 100%,
+      420px 420px
+      !important;
+
+    background-repeat:
+      no-repeat,
+      repeat
+      !important;
+
+    background-position:
+      center,
+      center
+      !important;
+
+  }
+
+
+  /*
+    Very subtle material depth.
+    This is lighting, not another green fill.
+  */
+
+  #table::after{
+    text-shadow:
+      0 1px 2px
+      rgba(0,0,0,.35);
+  }
+
+}
+

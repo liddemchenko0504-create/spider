@@ -11498,6 +11498,118 @@ function getArtworkForCard(card, skinId){
   }
 
 
+
+  /*
+    A hint should represent REAL progress.
+
+    We do NOT suggest moving cards around simply because
+    the move is technically legal.
+
+    Useful moves:
+    1. reveal a face-down card
+    2. improve same-suit continuity
+    3. genuinely empty a column
+
+    Example:
+    if 7♠-6♠ already sits under 8♠,
+    Hint will NOT suggest moving 7♠-6♠ to another 8.
+  */
+
+  function isProductiveHintMove(move){
+
+    const sourceCol =
+      state.columns[move.fromCol];
+
+    const destCol =
+      state.columns[move.toCol];
+
+    const first =
+      move.stack[0];
+
+    const sourceAnchor =
+      move.cardIdx > 0
+        ? sourceCol[move.cardIdx - 1]
+        : null;
+
+    const destination =
+      destCol.length
+        ? destCol[destCol.length - 1]
+        : null;
+
+
+    /* ------------------------------------------
+       1. Reveals a hidden card
+       ------------------------------------------ */
+
+    const revealsHiddenCard =
+      !!(
+        sourceAnchor &&
+        !sourceAnchor.faceUp
+      );
+
+
+    /* ------------------------------------------
+       2. Creates BETTER same-suit continuity
+
+       Example:
+       7♠ currently under 8♥
+       moving it to 8♠ IS useful.
+
+       But:
+       7♠ already under 8♠
+       moving it to another 8♠ is NOT useful.
+       ------------------------------------------ */
+
+    const alreadySameSuitConnected =
+      !!(
+        sourceAnchor &&
+        sourceAnchor.faceUp &&
+        sourceAnchor.rankIdx ===
+          first.rankIdx + 1 &&
+        sourceAnchor.suit ===
+          first.suit
+      );
+
+
+    const destinationSameSuit =
+      !!(
+        destination &&
+        destination.rankIdx ===
+          first.rankIdx + 1 &&
+        destination.suit ===
+          first.suit
+      );
+
+
+    const improvesSuit =
+      destinationSameSuit &&
+      !alreadySameSuitConnected;
+
+
+    /* ------------------------------------------
+       3. Actually frees a column
+
+       Moving an entire column into another
+       NON-empty column creates a useful empty space.
+
+       Moving whole column -> empty column only
+       relocates the empty space, so no hint.
+       ------------------------------------------ */
+
+    const freesColumn =
+      move.cardIdx === 0 &&
+      destCol.length > 0;
+
+
+    return (
+      revealsHiddenCard ||
+      improvesSuit ||
+      freesColumn
+    );
+
+  }
+
+
   function collectMeaningfulHints(){
 
     const allMoves = [];
@@ -11569,6 +11681,20 @@ function getArtworkForCard(card, skinId){
             toCol,
             stack
           };
+
+
+          /*
+            Ignore legal-but-pointless moves.
+            This prevents Hint from shuffling
+            the same run between equivalent 8s,
+            9s, etc.
+          */
+
+          if(
+            !isProductiveHintMove(move)
+          ){
+            continue;
+          }
 
 
           move.groupKey =

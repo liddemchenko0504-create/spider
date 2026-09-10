@@ -1584,3 +1584,1155 @@
   }
 
 }
+
+
+/* ==========================================================
+   SPIDER YARD — FINAL PREMIUM POLISH V2
+   ========================================================== */
+
+@media (min-width:701px){
+
+  /* ========================================================
+     1. LAYOUT FIXES
+     ======================================================== */
+
+
+  /* ---------- ACCOUNT: NEVER INSIDE BOTTOM DOCK ---------- */
+
+  .sy-controls .sy-account-btn,
+  .sy-account-btn{
+    position:fixed !important;
+
+    top:24px !important;
+    right:28px !important;
+
+    bottom:auto !important;
+    left:auto !important;
+
+    transform:none !important;
+
+    z-index:9990 !important;
+
+    margin:0 !important;
+
+    min-width:112px !important;
+    height:46px !important;
+
+    display:flex !important;
+
+    align-items:center !important;
+    justify-content:center !important;
+
+    padding:0 16px !important;
+
+    border-radius:999px !important;
+
+    pointer-events:auto !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(22,20,16,.96),
+        rgba(10,10,8,.96)
+      ) !important;
+
+    border:
+      1px solid
+      rgba(223,188,105,.25) !important;
+
+    color:#f1ddb0 !important;
+
+    box-shadow:
+      inset 0 1px 0
+      rgba(255,255,255,.05),
+
+      0 8px 22px
+      rgba(0,0,0,.34)
+      !important;
+
+    backdrop-filter:blur(10px);
+  }
+
+
+  .sy-account-btn:hover{
+    transform:
+      translateY(-1px) !important;
+
+    border-color:
+      rgba(228,193,111,.45) !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(34,30,23,.98),
+        rgba(14,13,10,.98)
+      ) !important;
+  }
+
+
+
+  /* ---------- PREMIUM STATUS ---------- */
+
+  .sy-controls .sy-mode-pill,
+  .sy-mode-pill,
+  #premium-btn{
+    position:fixed !important;
+
+    top:75px !important;
+    right:32px !important;
+
+    left:auto !important;
+    bottom:auto !important;
+
+    transform:none !important;
+
+    margin:0 !important;
+
+    z-index:9980 !important;
+
+    pointer-events:auto !important;
+  }
+
+
+
+  /* ---------- BOTTOM DOCK ---------- */
+
+  .sy-controls{
+    bottom:18px !important;
+
+    min-height:64px;
+
+    padding:
+      7px
+      10px !important;
+
+    gap:8px !important;
+
+    border-radius:20px !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(100,55,28,.96),
+        rgba(48,24,12,.98)
+      ) !important;
+
+    box-shadow:
+      inset 0 1px 0
+      rgba(255,255,255,.08),
+
+      inset 0 -5px 12px
+      rgba(0,0,0,.18),
+
+      0 12px 29px
+      rgba(0,0,0,.38)
+      !important;
+  }
+
+
+
+  /* ========================================================
+     DECK
+     ======================================================== */
+
+  .stock-area{
+    width:105px !important;
+
+    padding-left:10px !important;
+  }
+
+
+  .stock-pile{
+    width:74px !important;
+    height:102px !important;
+
+    transform:
+      rotate(-1.1deg) !important;
+
+    background-size:
+      100% 100% !important;
+
+    border:
+      1px solid
+      rgba(226,186,93,.82) !important;
+
+    box-shadow:
+      -2px 3px 0
+        #f1e8d8,
+
+      -4px 5px 0
+        #ddd2bd,
+
+      -6px 7px 0
+        #c6b9a3,
+
+      0 14px 19px
+        rgba(0,0,0,.30)
+      !important;
+  }
+
+
+  .stock-pile:hover{
+    transform:
+      translateY(-5px)
+      rotate(-.7deg) !important;
+  }
+
+
+
+  /* ========================================================
+     FOUNDATIONS — PHYSICAL TRAY
+     ======================================================== */
+
+  .foundations{
+    min-height:93px;
+
+    padding:
+      9px
+      11px
+      27px !important;
+
+    border:
+      1px solid
+      rgba(214,179,98,.12);
+
+    border-radius:12px !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        rgba(2,27,20,.28),
+        rgba(0,18,13,.40)
+      ) !important;
+
+    box-shadow:
+      inset 0 4px 14px
+        rgba(0,0,0,.22),
+
+      inset 0 1px 0
+        rgba(255,255,255,.025),
+
+      0 2px 1px
+        rgba(225,186,98,.05)
+      !important;
+  }
+
+
+  .foundations::after{
+    content:
+      "COMPLETED SETS  "
+      attr(data-completed)
+      "/8" !important;
+
+    bottom:7px !important;
+
+    font-size:9px !important;
+
+    letter-spacing:.7px;
+
+    color:
+      rgba(235,216,172,.65) !important;
+  }
+
+
+  .foundation-slot{
+    position:relative;
+
+    width:49px !important;
+    height:67px !important;
+
+    border-radius:7px !important;
+
+    border:
+      1px solid
+      rgba(222,187,106,.32) !important;
+
+    background:
+      radial-gradient(
+        ellipse at 50% 45%,
+        rgba(255,255,255,.018),
+        transparent 65%
+      ),
+      rgba(0,31,22,.22)
+      !important;
+
+    box-shadow:
+      inset 0 3px 9px
+      rgba(0,0,0,.24)
+      !important;
+  }
+
+
+  .foundation-slot:empty::before{
+    font-size:17px !important;
+
+    opacity:.58;
+  }
+
+
+
+  /* ========================================================
+     2. PREMIUM PHYSICAL CARDS
+     ======================================================== */
+
+  .card{
+    border:
+      1px solid
+      rgba(69,49,30,.22) !important;
+
+    border-radius:
+      7px !important;
+
+    background:
+      linear-gradient(
+        105deg,
+        rgba(255,255,255,.18),
+        transparent 28%
+      ),
+      linear-gradient(
+        180deg,
+        #f7f0e4,
+        #ede1d0 58%,
+        #e4d6c1
+      ) !important;
+
+    box-shadow:
+      0 1px 0
+        rgba(255,255,255,.68)
+        inset,
+
+      0 -1px 0
+        rgba(91,61,35,.07)
+        inset,
+
+      0 2px 2px
+        rgba(0,0,0,.18),
+
+      0 7px 13px
+        rgba(0,0,0,.14)
+      !important;
+
+    filter:
+      saturate(.96);
+
+    transform-origin:
+      50% 90%;
+
+    transition:
+      transform 150ms
+        cubic-bezier(.2,.7,.2,1),
+
+      box-shadow 150ms
+        ease,
+
+      filter 150ms
+        ease
+      !important;
+  }
+
+
+  .card:not(.face-down):hover{
+    transform:
+      translateY(-5px)
+      rotate(-.18deg)
+      !important;
+
+    filter:
+      brightness(1.025);
+
+    box-shadow:
+      0 1px 0
+        rgba(255,255,255,.72)
+        inset,
+
+      0 5px 5px
+        rgba(0,0,0,.17),
+
+      0 14px 22px
+        rgba(0,0,0,.24)
+      !important;
+  }
+
+
+  .card.selected{
+    transform:
+      translateY(-9px)
+      rotate(-.3deg)
+      scale(1.012)
+      !important;
+
+    box-shadow:
+      0 0 0 1px
+        rgba(227,189,99,.72),
+
+      0 9px 8px
+        rgba(0,0,0,.15),
+
+      0 19px 28px
+        rgba(0,0,0,.29)
+      !important;
+  }
+
+
+  .card.dragging{
+    opacity:.985 !important;
+
+    transform:
+      translateY(-13px)
+      rotate(-.7deg)
+      scale(1.025)
+      !important;
+
+    box-shadow:
+      0 12px 16px
+        rgba(0,0,0,.18),
+
+      0 29px 43px
+        rgba(0,0,0,.31)
+      !important;
+  }
+
+
+  .card.face-down{
+    border:
+      1px solid
+      rgba(218,178,87,.54) !important;
+
+    background-color:#15140f !important;
+
+    background-image:
+      url("/assets/tabletop/card-back.webp")
+      !important;
+
+    background-position:center !important;
+
+    background-size:
+      100% 100% !important;
+
+    box-shadow:
+      inset 0 0 0 1px
+        rgba(255,255,255,.025),
+
+      0 3px 8px
+        rgba(0,0,0,.28)
+      !important;
+  }
+
+
+
+  /* ========================================================
+     3. REAL LAMP LIGHTING
+     ======================================================== */
+
+  body::before{
+    content:"";
+
+    position:fixed;
+
+    left:-70px;
+    top:-45px;
+
+    width:620px;
+    height:560px;
+
+    z-index:2;
+
+    pointer-events:none;
+
+    background:
+      radial-gradient(
+        ellipse at 26% 18%,
+        rgba(255,191,94,.32) 0%,
+        rgba(255,172,66,.15) 28%,
+        rgba(255,157,49,.055) 49%,
+        transparent 69%
+      );
+
+    mix-blend-mode:screen;
+
+    filter:
+      blur(7px);
+
+    opacity:.88;
+  }
+
+
+  #prop-lamp{
+    z-index:7 !important;
+
+    filter:
+      drop-shadow(
+        0 14px 18px
+        rgba(0,0,0,.30)
+      )
+      drop-shadow(
+        70px 80px 70px
+        rgba(255,175,68,.12)
+      )
+      !important;
+  }
+
+
+  #prop-ivy-left{
+    z-index:8 !important;
+
+    filter:
+      drop-shadow(
+        0 9px 13px
+        rgba(0,0,0,.23)
+      )
+      !important;
+  }
+
+
+
+  /* ========================================================
+     OTHER DESK PROPS
+     ======================================================== */
+
+  #prop-books{
+    z-index:9 !important;
+
+    right:-8px !important;
+    top:-8px !important;
+
+    width:265px !important;
+  }
+
+
+  #prop-coffee{
+    right:-26px !important;
+
+    bottom:72px !important;
+
+    width:154px !important;
+
+    z-index:8 !important;
+  }
+
+
+  #prop-leather-book{
+    left:-34px !important;
+
+    bottom:12px !important;
+
+    width:210px !important;
+
+    z-index:6 !important;
+
+    transform:
+      rotate(-5deg) !important;
+  }
+
+
+
+  /* ========================================================
+     4. THEME BOOK — REAL IMAGE OPENS
+     ======================================================== */
+
+  #skins-overlay{
+    background:
+      rgba(18,10,6,.20) !important;
+
+    backdrop-filter:
+      blur(2px)
+      brightness(.88)
+      saturate(.90)
+      !important;
+  }
+
+
+  #skins-overlay .after-dark-modal{
+    right:
+      clamp(22px,3vw,52px)
+      !important;
+
+    bottom:
+      25px !important;
+
+    width:
+      min(540px,calc(100vw - 55px))
+      !important;
+
+    min-height:
+      455px;
+
+    max-height:
+      calc(100vh - 55px)
+      !important;
+
+    padding:
+      80px
+      59px
+      54px !important;
+
+    border:0 !important;
+
+    border-radius:0 !important;
+
+    overflow:auto !important;
+
+    color:#3a2618 !important;
+
+    background-color:
+      transparent !important;
+
+    background-image:
+      url("/assets/tabletop/theme-book.webp")
+      !important;
+
+    background-repeat:
+      no-repeat !important;
+
+    background-position:
+      center !important;
+
+    background-size:
+      100% 100% !important;
+
+    box-shadow:
+      none !important;
+
+    transform:
+      rotate(-1deg)
+      translateY(0)
+      scale(1)
+      !important;
+
+    transform-origin:
+      85% 100%;
+
+    animation:
+      syBookOpen
+      330ms
+      cubic-bezier(.18,.78,.2,1)
+      both;
+  }
+
+
+  @keyframes syBookOpen{
+
+    from{
+      opacity:0;
+
+      transform:
+        rotate(-3deg)
+        translateY(35px)
+        scale(.91);
+    }
+
+    to{
+      opacity:1;
+
+      transform:
+        rotate(-1deg)
+        translateY(0)
+        scale(1);
+    }
+
+  }
+
+
+  #skins-overlay
+  .collection-header{
+    margin:
+      0 0 12px !important;
+
+    text-align:center !important;
+  }
+
+
+  #skins-overlay
+  .collection-eyebrow{
+    font-size:
+      8px !important;
+
+    color:
+      rgba(78,49,27,.62)
+      !important;
+
+    letter-spacing:
+      1.5px !important;
+  }
+
+
+  #skins-overlay
+  .collection-header h2{
+    margin:
+      3px
+      0
+      3px !important;
+
+    font-family:
+      Georgia,
+      serif !important;
+
+    font-size:
+      20px !important;
+
+    color:
+      #352116 !important;
+  }
+
+
+  #skins-overlay
+  .collection-subtitle{
+    width:
+      82%;
+
+    margin:
+      0 auto !important;
+
+    font-size:
+      9px !important;
+
+    line-height:
+      1.25 !important;
+
+    color:
+      rgba(61,39,22,.63)
+      !important;
+  }
+
+
+
+  /* ========================================================
+     THEME GRID INSIDE BOOK
+     ======================================================== */
+
+  #skins-grid{
+    margin:
+      13px auto 0
+      !important;
+
+    width:
+      88% !important;
+
+    gap:
+      8px !important;
+  }
+
+
+  #skins-overlay
+  .skin-card{
+    min-height:
+      118px !important;
+
+    padding:
+      6px !important;
+
+    border:
+      1px solid
+      rgba(78,49,27,.20)
+      !important;
+
+    border-radius:
+      5px !important;
+
+    background:
+      rgba(255,247,229,.13)
+      !important;
+
+    box-shadow:
+      0 2px 5px
+      rgba(67,42,23,.12)
+      !important;
+
+    transform:
+      rotate(0deg);
+
+    transition:
+      transform 150ms ease,
+      box-shadow 150ms ease
+      !important;
+  }
+
+
+  #skins-overlay
+  .skin-card:nth-child(odd){
+    transform:
+      rotate(-.25deg);
+  }
+
+
+  #skins-overlay
+  .skin-card:nth-child(even){
+    transform:
+      rotate(.25deg);
+  }
+
+
+  #skins-overlay
+  .skin-card:hover{
+    transform:
+      translateY(-3px)
+      rotate(0deg)
+      scale(1.015)
+      !important;
+
+    box-shadow:
+      0 8px 14px
+      rgba(61,36,19,.18)
+      !important;
+  }
+
+
+  #skins-overlay
+  .skin-card .swatch{
+    height:
+      61px !important;
+
+    margin-bottom:
+      5px !important;
+
+    border-radius:
+      4px !important;
+  }
+
+
+  #skins-overlay .sname{
+    font-size:
+      10px !important;
+  }
+
+
+  #skins-overlay
+  .skin-description{
+    display:none !important;
+  }
+
+
+
+  /* ========================================================
+     6. ADULT UX — ONLY INSIDE THE COLLECTION BOOK
+     ======================================================== */
+
+
+  /*
+    Hide old floating / duplicate audience badges.
+  */
+
+  body:not(.skins-open)
+  .skin-audience-badge,
+
+  body:not(.skins-open)
+  [data-audience]::after{
+    display:none !important;
+  }
+
+
+  #skins-overlay
+  .skin-audience-badge{
+    display:flex !important;
+
+    align-items:center;
+
+    position:absolute;
+
+    left:6px !important;
+    bottom:6px !important;
+
+    z-index:8;
+
+    min-height:17px;
+
+    padding:
+      3px
+      7px !important;
+
+    border-radius:
+      999px !important;
+
+    background:
+      rgba(18,13,10,.81)
+      !important;
+
+    border:
+      1px solid
+      rgba(227,190,105,.27)
+      !important;
+
+    color:
+      #ecd18b !important;
+
+    font-family:
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+
+    font-size:
+      7px !important;
+
+    font-weight:650;
+
+    letter-spacing:
+      .8px !important;
+
+    line-height:1;
+
+    text-transform:
+      uppercase;
+  }
+
+
+  #skins-overlay
+  .skin-preview-lock{
+    min-width:
+      62px !important;
+
+    min-height:
+      43px !important;
+
+    padding:
+      7px 9px !important;
+
+    border-radius:
+      10px !important;
+
+    background:
+      rgba(15,12,10,.85)
+      !important;
+
+    border:
+      1px solid
+      rgba(225,187,98,.46)
+      !important;
+
+    box-shadow:
+      0 5px 12px
+      rgba(0,0,0,.22);
+  }
+
+
+  #skins-overlay
+  .skin-preview-lock-label{
+    font-size:
+      7px !important;
+
+    letter-spacing:
+      1px !important;
+
+    color:
+      #edcf7b !important;
+  }
+
+
+
+  /* ========================================================
+     UNLOCK BUTTON INSIDE BOOK
+     ======================================================== */
+
+  #skins-overlay
+  .unlock-cta{
+    min-height:
+      35px !important;
+
+    margin:
+      10px auto 11px
+      !important;
+
+    padding:
+      0 17px !important;
+
+    border-radius:
+      999px !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        #f1d98b,
+        #c99737
+      ) !important;
+
+    color:
+      #39220e !important;
+
+    border:
+      1px solid
+      rgba(105,67,25,.40)
+      !important;
+
+    box-shadow:
+      inset 0 1px 0
+      rgba(255,255,255,.43),
+
+      0 4px 8px
+      rgba(80,48,23,.20)
+      !important;
+
+    font-size:
+      10px !important;
+
+    transition:
+      transform 140ms ease,
+      filter 140ms ease;
+  }
+
+
+  #skins-overlay
+  .unlock-cta:hover{
+    transform:
+      translateY(-2px);
+
+    filter:
+      brightness(1.06);
+  }
+
+
+
+  /* ========================================================
+     5. MICRO-ANIMATIONS
+     ======================================================== */
+
+  .sy-btn,
+  .sy-segmented__btn,
+  .stock-pile,
+  .sy-account-btn{
+    transition:
+      transform 140ms
+        cubic-bezier(.2,.7,.2,1),
+
+      box-shadow 140ms ease,
+
+      filter 140ms ease,
+
+      background 140ms ease
+      !important;
+  }
+
+
+  .sy-btn:hover{
+    transform:
+      translateY(-3px)
+      !important;
+  }
+
+
+  .sy-btn:active{
+    transform:
+      translateY(1px)
+      scale(.985)
+      !important;
+  }
+
+
+  .sy-btn--primary:hover{
+    transform:
+      translateY(-3px)
+      scale(1.012)
+      !important;
+
+    box-shadow:
+      inset 0 2px 1px
+      rgba(255,255,255,.44),
+
+      inset 0 -6px 8px
+      rgba(117,71,19,.15),
+
+      0 10px 18px
+      rgba(0,0,0,.39)
+      !important;
+  }
+
+
+  .sy-segmented__btn:hover{
+    transform:
+      translateY(-1px);
+  }
+
+
+  .foundation-slot{
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      filter 180ms ease;
+  }
+
+
+  .foundation-slot.sy-foundation-pop{
+    animation:
+      syFoundationPop
+      540ms
+      cubic-bezier(.2,.8,.25,1);
+  }
+
+
+  @keyframes syFoundationPop{
+
+    0%{
+      transform:
+        scale(.92);
+
+      filter:
+        brightness(1);
+    }
+
+    42%{
+      transform:
+        translateY(-5px)
+        scale(1.06);
+
+      filter:
+        brightness(1.20);
+
+      box-shadow:
+        0 0 20px
+        rgba(214,171,73,.29);
+    }
+
+    100%{
+      transform:
+        translateY(0)
+        scale(1);
+
+      filter:
+        brightness(1);
+    }
+
+  }
+
+
+
+  /* ========================================================
+     MID-SIZE DESKTOP
+     ======================================================== */
+
+  @media(max-width:1280px){
+
+    .sy-controls{
+      transform:
+        translateX(-50%)
+        scale(.91)
+        !important;
+
+      transform-origin:
+        center bottom;
+    }
+
+
+    #skins-overlay
+    .after-dark-modal{
+      width:
+        485px !important;
+
+      padding:
+        73px
+        53px
+        47px !important;
+    }
+
+  }
+
+}
+
+@media(min-width:701px){
+
+  .sy-pressed{
+    transform:
+      translateY(1px)
+      scale(.985)
+      !important;
+  }
+
+}

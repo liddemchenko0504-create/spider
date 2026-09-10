@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
 <title>Spider Yard — Spider Solitaire</title>
 <style>
   :root{
@@ -607,6 +610,437 @@
   min-height:18px;
   font-size:13px;
   color: rgba(232,217,160,0.82);
+}
+/* =========================================================
+   MOBILE / RESPONSIVE
+   ========================================================= */
+
+:root{
+  --card-w: 92px;
+  --card-h: 128px;
+  --board-gap: 14px;
+}
+
+.column{
+  width: var(--card-w);
+}
+
+.card{
+  width: var(--card-w);
+  height: var(--card-h);
+}
+
+.empty-slot{
+  width: var(--card-w);
+  height: var(--card-h);
+}
+
+.board{
+  gap: var(--board-gap);
+}
+
+
+/* TABLET */
+@media (max-width: 1100px){
+
+  :root{
+    --card-w: 76px;
+    --card-h: 106px;
+    --board-gap: 8px;
+  }
+
+  header{
+    padding:10px 12px;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  header h1{
+    font-size:17px;
+  }
+
+  .stats{
+    gap:12px;
+    font-size:11px;
+  }
+
+  .controls{
+    gap:5px;
+    flex-wrap:wrap;
+  }
+
+  .controls > button,
+  .difficulty-option{
+    padding:6px 8px;
+    font-size:11px;
+  }
+
+  #table{
+    padding:12px 10px 18px;
+  }
+
+  .card .corner{
+    font-size:13px;
+  }
+
+  .card .pip{
+    font-size:22px;
+  }
+}
+
+
+/* MOBILE */
+@media (max-width: 700px){
+
+  html,
+  body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+  }
+
+  :root{
+    --card-w: calc((100vw - 27px) / 10);
+    --card-h: calc(var(--card-w) * 1.39);
+    --board-gap:3px;
+  }
+
+  #app{
+    height:100dvh;
+    min-height:100dvh;
+  }
+
+  header{
+    padding:7px 8px;
+    gap:6px;
+
+    display:grid;
+    grid-template-columns:1fr auto;
+
+    align-items:center;
+  }
+
+  header h1{
+    font-size:15px;
+    letter-spacing:0;
+  }
+
+  .stats{
+    grid-column:1 / -1;
+
+    width:100%;
+
+    display:flex;
+    justify-content:space-between;
+
+    gap:6px;
+    font-size:10px;
+  }
+
+  .controls{
+    grid-column:1 / -1;
+
+    width:100%;
+
+    display:flex;
+    align-items:center;
+
+    gap:4px;
+
+    overflow-x:auto;
+    overflow-y:hidden;
+
+    scrollbar-width:none;
+
+    -webkit-overflow-scrolling:touch;
+  }
+
+  .controls::-webkit-scrollbar{
+    display:none;
+  }
+
+  .controls > button{
+    flex:0 0 auto;
+
+    min-height:30px;
+
+    padding:5px 8px;
+
+    border-radius:7px;
+
+    font-size:10px;
+
+    white-space:nowrap;
+  }
+
+  .difficulty-segmented{
+    flex:0 0 auto;
+
+    padding:2px;
+  }
+
+  .difficulty-option{
+    min-height:26px;
+
+    padding:5px 7px;
+
+    font-size:10px;
+  }
+
+  #table{
+    padding:8px 5px 12px;
+
+    gap:8px;
+
+    overflow:hidden;
+  }
+
+  .top-row{
+    min-height:54px;
+
+    align-items:flex-start;
+  }
+
+
+  /* DECK */
+
+  .stock-pile{
+    width:42px;
+    height:58px;
+
+    border-radius:5px;
+
+    font-size:8px;
+  }
+
+  .stock-pile .count{
+    bottom:-15px;
+
+    font-size:8px;
+  }
+
+
+  /* COMPLETED STACKS */
+
+  .foundations{
+    gap:3px;
+
+    max-width:calc(100vw - 65px);
+  }
+
+  .foundation-slot{
+    width:27px;
+    height:39px;
+
+    font-size:15px;
+
+    border-radius:4px;
+  }
+
+
+  /* BOARD */
+
+  .board{
+    width:100%;
+
+    gap:var(--board-gap);
+
+    justify-content:space-between;
+
+    padding-top:2px;
+  }
+
+  .column{
+    flex:0 0 var(--card-w);
+
+    min-width:0;
+
+    min-height:90px;
+  }
+
+  .card{
+    border-radius:5px;
+
+    padding:3px;
+  }
+
+  .card .corner{
+    font-size:clamp(7px, 2.4vw, 11px);
+  }
+
+  .card .pip{
+    font-size:clamp(12px, 4vw, 20px);
+  }
+
+  .card.selected{
+    transform:translateY(-3px);
+  }
+
+
+  /* STATUS */
+
+  #status-bar{
+    padding:5px 8px;
+
+    min-height:24px;
+
+    font-size:9px;
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+  }
+
+
+  /* MODALS */
+
+  .overlay{
+    padding:10px;
+
+    overflow-y:auto;
+
+    justify-content:flex-start;
+
+    padding-top:24px;
+  }
+
+  .win-card,
+  .after-dark-modal{
+    width:100%;
+
+    max-width:calc(100vw - 20px) !important;
+
+    padding:18px 14px;
+
+    border-radius:14px;
+  }
+
+  .collection-header{
+    display:block;
+  }
+
+  .collection-header h2{
+    font-size:22px;
+  }
+
+  .collection-subtitle{
+    font-size:12px;
+  }
+
+  .unlock-cta{
+    width:100%;
+
+    margin-top:14px;
+
+    justify-content:center;
+  }
+
+
+  /* SKINS */
+
+  #skins-grid{
+    grid-template-columns:1fr;
+
+    gap:10px;
+  }
+
+  .skin-card{
+    padding:11px;
+  }
+
+  .skin-card .swatch{
+    height:54px;
+  }
+
+
+  /* GALLERY */
+
+  #gallery-grid{
+    grid-template-columns:repeat(2,1fr);
+
+    width:100%;
+
+    max-width:100%;
+
+    gap:10px;
+  }
+
+  .gallery-item{
+    width:100%;
+
+    height:auto;
+
+    aspect-ratio:3 / 4;
+  }
+
+  .portrait{
+    width:min(160px,60vw);
+
+    height:auto;
+
+    aspect-ratio:3 / 4;
+  }
+}
+
+
+/* VERY SMALL PHONES */
+
+@media (max-width:390px){
+
+  :root{
+    --card-w:calc((100vw - 22px) / 10);
+
+    --board-gap:2px;
+  }
+
+  header h1{
+    font-size:14px;
+  }
+
+  .stats{
+    font-size:9px;
+  }
+
+  .controls > button,
+  .difficulty-option{
+    font-size:9px;
+
+    padding:5px 6px;
+  }
+
+  .foundation-slot{
+    width:24px;
+
+    height:35px;
+  }
+
+  .stock-pile{
+    width:38px;
+
+    height:53px;
+  }
+}
+
+
+/* TOUCH DEVICES */
+
+@media (hover:none) and (pointer:coarse){
+
+  button,
+  .difficulty-option,
+  .skin-card,
+  .card,
+  .stock-pile{
+    touch-action:manipulation;
+  }
+
+  button:hover,
+  .skin-card:hover,
+  .card.movable-hint:hover{
+    transform:none;
+  }
 }
 </style>
 </head>

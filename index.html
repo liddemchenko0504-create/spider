@@ -3601,6 +3601,25 @@ body.custom-cursor-active .overlay *{
 
 }
 
+
+
+/* =========================================================
+   WHITE SPIDER YARD ICON
+   ========================================================= */
+
+.sy-brand__image{
+  filter:
+    brightness(0)
+    invert(1)
+    drop-shadow(
+      0 2px 4px
+      rgba(0,0,0,.28)
+    ) !important;
+
+  opacity:.94 !important;
+}
+
+
 </style>
 </head>
 <body>
@@ -4074,7 +4093,7 @@ body.custom-cursor-active .overlay *{
     id="viewer-use"
     type="button"
   >
-    Use in Game
+    Apply to Cards
   </button>
 
 
@@ -4383,93 +4402,388 @@ function getArtworkForCard(card, skinId){
 
 
   function applySkin(skinId){
-    const skin = SKINS.find(s => s.id === skinId) || SKINS[0];
-    if(skin.premium && !isPremium()) return false;
-    Object.entries(skin.vars).forEach(([k,v]) => document.documentElement.style.setProperty(k, v));
-    localStorage.setItem(SKIN_KEY, skinId);
+    const skin =
+      SKINS.find(s => s.id === skinId) ||
+      SKINS[0];
 
-    updateThemedCursor(skinId);
+    if(
+      skin.premium &&
+      !isPremium()
+    ){
+      return false;
+    }
+
+    Object.entries(
+      skin.vars || {}
+    ).forEach(([key,value]) => {
+      document.documentElement
+        .style
+        .setProperty(key,value);
+    });
+
+    /*
+      ONE source of truth.
+      Do not use "spider_skin" anymore.
+    */
+    localStorage.setItem(
+      SKIN_KEY,
+      skin.id
+    );
+
+    updateThemedCursor(
+      skin.id
+    );
+
+    /*
+      Theme must be visible immediately.
+      No Deck click required.
+    */
+    if(state){
+      render();
+    }
 
     renderSkinsPanel();
+    updatePremiumButton();
 
     return true;
   }
 
   function renderSkinsPanel(){
-  const grid = document.getElementById("skins-grid");
-  const msg = document.getElementById("checkout-msg");
-  const unlockBtn = document.getElementById("unlock-cta");
+    const grid =
+      document.getElementById(
+        "skins-grid"
+      );
 
-  const premium = isPremium();
-  const currentSkin = localStorage.getItem("spider_skin") || "classic";
+    const msg =
+      document.getElementById(
+        "checkout-msg"
+      );
 
-  if(unlockBtn){
-    unlockBtn.style.display = premium ? "none" : "inline-flex";
-    unlockBtn.onclick = () => startCheckout();
-  }
+    const unlockBtn =
+      document.getElementById(
+        "unlock-cta"
+      );
 
-  grid.innerHTML = "";
+    if(!grid) return;
 
-  SKINS.forEach(skin => {
-    const locked = skin.premium && !premium;
+    const premium =
+      isPremium();
 
-    const div = document.createElement("div");
-    div.className =
-      "skin-card" +
-      (currentSkin === skin.id ? " active" : "") +
-      (locked ? " locked" : "");
+    const currentSkin =
+      getCurrentSkinId();
 
-    div.innerHTML = `
-      <div class="swatch" style="background:${skin.swatch};"></div>
 
-      <div class="skin-topline">
-        <div class="sname">${skin.name}</div>
-        <div class="skin-badge ${skin.premium ? "premium" : "free"}">
-          ${skin.premium ? (locked ? "Premium" : "Unlocked") : "Free"}
-        </div>
-      </div>
+    const THEME_META = {
 
-      <div class="skin-description">${skin.description}</div>
-      <div class="skin-note">${skin.note}</div>
+      emerald:{
+        description:
+          "The original Spider Yard table.",
+        note:
+          "Classic cards • Clean play • Free"
+      },
 
-      <div class="skin-action">
-        ${
-          locked
-            ? `<div class="locked-copy">Unlock this theme with After Dark Collection.</div>`
-            : `<div class="skin-action-text">${currentSkin === skin.id ? "Currently active" : "Ready to apply"}</div>
-               <button class="apply-theme-btn">${currentSkin === skin.id ? "Active" : "Apply theme"}</button>`
-        }
-      </div>
-    `;
+      midnight:{
+        description:
+          "Deep midnight velvet with premium artwork support.",
+        note:
+          "After Dark • Premium collection"
+      },
 
-    div.addEventListener("click", () => {
-      if(locked){
-        msg.textContent = "This theme is part of After Dark Collection — unlock it permanently below.";
-        return;
+      rose:{
+        description:
+          "A softer rose-toned premium table.",
+        note:
+          "Premium theme"
+      },
+
+      harbor:{
+        description:
+          "Dark navy table with warm gold detailing.",
+        note:
+          "Premium theme"
       }
 
-      applySkin(skin.id);
-      localStorage.setItem("spider_skin", skin.id);
-      msg.textContent = `${skin.name} is now active.`;
-      renderSkinsPanel();
+    };
+
+
+    if(unlockBtn){
+
+      unlockBtn.style.display =
+        premium
+          ? "none"
+          : "inline-flex";
+
+      unlockBtn.onclick =
+        () => startCheckout();
+
+    }
+
+
+    grid.innerHTML = "";
+
+
+    SKINS.forEach(skin => {
+
+      const locked =
+        skin.premium &&
+        !premium;
+
+      const active =
+        currentSkin ===
+        skin.id;
+
+      const meta =
+        THEME_META[skin.id] || {
+          description:
+            "Spider Yard table theme.",
+          note:
+            skin.premium
+              ? "Premium theme"
+              : "Free theme"
+        };
+
+
+      const felt =
+        skin.vars?.["--felt"] ||
+        "#16332a";
+
+      const feltLight =
+        skin.vars?.["--felt-light"] ||
+        felt;
+
+      const gold =
+        skin.vars?.["--gold"] ||
+        "#c9a227";
+
+
+      const swatch =
+        `linear-gradient(
+          135deg,
+          ${felt},
+          ${feltLight} 64%,
+          ${gold}
+        )`;
+
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+      div.className =
+        "skin-card" +
+        (
+          active
+            ? " active"
+            : ""
+        ) +
+        (
+          locked
+            ? " locked"
+            : ""
+        );
+
+
+      div.innerHTML = `
+
+        <div
+          class="swatch"
+          style="background:${swatch};"
+        ></div>
+
+        <div class="skin-topline">
+
+          <div class="sname">
+            ${skin.name}
+          </div>
+
+          <div
+            class="skin-badge ${
+              skin.premium
+                ? "premium"
+                : "free"
+            }"
+          >
+            ${
+              skin.premium
+                ? (
+                    locked
+                      ? "Premium"
+                      : "Unlocked"
+                  )
+                : "Free"
+            }
+          </div>
+
+        </div>
+
+
+        <div class="skin-description">
+          ${meta.description}
+        </div>
+
+        <div class="skin-note">
+          ${meta.note}
+        </div>
+
+
+        <div class="skin-action">
+
+          ${
+            locked
+
+              ? `
+                <div class="locked-copy">
+                  Unlock this theme with
+                  After Dark Collection.
+                </div>
+              `
+
+              : `
+                <div class="skin-action-text">
+                  ${
+                    active
+                      ? "Currently active"
+                      : "Ready to apply"
+                  }
+                </div>
+
+                <button
+                  class="apply-theme-btn"
+                  type="button"
+                >
+                  ${
+                    active
+                      ? "Active ✓"
+                      : "Apply Theme"
+                  }
+                </button>
+              `
+          }
+
+        </div>
+      `;
+
+
+      const applyBtn =
+        div.querySelector(
+          ".apply-theme-btn"
+        );
+
+
+      if(applyBtn){
+
+        applyBtn.addEventListener(
+          "click",
+          e => {
+
+            e.stopPropagation();
+
+            applySkin(
+              skin.id
+            );
+
+            if(msg){
+              msg.textContent =
+                `${skin.name} is now active.`;
+            }
+
+          }
+        );
+
+      }
+
+
+      div.addEventListener(
+        "click",
+        () => {
+
+          if(locked){
+
+            if(msg){
+              msg.textContent =
+                "This theme is part of After Dark Collection.";
+            }
+
+            return;
+          }
+
+          applySkin(
+            skin.id
+          );
+
+          if(msg){
+            msg.textContent =
+              `${skin.name} is now active.`;
+          }
+
+        }
+      );
+
+
+      grid.appendChild(
+        div
+      );
+
     });
 
-    grid.appendChild(div);
-  });
-}
+  }
 
   function updatePremiumButton(){
-  const btn = document.getElementById("premium-btn");
-  if(!btn) return;
+    const btn =
+      document.getElementById(
+        "premium-btn"
+      );
 
-  if(isPremium()){
-    btn.textContent = "After Dark ✓";
-    btn.classList.add("owned");
-  } else {
-    btn.textContent = "Unlock After Dark";
-    btn.classList.remove("owned");
+    if(!btn) return;
+
+
+    if(!isPremium()){
+
+      btn.classList.remove(
+        "owned"
+      );
+
+      btn.innerHTML = `
+        <span class="sy-mode-pill__moon">☾</span>
+        <span class="sy-mode-pill__text">
+          Unlock After Dark
+        </span>
+      `;
+
+      return;
+    }
+
+
+    const skinId =
+      getCurrentSkinId();
+
+    const skin =
+      SKINS.find(
+        item =>
+          item.id === skinId
+      ) || SKINS[0];
+
+
+    btn.classList.add(
+      "owned"
+    );
+
+
+    btn.innerHTML = `
+      <span class="sy-mode-pill__moon">
+        ${skin.premium ? "✦" : "♠"}
+      </span>
+
+      <span class="sy-mode-pill__text">
+        ${skin.name}
+      </span>
+
+      <span class="sy-mode-pill__check">
+        ✓
+      </span>
+    `;
   }
-}
 
   async function startCheckout(){
     const msg = document.getElementById("checkout-msg");
@@ -4770,7 +5084,7 @@ function getArtworkForCard(card, skinId){
         getCurrentSkinId();
 
       const artwork =
-  getArtworkForCard(card, currentSkin);
+        getArtworkForSkin(currentSkin);
 
       if(
         artwork &&
@@ -5363,8 +5677,8 @@ function getArtworkForCard(card, skinId){
 
     btn.textContent =
       active
-        ? "Selected ✓"
-        : "Use in Game";
+        ? "Applied ✓"
+        : "Apply to Cards";
 
   }
 

@@ -3594,3 +3594,532 @@
   }
 
 }
+
+
+/* ==========================================================
+   SPIDER YARD — THEME BOOK PRECISION LAYOUT V4
+   ========================================================== */
+
+@media(min-width:701px){
+
+  /* --------------------------------------------------------
+     REAL BOOK CANVAS
+     -------------------------------------------------------- */
+
+  #skins-overlay .after-dark-modal{
+    position:absolute !important;
+
+    right:34px !important;
+    bottom:18px !important;
+
+    width:min(
+      700px,
+      calc(100vw - 60px)
+    ) !important;
+
+    aspect-ratio:1.62 / 1 !important;
+
+    height:auto !important;
+    min-height:0 !important;
+
+    padding:0 !important;
+
+    overflow:visible !important;
+
+    background:
+      url("/assets/tabletop/theme-book.webp")
+      center / contain
+      no-repeat
+      !important;
+
+    border:none !important;
+    box-shadow:none !important;
+
+    transform:rotate(-1deg) !important;
+  }
+
+
+  /* --------------------------------------------------------
+     HEADER — TOP CENTER OF PAGES
+     -------------------------------------------------------- */
+
+  #skins-overlay .collection-header{
+    position:absolute !important;
+
+    top:68px !important;
+
+    left:110px !important;
+    right:110px !important;
+
+    width:auto !important;
+
+    margin:0 !important;
+
+    z-index:20;
+
+    text-align:center !important;
+  }
+
+
+  #skins-overlay .collection-eyebrow{
+    margin:0 0 3px !important;
+
+    font-size:7px !important;
+
+    line-height:1 !important;
+
+    letter-spacing:1.6px !important;
+
+    color:
+      rgba(76,47,26,.55)
+      !important;
+  }
+
+
+  #skins-overlay .collection-header h2{
+    margin:0 0 4px !important;
+
+    font-size:18px !important;
+
+    line-height:1 !important;
+
+    color:#352216 !important;
+  }
+
+
+  #skins-overlay .collection-subtitle{
+    margin:0 auto !important;
+
+    max-width:370px !important;
+
+    font-size:7.5px !important;
+
+    line-height:1.25 !important;
+
+    color:
+      rgba(59,37,21,.60)
+      !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     PURCHASE BUTTON
+     -------------------------------------------------------- */
+
+  #skins-overlay .unlock-cta{
+    position:absolute !important;
+
+    top:122px !important;
+
+    left:50% !important;
+
+    transform:
+      translateX(-50%)
+      !important;
+
+    z-index:30;
+
+    width:auto !important;
+
+    min-width:190px !important;
+
+    height:31px !important;
+    min-height:31px !important;
+
+    margin:0 !important;
+
+    padding:0 15px !important;
+
+    font-size:9px !important;
+
+    border-radius:999px !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     FOUR THEMES — EXACT PAGE AREA
+     -------------------------------------------------------- */
+
+  #skins-grid{
+    position:absolute !important;
+
+    top:166px !important;
+
+    left:86px !important;
+    right:83px !important;
+
+    bottom:69px !important;
+
+    width:auto !important;
+    height:auto !important;
+
+    margin:0 !important;
+
+    display:grid !important;
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr))
+      !important;
+
+    grid-template-rows:
+      repeat(2,minmax(0,1fr))
+      !important;
+
+    column-gap:38px !important;
+    row-gap:14px !important;
+
+    z-index:15;
+  }
+
+
+
+  /* --------------------------------------------------------
+     EACH THEME CARD
+     -------------------------------------------------------- */
+
+  #skins-overlay .skin-card{
+    position:relative !important;
+
+    width:100% !important;
+    height:100% !important;
+
+    min-width:0 !important;
+    min-height:0 !important;
+
+    margin:0 !important;
+
+    padding:5px !important;
+
+    overflow:hidden !important;
+
+    border:
+      1px solid
+      rgba(87,54,29,.13)
+      !important;
+
+    border-radius:5px !important;
+
+    background:
+      rgba(255,248,231,.11)
+      !important;
+
+    box-shadow:
+      0 2px 5px
+      rgba(58,34,17,.10)
+      !important;
+
+    transform:none !important;
+  }
+
+
+  #skins-overlay .skin-card:hover{
+    transform:
+      translateY(-2px)
+      scale(1.01)
+      !important;
+
+    z-index:30;
+  }
+
+
+
+  /* preview */
+  #skins-overlay .skin-card .swatch{
+    position:relative !important;
+
+    width:100% !important;
+
+    height:70px !important;
+
+    margin:0 0 5px !important;
+
+    border-radius:4px !important;
+
+    overflow:hidden !important;
+
+    box-shadow:
+      0 2px 5px
+      rgba(46,27,14,.14)
+      !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     TEXT — KEEP IT MINIMAL
+     -------------------------------------------------------- */
+
+  #skins-overlay .sname{
+    margin:0 !important;
+
+    font-size:9px !important;
+
+    line-height:1.1 !important;
+
+    color:#342115 !important;
+  }
+
+
+  #skins-overlay
+  .skin-description,
+
+  #skins-overlay
+  .skin-note,
+
+  #skins-overlay
+  .skin-action-text,
+
+  #skins-overlay
+  .locked-copy{
+    display:none !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     PREMIUM / FREE BADGE
+     -------------------------------------------------------- */
+
+  #skins-overlay .skin-badge{
+    position:absolute !important;
+
+    right:5px !important;
+    bottom:5px !important;
+
+    padding:
+      2px 5px
+      !important;
+
+    font-size:6px !important;
+
+    line-height:1 !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     ACTIVE BUTTON
+     -------------------------------------------------------- */
+
+  #skins-overlay .apply-theme-btn{
+    position:absolute !important;
+
+    left:5px !important;
+    bottom:5px !important;
+
+    min-height:18px !important;
+
+    padding:
+      2px 5px
+      !important;
+
+    font-size:6px !important;
+
+    line-height:1 !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     LOCK
+     -------------------------------------------------------- */
+
+  #skins-overlay .skin-preview-lock{
+    position:absolute !important;
+
+    left:50% !important;
+    top:50% !important;
+
+    transform:
+      translate(-50%,-50%)
+      !important;
+
+    min-width:55px !important;
+    min-height:37px !important;
+
+    padding:
+      5px 7px
+      !important;
+
+    border-radius:9px !important;
+  }
+
+
+  #skins-overlay .skin-preview-lock svg{
+    width:11px !important;
+    height:11px !important;
+  }
+
+
+  #skins-overlay
+  .skin-preview-lock-label{
+    font-size:6px !important;
+
+    letter-spacing:.85px !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     NO DUPLICATE STRAIGHT / GAY / LESBIAN
+     Locked = label ONLY inside lock.
+     Unlocked = small badge.
+     -------------------------------------------------------- */
+
+  #skins-overlay
+  .skin-card.locked
+  .skin-audience-badge{
+    display:none !important;
+  }
+
+
+  #skins-overlay
+  .skin-card:not(.locked)
+  .skin-audience-badge{
+    display:flex !important;
+
+    position:absolute !important;
+
+    left:5px !important;
+    bottom:5px !important;
+
+    padding:
+      2px 5px
+      !important;
+
+    min-height:13px !important;
+
+    font-size:6px !important;
+
+    line-height:1 !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     CLOSE — DON'T PUT IT BETWEEN CARDS
+     -------------------------------------------------------- */
+
+  #skins-close{
+    position:absolute !important;
+
+    top:45px !important;
+    right:56px !important;
+
+    left:auto !important;
+    bottom:auto !important;
+
+    transform:none !important;
+
+    z-index:100 !important;
+
+    width:26px !important;
+    height:26px !important;
+
+    min-width:26px !important;
+    min-height:26px !important;
+
+    padding:0 !important;
+
+    display:grid !important;
+    place-items:center !important;
+
+    border-radius:50% !important;
+
+    font-size:0 !important;
+
+    background:
+      rgba(54,35,20,.72)
+      !important;
+
+    border:
+      1px solid
+      rgba(231,199,128,.33)
+      !important;
+
+    color:#f0dab0 !important;
+
+    box-shadow:
+      0 3px 8px
+      rgba(0,0,0,.18)
+      !important;
+  }
+
+
+  #skins-close::before{
+    content:"×";
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size:18px;
+
+    line-height:1;
+
+    color:#f0dab0;
+  }
+
+
+  #skins-close:hover{
+    transform:
+      scale(1.06)
+      !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     SMALLER LAPTOP
+     -------------------------------------------------------- */
+
+  @media(max-width:1200px){
+
+    #skins-overlay .after-dark-modal{
+      width:min(
+        620px,
+        calc(100vw - 35px)
+      ) !important;
+
+      right:15px !important;
+      bottom:12px !important;
+    }
+
+
+    #skins-overlay .collection-header{
+      top:61px !important;
+
+      left:100px !important;
+      right:100px !important;
+    }
+
+
+    #skins-overlay .unlock-cta{
+      top:109px !important;
+    }
+
+
+    #skins-grid{
+      top:148px !important;
+
+      left:77px !important;
+      right:75px !important;
+
+      bottom:61px !important;
+
+      column-gap:34px !important;
+
+      row-gap:12px !important;
+    }
+
+
+    #skins-overlay
+    .skin-card .swatch{
+      height:61px !important;
+    }
+
+  }
+
+}

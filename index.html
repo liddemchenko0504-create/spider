@@ -4320,6 +4320,186 @@ body.custom-cursor-active .overlay *{
   display:block;
 }
 
+
+/* =========================================================
+   THEMES DESKTOP LAYOUT V4
+   ========================================================= */
+
+@media (min-width:701px){
+
+  /*
+    Header remains visible.
+    Modal begins BELOW it.
+  */
+  #skins-overlay{
+    top:76px !important;
+    right:0 !important;
+    bottom:0 !important;
+    left:0 !important;
+
+    padding:
+      18px
+      20px
+      30px !important;
+
+    justify-content:flex-start !important;
+    align-items:center !important;
+
+    overflow-y:auto !important;
+  }
+
+  #skins-overlay .after-dark-modal{
+    width:min(
+      760px,
+      calc(100vw - 40px)
+    ) !important;
+
+    margin:
+      0 auto !important;
+
+    flex:0 0 auto;
+  }
+
+}
+
+
+/* ---------- Category inside locked preview ---------- */
+
+.skin-preview-lock{
+  width:auto !important;
+  min-width:88px !important;
+
+  height:auto !important;
+  min-height:62px !important;
+
+  padding:
+    9px
+    13px !important;
+
+  flex-direction:column !important;
+
+  gap:6px !important;
+
+  border-radius:14px !important;
+}
+
+.skin-preview-lock svg{
+  width:18px !important;
+  height:18px !important;
+}
+
+.skin-preview-lock-label{
+  display:block;
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    "Segoe UI",
+    sans-serif;
+
+  font-size:9px;
+
+  font-weight:650;
+
+  letter-spacing:1.15px;
+
+  line-height:1;
+
+  text-transform:uppercase;
+
+  color:
+    rgba(239,213,151,.92);
+
+  white-space:nowrap;
+}
+
+
+/* Category badge after Premium is unlocked */
+
+.skin-audience-badge{
+  position:absolute;
+
+  left:9px;
+  bottom:9px;
+
+  z-index:6;
+
+  padding:
+    5px
+    8px;
+
+  border-radius:999px;
+
+  background:
+    rgba(10,8,7,.68);
+
+  border:
+    1px solid
+    rgba(235,205,137,.22);
+
+  backdrop-filter:
+    blur(7px);
+
+  color:
+    rgba(246,226,180,.92);
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    "Segoe UI",
+    sans-serif;
+
+  font-size:8px;
+
+  font-weight:650;
+
+  letter-spacing:.9px;
+
+  text-transform:uppercase;
+}
+
+
+/*
+  While locked, category is already
+  displayed together with lock.
+*/
+.skin-card.locked
+.skin-audience-badge{
+  display:none;
+}
+
+
+/* Make preview feel less like a generic tile */
+
+.skin-card .swatch{
+  min-height:116px !important;
+}
+
+.skin-card.locked .swatch{
+  box-shadow:
+    inset 0 0 35px
+    rgba(0,0,0,.18);
+}
+
+
+/* Keep title safely visible */
+#skins-overlay
+.collection-header{
+  padding-top:2px !important;
+}
+
+#skins-overlay
+.collection-eyebrow{
+  margin-top:0 !important;
+}
+
+#skins-overlay
+.collection-header h2{
+  margin-top:8px !important;
+}
+
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -6212,6 +6392,13 @@ function getArtworkForCard(card, skinId){
         );
 
 
+      const audience = ({
+        midnight: "Straight",
+        rose: "Gay",
+        harbor: "Lesbian"
+      })[skin.id] || "";
+
+
       const previewImage =
         getThemePreviewImage(
           skin.id
@@ -6390,6 +6577,62 @@ function getArtworkForCard(card, skinId){
         </div>
       `;
 
+
+
+      /* THEME AUDIENCE LABEL */
+
+      if(audience){
+
+        const previewLock =
+          div.querySelector(
+            ".skin-preview-lock"
+          );
+
+        if(previewLock){
+
+          const label =
+            document.createElement(
+              "span"
+            );
+
+          label.className =
+            "skin-preview-lock-label";
+
+          label.textContent =
+            audience;
+
+          previewLock.appendChild(
+            label
+          );
+
+        }
+
+
+        const swatchEl =
+          div.querySelector(
+            ".swatch"
+          );
+
+        if(swatchEl){
+
+          const badge =
+            document.createElement(
+              "div"
+            );
+
+          badge.className =
+            "skin-audience-badge";
+
+          badge.textContent =
+            audience;
+
+          swatchEl.appendChild(
+            badge
+          );
+
+        }
+
+      }
 
 
       const previewElement =

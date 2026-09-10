@@ -8586,3 +8586,318 @@
   }
 
 }
+
+/* ==========================================================
+   SPIDER YARD — GOLD BOOKMARK CTA V8.2
+   Move premium purchase action to bottom edge of book
+   ========================================================== */
+
+@media(min-width:701px){
+
+  /* --------------------------------------------------------
+     REMOVE CTA FROM TOP
+     -------------------------------------------------------- */
+
+  #skins-overlay .unlock-cta{
+    position:absolute !important;
+
+    top:auto !important;
+
+    left:50% !important;
+
+    bottom:6.8% !important;
+
+    transform:
+      translateX(-50%)
+      !important;
+
+    z-index:90 !important;
+
+    min-width:
+      230px !important;
+
+    width:auto !important;
+
+    height:
+      42px !important;
+
+    min-height:
+      42px !important;
+
+    margin:0 !important;
+
+    padding:
+      0 24px 0 20px
+      !important;
+
+    border:none !important;
+
+    border-radius:
+      4px 4px 14px 14px
+      !important;
+
+    overflow:visible !important;
+
+    font-family:
+      Georgia,
+      serif !important;
+
+    font-size:
+      11px !important;
+
+    font-weight:
+      700 !important;
+
+    letter-spacing:
+      .15px;
+
+    color:
+      #37210d !important;
+
+    background:
+      linear-gradient(
+        180deg,
+        #f2dc92 0%,
+        #d9b15a 45%,
+        #bd8732 100%
+      ) !important;
+
+    box-shadow:
+      inset 0 1px 0
+        rgba(255,255,255,.56),
+
+      inset 0 -4px 6px
+        rgba(95,56,14,.15),
+
+      0 5px 10px
+        rgba(39,21,9,.20),
+
+      0 10px 22px
+        rgba(39,21,9,.12)
+      !important;
+
+    text-shadow:
+      0 1px 0
+      rgba(255,255,255,.22);
+
+    transition:
+      transform 150ms ease,
+      filter 150ms ease,
+      box-shadow 150ms ease
+      !important;
+  }
+
+
+  /* little metal top edge */
+  #skins-overlay .unlock-cta::before{
+    content:"";
+
+    position:absolute;
+
+    left:8px;
+    right:8px;
+
+    top:-4px;
+
+    height:5px;
+
+    border-radius:
+      4px 4px 0 0;
+
+    background:
+      linear-gradient(
+        180deg,
+        #f7e9ae,
+        #c99b45
+      );
+
+    box-shadow:
+      inset 0 1px 0
+      rgba(255,255,255,.50);
+  }
+
+
+  /* bookmark tails */
+  #skins-overlay .unlock-cta::after{
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+
+    bottom:-16px;
+
+    width:28px;
+    height:17px;
+
+    transform:
+      translateX(-50%);
+
+    background:
+      linear-gradient(
+        180deg,
+        #bd8732,
+        #9e6823
+      );
+
+    clip-path:
+      polygon(
+        0 0,
+        100% 0,
+        100% 100%,
+        50% 67%,
+        0 100%
+      );
+
+    filter:
+      drop-shadow(
+        0 3px 3px
+        rgba(44,23,8,.18)
+      );
+  }
+
+
+  #skins-overlay .unlock-cta:hover{
+    transform:
+      translateX(-50%)
+      translateY(-4px)
+      !important;
+
+    filter:
+      brightness(1.07);
+
+    box-shadow:
+      inset 0 1px 0
+        rgba(255,255,255,.58),
+
+      inset 0 -4px 6px
+        rgba(95,56,14,.13),
+
+      0 8px 15px
+        rgba(39,21,9,.24),
+
+      0 14px 28px
+        rgba(39,21,9,.14)
+      !important;
+  }
+
+
+  #skins-overlay .unlock-cta:active{
+    transform:
+      translateX(-50%)
+      translateY(1px)
+      scale(.985)
+      !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     GIVE HEADER MORE BREATHING ROOM
+     -------------------------------------------------------- */
+
+  #skins-overlay .collection-header{
+    top:16.5% !important;
+  }
+
+
+  #skins-overlay .collection-header h2{
+    margin-bottom:
+      9px !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     MOVE THEME GRID SLIGHTLY UP
+     because CTA no longer occupies center
+     -------------------------------------------------------- */
+
+  #skins-grid{
+    top:
+      33.5% !important;
+
+    bottom:
+      19.5% !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     BOOKMARK APPEARS LAST
+     -------------------------------------------------------- */
+
+  #skins-overlay.sy-v8-opening
+  .unlock-cta{
+
+    animation:
+      syBookmarkIn
+      360ms
+      980ms
+      cubic-bezier(.2,.7,.2,1)
+      both
+      !important;
+  }
+
+
+  @keyframes syBookmarkIn{
+
+    from{
+      opacity:0;
+
+      transform:
+        translateX(-50%)
+        translateY(18px)
+        scale(.94);
+    }
+
+    to{
+      opacity:1;
+
+      transform:
+        translateX(-50%)
+        translateY(0)
+        scale(1);
+    }
+
+  }
+
+
+
+  /* --------------------------------------------------------
+     BOOKMARK LEAVES FIRST ON CLOSE
+     -------------------------------------------------------- */
+
+  #skins-overlay.sy-v8-closing
+  .unlock-cta{
+
+    animation:
+      syBookmarkOut
+      150ms
+      ease
+      both
+      !important;
+  }
+
+
+  @keyframes syBookmarkOut{
+
+    from{
+      opacity:1;
+
+      transform:
+        translateX(-50%)
+        translateY(0);
+    }
+
+    to{
+      opacity:0;
+
+      transform:
+        translateX(-50%)
+        translateY(12px);
+    }
+
+  }
+
+}

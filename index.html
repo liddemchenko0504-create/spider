@@ -2928,6 +2928,19 @@ function getCollectionImages(skinId){
       `${collection.folder}/${i + 1}.${collection.extension}`
   );
 }
+
+function getArtworkForCard(card, skinId){
+  const images = getCollectionImages(skinId);
+
+  if(!images.length) return null;
+
+  const index =
+    Number.isFinite(card.id)
+      ? card.id % images.length
+      : 0;
+
+  return images[index];
+}
   const PREMIUM_KEY = "spider_yard_premium_v1";
   const SKIN_KEY = "spider_yard_skin_v1";
 

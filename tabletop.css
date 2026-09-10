@@ -9165,3 +9165,519 @@
   display:none !important;
 }
 
+
+
+/* =========================================================
+   SPIDER YARD DESK INTERACTIONS V1
+   ========================================================= */
+
+
+/* clickable physical objects */
+
+.sy-interactive-object{
+  cursor:pointer !important;
+
+  transition:
+    transform .16s ease,
+    filter .16s ease !important;
+}
+
+.sy-interactive-object:hover{
+  filter:
+    brightness(1.07);
+
+  transform:
+    translateY(-2px);
+}
+
+
+/* =========================================================
+   LAMP LIGHT
+   ========================================================= */
+
+body::after{
+  transition:
+    background .35s ease,
+    opacity .35s ease;
+}
+
+
+/*
+ * Physical lamp glow over the table.
+ */
+
+.sy-lamp-control{
+  z-index:50;
+}
+
+body:not(.sy-lamp-off)
+#table::after{
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  pointer-events:none;
+
+  border-radius:
+    inherit;
+
+  background:
+    radial-gradient(
+      ellipse at 18% 5%,
+      rgba(255,219,157,.13) 0%,
+      rgba(255,190,110,.06) 25%,
+      transparent 55%
+    );
+
+  mix-blend-mode:
+    screen;
+
+  z-index:30;
+}
+
+
+body.sy-lamp-off #table{
+  filter:
+    brightness(.70)
+    saturate(.82);
+
+  transition:
+    filter .35s ease;
+}
+
+
+body:not(.sy-lamp-off) #table{
+  transition:
+    filter .35s ease;
+}
+
+
+/* =========================================================
+   CANDLE
+   ========================================================= */
+
+.sy-desk-candle{
+  position:fixed;
+
+  left:170px;
+  bottom:120px;
+
+  width:32px;
+  height:62px;
+
+  padding:0;
+
+  border:0;
+
+  border-radius:
+    8px 8px 5px 5px;
+
+  cursor:pointer;
+
+  z-index:120;
+
+  background:
+    linear-gradient(
+      90deg,
+      #c9ae7e 0%,
+      #eee0be 45%,
+      #d0b585 100%
+    );
+
+  box-shadow:
+    0 9px 18px
+    rgba(0,0,0,.34),
+    inset -4px 0 7px
+    rgba(91,57,29,.10);
+
+  transition:
+    transform .15s ease,
+    filter .15s ease;
+}
+
+
+.sy-desk-candle:hover{
+  transform:
+    translateY(-2px);
+
+  filter:
+    brightness(1.04);
+}
+
+
+.sy-candle-wick{
+  position:absolute;
+
+  top:-7px;
+  left:50%;
+
+  width:2px;
+  height:9px;
+
+  background:
+    #332319;
+
+  transform:
+    translateX(-50%);
+}
+
+
+.sy-candle-flame{
+  position:absolute;
+
+  left:50%;
+  top:-28px;
+
+  width:14px;
+  height:24px;
+
+  opacity:0;
+
+  transform:
+    translateX(-50%);
+
+  transform-origin:
+    center bottom;
+
+  border-radius:
+    70% 45% 65% 45%;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 75%,
+      #fffbd5 0 19%,
+      #ffc75f 25% 58%,
+      #e47d24 70% 100%
+    );
+
+  filter:
+    drop-shadow(
+      0 0 7px
+      rgba(255,168,64,.75)
+    );
+
+  transition:
+    opacity .2s ease;
+}
+
+
+body.sy-candle-on
+.sy-candle-flame{
+  opacity:1;
+
+  animation:
+    syCandleFlicker
+    1.4s
+    ease-in-out
+    infinite;
+}
+
+
+body.sy-candle-on::before{
+  content:"";
+
+  position:fixed;
+
+  left:0;
+  bottom:0;
+
+  width:430px;
+  height:390px;
+
+  pointer-events:none;
+
+  z-index:4;
+
+  background:
+    radial-gradient(
+      circle at 185px 265px,
+      rgba(255,175,76,.20),
+      rgba(255,139,50,.075) 34%,
+      transparent 68%
+    );
+}
+
+
+@keyframes syCandleFlicker{
+
+  0%,
+  100%{
+    transform:
+      translateX(-50%)
+      rotate(-2deg)
+      scale(1);
+  }
+
+  35%{
+    transform:
+      translateX(-50%)
+      rotate(3deg)
+      scale(.92,1.07);
+  }
+
+  70%{
+    transform:
+      translateX(-50%)
+      rotate(-1deg)
+      scale(1.05,.96);
+  }
+
+}
+
+
+/* =========================================================
+   MINI GAME
+   ========================================================= */
+
+.sy-mini-game-overlay{
+  position:fixed;
+
+  inset:0;
+
+  display:flex;
+
+  align-items:center;
+  justify-content:center;
+
+  padding:24px;
+
+  visibility:hidden;
+  opacity:0;
+
+  pointer-events:none;
+
+  background:
+    rgba(13,8,5,.64);
+
+  backdrop-filter:
+    blur(9px);
+
+  z-index:30000;
+
+  transition:
+    opacity .22s ease,
+    visibility .22s ease;
+}
+
+
+.sy-mini-game-overlay.is-open{
+  visibility:visible;
+  opacity:1;
+
+  pointer-events:auto;
+}
+
+
+.sy-mini-game-card{
+  position:relative;
+
+  width:
+    min(560px, 92vw);
+
+  padding:
+    38px 34px 34px;
+
+  border:
+    1px solid
+    rgba(91,62,31,.26);
+
+  border-radius:
+    18px;
+
+  color:
+    #382619;
+
+  background:
+    linear-gradient(
+      145deg,
+      #eee1c4,
+      #d8c39b
+    );
+
+  box-shadow:
+    0 35px 100px
+    rgba(0,0,0,.52),
+    inset 0 0 40px
+    rgba(255,255,255,.16);
+
+  transform:
+    translateY(8px)
+    scale(.985);
+
+  transition:
+    transform .22s ease;
+}
+
+
+.sy-mini-game-overlay.is-open
+.sy-mini-game-card{
+  transform:
+    translateY(0)
+    scale(1);
+}
+
+
+.sy-mini-close{
+  position:absolute;
+
+  right:15px;
+  top:14px;
+
+  width:34px;
+  height:34px;
+
+  border:
+    1px solid
+    rgba(63,42,24,.18);
+
+  border-radius:50%;
+
+  background:
+    rgba(255,255,255,.22);
+
+  color:
+    #392617;
+
+  cursor:pointer;
+
+  font-size:21px;
+}
+
+
+.sy-mini-eyebrow{
+  margin-bottom:8px;
+
+  font-size:9px;
+
+  letter-spacing:
+    .22em;
+
+  opacity:.55;
+}
+
+
+.sy-mini-game-card h2{
+  margin:
+    0 0 7px;
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-weight:500;
+
+  font-size:30px;
+}
+
+
+.sy-mini-game-card p{
+  margin:0;
+
+  opacity:.67;
+
+  font-size:13px;
+}
+
+
+.sy-mini-cards{
+  display:grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap:14px;
+
+  margin-top:28px;
+}
+
+
+.sy-mini-pick{
+  position:relative;
+
+  height:165px;
+
+  border:
+    1px solid
+    rgba(219,191,122,.36);
+
+  border-radius:11px;
+
+  cursor:pointer;
+
+  color:
+    #ddc37c;
+
+  font-family:
+    Georgia,
+    serif;
+
+  font-size:28px;
+
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      rgba(221,193,121,.07),
+      transparent 45%
+    ),
+    linear-gradient(
+      145deg,
+      #174333,
+      #09271e
+    );
+
+  box-shadow:
+    0 12px 25px
+    rgba(0,0,0,.20);
+
+  transition:
+    transform .15s ease,
+    box-shadow .15s ease;
+}
+
+
+.sy-mini-pick:hover{
+  transform:
+    translateY(-5px);
+
+  box-shadow:
+    0 17px 27px
+    rgba(0,0,0,.24);
+}
+
+
+.sy-mini-pick.revealed{
+  background:
+    #f5eddc;
+
+  color:
+    #37271b;
+}
+
+
+.sy-mini-pick.winner{
+  box-shadow:
+    0 17px 30px
+    rgba(0,0,0,.22),
+    0 0 0 2px
+    rgba(173,132,46,.32);
+}
+
+
+@media(max-width:700px){
+
+  .sy-desk-candle{
+    display:none;
+  }
+
+  .sy-mini-cards{
+    gap:8px;
+  }
+
+  .sy-mini-pick{
+    height:125px;
+  }
+
+}
+

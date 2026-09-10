@@ -911,3 +911,361 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 })();
+
+
+/* =========================================================
+   SPIDER YARD DESK INTERACTIONS V1
+   Lamp + Candle + Note Mini Game
+   ========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  /*
+   * Find existing decorative assets.
+   * We do not need to change the current HTML.
+   */
+  const lamp =
+    document.querySelector(
+      'img[src*="lamp.webp"], [style*="lamp.webp"]'
+    );
+
+  const note =
+    document.querySelector(
+      'img[src*="note.webp"], [style*="note.webp"]'
+    );
+
+
+  /* =======================================================
+     LAMP
+     ======================================================= */
+
+  if(lamp){
+
+    lamp.classList.add(
+      "sy-interactive-object",
+      "sy-lamp-control"
+    );
+
+    lamp.setAttribute(
+      "title",
+      "Turn lamp on / off"
+    );
+
+    lamp.addEventListener(
+      "click",
+      (event) => {
+
+        event.stopPropagation();
+
+        document.body.classList.toggle(
+          "sy-lamp-off"
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =======================================================
+     CANDLE
+     ======================================================= */
+
+  if(
+    !document.getElementById(
+      "sy-desk-candle"
+    )
+  ){
+
+    const candle =
+      document.createElement("button");
+
+    candle.id =
+      "sy-desk-candle";
+
+    candle.type =
+      "button";
+
+    candle.className =
+      "sy-desk-candle";
+
+    candle.setAttribute(
+      "aria-label",
+      "Light candle"
+    );
+
+    candle.setAttribute(
+      "title",
+      "Light candle"
+    );
+
+    candle.innerHTML = `
+      <span class="sy-candle-wick"></span>
+      <span class="sy-candle-flame"></span>
+    `;
+
+    document.body.appendChild(
+      candle
+    );
+
+    candle.addEventListener(
+      "click",
+      () => {
+
+        document.body.classList.toggle(
+          "sy-candle-on"
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =======================================================
+     MINI GAME MODAL
+     ======================================================= */
+
+  let overlay =
+    document.getElementById(
+      "sy-mini-game-overlay"
+    );
+
+  if(!overlay){
+
+    overlay =
+      document.createElement("div");
+
+    overlay.id =
+      "sy-mini-game-overlay";
+
+    overlay.className =
+      "sy-mini-game-overlay";
+
+    overlay.innerHTML = `
+      <div class="sy-mini-game-card">
+
+        <button
+          class="sy-mini-close"
+          id="sy-mini-close"
+          type="button"
+          aria-label="Close"
+        >
+          ×
+        </button>
+
+        <div class="sy-mini-eyebrow">
+          DESK GAME
+        </div>
+
+        <h2>
+          Find the Queen
+        </h2>
+
+        <p id="sy-mini-message">
+          One of these cards hides the Queen.
+        </p>
+
+        <div
+          class="sy-mini-cards"
+          id="sy-mini-cards"
+        ></div>
+
+      </div>
+    `;
+
+    document.body.appendChild(
+      overlay
+    );
+
+  }
+
+
+  function closeMiniGame(){
+
+    overlay.classList.remove(
+      "is-open"
+    );
+
+  }
+
+
+  function openMiniGame(){
+
+    const board =
+      document.getElementById(
+        "sy-mini-cards"
+      );
+
+    const message =
+      document.getElementById(
+        "sy-mini-message"
+      );
+
+    if(!board)
+      return;
+
+    board.innerHTML = "";
+
+    if(message){
+
+      message.textContent =
+        "One of these cards hides the Queen.";
+
+    }
+
+    const queenIndex =
+      Math.floor(
+        Math.random() * 3
+      );
+
+    for(
+      let i = 0;
+      i < 3;
+      i++
+    ){
+
+      const card =
+        document.createElement(
+          "button"
+        );
+
+      card.type =
+        "button";
+
+      card.className =
+        "sy-mini-pick";
+
+      card.innerHTML =
+        '<span>✦</span>';
+
+      card.addEventListener(
+        "click",
+        () => {
+
+          if(
+            card.classList.contains(
+              "revealed"
+            )
+          ){
+            return;
+          }
+
+          card.classList.add(
+            "revealed"
+          );
+
+          if(i === queenIndex){
+
+            card.classList.add(
+              "winner"
+            );
+
+            card.innerHTML =
+              "<strong>Q</strong>";
+
+            if(message){
+
+              message.textContent =
+                "You found the Queen.";
+
+            }
+
+          }else{
+
+            card.innerHTML =
+              "<strong>×</strong>";
+
+            if(message){
+
+              message.textContent =
+                "Not this one.";
+
+            }
+
+          }
+
+        }
+      );
+
+      board.appendChild(
+        card
+      );
+
+    }
+
+    overlay.classList.add(
+      "is-open"
+    );
+
+  }
+
+
+  document
+    .getElementById(
+      "sy-mini-close"
+    )
+    ?.addEventListener(
+      "click",
+      closeMiniGame
+    );
+
+
+  overlay.addEventListener(
+    "click",
+    (event) => {
+
+      if(event.target === overlay){
+
+        closeMiniGame();
+
+      }
+
+    }
+  );
+
+
+  document.addEventListener(
+    "keydown",
+    (event) => {
+
+      if(event.key === "Escape"){
+
+        closeMiniGame();
+
+      }
+
+    }
+  );
+
+
+  /* =======================================================
+     EXISTING PAPER NOTE OPENS THE MINI GAME
+     ======================================================= */
+
+  if(note){
+
+    note.classList.add(
+      "sy-interactive-object",
+      "sy-note-control"
+    );
+
+    note.setAttribute(
+      "title",
+      "Desk game"
+    );
+
+    note.addEventListener(
+      "click",
+      (event) => {
+
+        event.stopPropagation();
+
+        openMiniGame();
+
+      }
+    );
+
+  }
+
+});

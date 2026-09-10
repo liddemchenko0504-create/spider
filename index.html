@@ -1778,6 +1778,344 @@ body.custom-cursor-active .difficulty-option{
   }
 }
 
+
+/* =========================================================
+   ADULT ARTWORK VIEWER
+   ========================================================= */
+
+.adult-viewer{
+  position:fixed;
+  inset:0;
+  z-index:20000;
+
+  display:flex;
+  flex-direction:column;
+
+  padding:24px;
+
+  background:
+    radial-gradient(
+      circle at 50% 20%,
+      rgba(98,54,73,.18),
+      transparent 38%
+    ),
+    rgba(9,7,8,.985);
+
+  color:#f3ead8;
+}
+
+.adult-viewer.hidden{
+  display:none;
+}
+
+.adult-viewer-top{
+  width:100%;
+  max-width:1100px;
+
+  margin:0 auto 16px;
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.viewer-eyebrow{
+  font-size:9px;
+  letter-spacing:1.8px;
+  color:rgba(232,217,160,.48);
+}
+
+#viewer-title{
+  margin-top:4px;
+
+  font-size:23px;
+  font-weight:500;
+}
+
+#viewer-close{
+  width:38px;
+  height:38px;
+
+  padding:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  border:1px solid rgba(255,255,255,.09);
+
+  background:rgba(255,255,255,.04);
+
+  color:#f3ead8;
+
+  font-size:24px;
+}
+
+.viewer-stage{
+  flex:1;
+
+  min-height:0;
+
+  width:100%;
+  max-width:1050px;
+
+  margin:auto;
+
+  display:grid;
+  grid-template-columns:60px 1fr 60px;
+
+  align-items:center;
+}
+
+.viewer-image-container{
+  position:relative;
+
+  height:100%;
+
+  min-height:340px;
+
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:20px;
+
+  background:#050404;
+
+  border:1px solid rgba(232,217,160,.08);
+
+  box-shadow:
+    inset 0 0 60px rgba(0,0,0,.45);
+}
+
+#viewer-image{
+  max-width:90%;
+  max-height:90%;
+
+  object-fit:contain;
+
+  transform-origin:center;
+
+  user-select:none;
+  -webkit-user-drag:none;
+
+  transition:transform .16s ease;
+
+  cursor:grab;
+}
+
+#viewer-image:active{
+  cursor:grabbing;
+}
+
+.viewer-nav{
+  border:0;
+  background:transparent;
+
+  color:rgba(243,234,216,.55);
+
+  font-size:46px;
+
+  padding:8px;
+}
+
+.viewer-nav:hover{
+  color:#f3ead8;
+  background:transparent;
+}
+
+.viewer-counter{
+  margin:10px 0 8px;
+
+  text-align:center;
+
+  font-size:11px;
+
+  color:rgba(243,234,216,.44);
+}
+
+.viewer-tools{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+
+  margin-bottom:10px;
+}
+
+.viewer-tools button{
+  min-width:42px;
+
+  border-color:rgba(232,217,160,.12);
+
+  background:rgba(255,255,255,.03);
+
+  color:rgba(243,234,216,.75);
+}
+
+.viewer-use{
+  align-self:center;
+
+  min-width:190px;
+
+  padding:11px 18px;
+
+  border-radius:11px;
+
+  background:#d4ac58;
+
+  border-color:#e7ca82;
+
+  color:#19120c;
+
+  font-weight:700;
+}
+
+.viewer-use.active{
+  background:rgba(79,142,98,.30);
+
+  border-color:rgba(126,177,143,.55);
+
+  color:#d6eddc;
+}
+
+.adult-thumb-grid{
+  width:100%;
+  max-width:800px;
+
+  margin:14px auto 0;
+
+  display:flex;
+  gap:7px;
+
+  overflow-x:auto;
+
+  padding-bottom:5px;
+
+  scrollbar-width:none;
+}
+
+.adult-thumb-grid::-webkit-scrollbar{
+  display:none;
+}
+
+.adult-thumb{
+  flex:0 0 64px;
+
+  width:64px;
+  height:78px;
+
+  object-fit:cover;
+
+  border-radius:8px;
+
+  opacity:.42;
+
+  border:1px solid transparent;
+
+  cursor:pointer;
+
+  transition:
+    opacity .15s ease,
+    transform .15s ease,
+    border-color .15s ease;
+}
+
+.adult-thumb:hover{
+  opacity:.78;
+  transform:translateY(-1px);
+}
+
+.adult-thumb.active{
+  opacity:1;
+
+  border-color:rgba(232,217,160,.62);
+}
+
+.card.adult-art-card{
+  background-size:cover !important;
+  background-position:center !important;
+  background-repeat:no-repeat !important;
+  overflow:hidden;
+}
+
+.card.adult-art-card::before{
+  content:"";
+
+  position:absolute;
+  inset:0;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0,0,0,.02),
+      transparent 45%,
+      rgba(0,0,0,.10)
+    );
+
+  pointer-events:none;
+}
+
+.card.adult-art-card .corner,
+.card.adult-art-card .pip{
+  position:relative;
+  z-index:3;
+}
+
+.card.adult-art-card .corner{
+  width:max-content;
+
+  padding:3px 4px;
+
+  border-radius:5px;
+
+  background:rgba(243,234,216,.88);
+
+  box-shadow:
+    0 1px 4px rgba(0,0,0,.14);
+}
+
+.card.adult-art-card .pip{
+  padding:2px 4px;
+
+  border-radius:5px;
+
+  background:rgba(243,234,216,.72);
+}
+
+@media(max-width:700px){
+
+  .adult-viewer{
+    padding:
+      calc(12px + env(safe-area-inset-top))
+      8px
+      calc(12px + env(safe-area-inset-bottom));
+  }
+
+  .viewer-stage{
+    grid-template-columns:34px 1fr 34px;
+  }
+
+  .viewer-image-container{
+    min-height:240px;
+  }
+
+  .viewer-nav{
+    font-size:32px;
+  }
+
+  .adult-thumb{
+    flex-basis:55px;
+
+    width:55px;
+    height:68px;
+  }
+
+}
+
 </style>
 </head>
 <body>
@@ -1996,6 +2334,133 @@ body.custom-cursor-active .difficulty-option{
   aria-hidden="true"
 ></div>
 
+
+<div class="adult-viewer hidden" id="adult-viewer">
+
+  <div class="adult-viewer-top">
+
+    <div>
+      <div class="viewer-eyebrow">
+        AFTER DARK COLLECTION
+      </div>
+
+      <div id="viewer-title">
+        Velvet Vice
+      </div>
+    </div>
+
+    <button
+      id="viewer-close"
+      type="button"
+      aria-label="Close"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <div class="viewer-stage">
+
+    <button
+      class="viewer-nav"
+      id="viewer-prev"
+      type="button"
+    >
+      ‹
+    </button>
+
+
+    <div class="viewer-image-container">
+
+      <img
+        id="viewer-image"
+        draggable="false"
+        alt="Premium card artwork"
+      >
+
+    </div>
+
+
+    <button
+      class="viewer-nav"
+      id="viewer-next"
+      type="button"
+    >
+      ›
+    </button>
+
+  </div>
+
+
+  <div
+    class="viewer-counter"
+    id="viewer-counter"
+  >
+    1 / 6
+  </div>
+
+
+  <div class="viewer-tools">
+
+    <button
+      id="viewer-zoom-out"
+      type="button"
+      title="Zoom out"
+    >
+      −
+    </button>
+
+    <button
+      id="viewer-zoom-in"
+      type="button"
+      title="Zoom in"
+    >
+      +
+    </button>
+
+    <button
+      id="viewer-rotate-left"
+      type="button"
+      title="Rotate left"
+    >
+      ↺
+    </button>
+
+    <button
+      id="viewer-rotate-right"
+      type="button"
+      title="Rotate right"
+    >
+      ↻
+    </button>
+
+    <button
+      id="viewer-reset"
+      type="button"
+    >
+      Reset
+    </button>
+
+  </div>
+
+
+  <button
+    class="viewer-use"
+    id="viewer-use"
+    type="button"
+  >
+    Use in Game
+  </button>
+
+
+  <div
+    class="adult-thumb-grid"
+    id="adult-thumb-grid"
+  ></div>
+
+</div>
+
 <script>
 (function(){
   "use strict";
@@ -2094,8 +2559,84 @@ const SKINS = [
     }
   }
 ];
+
+const ADULT_COLLECTIONS = {
+  midnight: {
+    name: "Velvet Vice",
+    folder: "/assets/adult/velvet-vice",
+    count: 6,
+    extension: "jpg"
+  },
+
+  lesbian: {
+    name: "Sapphic Nights",
+    folder: "/assets/adult/lesbian",
+    count: 0,
+    extension: "jpg"
+  },
+
+  gay: {
+    name: "Midnight Men",
+    folder: "/assets/adult/gay",
+    count: 0,
+    extension: "jpg"
+  }
+};
+
+function getCollectionImages(skinId){
+  const collection = ADULT_COLLECTIONS[skinId];
+
+  if(!collection) return [];
+
+  return Array.from(
+    { length: collection.count },
+    (_, i) =>
+      `${collection.folder}/${i + 1}.${collection.extension}`
+  );
+}
   const PREMIUM_KEY = "spider_yard_premium_v1";
   const SKIN_KEY = "spider_yard_skin_v1";
+
+
+  const ARTWORK_KEY =
+    "spider_yard_artwork_v1";
+
+  function getArtworkSelections(){
+    try{
+      return JSON.parse(
+        localStorage.getItem(ARTWORK_KEY) || "{}"
+      );
+    }catch(e){
+      return {};
+    }
+  }
+
+  function setArtworkForSkin(skinId, image){
+    const selections =
+      getArtworkSelections();
+
+    selections[skinId] = image;
+
+    localStorage.setItem(
+      ARTWORK_KEY,
+      JSON.stringify(selections)
+    );
+  }
+
+  function getArtworkForSkin(skinId){
+    return (
+      getArtworkSelections()[skinId] ||
+      null
+    );
+  }
+
+  function getCurrentSkinId(){
+    return (
+      localStorage.getItem(SKIN_KEY) ||
+      "emerald"
+    );
+  }
+
 
   function isPremium(){ return localStorage.getItem(PREMIUM_KEY) === "true"; }
   function setPremium(val){ localStorage.setItem(PREMIUM_KEY, val ? "true" : "false"); }
@@ -2584,6 +3125,32 @@ const SKINS = [
     div.style.top = topOffset + "px";
     div.dataset.col = colIdx;
     div.dataset.idx = idxInCol;
+
+
+    if(card.faceUp){
+
+      const currentSkin =
+        getCurrentSkinId();
+
+      const artwork =
+        getArtworkForSkin(currentSkin);
+
+      if(
+        artwork &&
+        ADULT_COLLECTIONS[currentSkin]
+      ){
+
+        div.classList.add(
+          "adult-art-card"
+        );
+
+        div.style.backgroundImage =
+          `url("${artwork}")`;
+
+      }
+
+    }
+
     if(card.faceUp){
       div.innerHTML = `
         <div class="corner"><span>${card.rank}</span><span>${card.suit}</span></div>
@@ -2932,6 +3499,509 @@ const SKINS = [
     drawHintArrow._t = setTimeout(()=>{ layer.classList.remove("active"); }, 2600);
   }
 
+
+  /* ---------- Adult artwork viewer ---------- */
+
+  let viewerSkin = "midnight";
+  let viewerIndex = 0;
+  let viewerScale = 1;
+  let viewerRotation = 0;
+
+  let viewerOffsetX = 0;
+  let viewerOffsetY = 0;
+
+  let viewerDragging = false;
+  let viewerDragStartX = 0;
+  let viewerDragStartY = 0;
+
+
+  function openAdultGallery(
+    skinId = getCurrentSkinId(),
+    index = 0
+  ){
+
+    if(!isPremium()){
+      startCheckout();
+      return;
+    }
+
+    if(!ADULT_COLLECTIONS[skinId]){
+      skinId = "midnight";
+    }
+
+    viewerSkin = skinId;
+    viewerIndex = index;
+
+    resetAdultViewerTransform();
+
+    document
+      .getElementById("adult-viewer")
+      ?.classList.remove("hidden");
+
+    renderAdultViewer();
+  }
+
+
+  function closeAdultGallery(){
+
+    document
+      .getElementById("adult-viewer")
+      ?.classList.add("hidden");
+
+  }
+
+
+  function resetAdultViewerTransform(){
+
+    viewerScale = 1;
+    viewerRotation = 0;
+
+    viewerOffsetX = 0;
+    viewerOffsetY = 0;
+
+    updateViewerTransform();
+
+  }
+
+
+  function updateViewerTransform(){
+
+    const img =
+      document.getElementById(
+        "viewer-image"
+      );
+
+    if(!img) return;
+
+    img.style.transform =
+      `translate(${viewerOffsetX}px, ${viewerOffsetY}px)
+       scale(${viewerScale})
+       rotate(${viewerRotation}deg)`;
+
+  }
+
+
+  function renderAdultViewer(){
+
+    const collection =
+      ADULT_COLLECTIONS[viewerSkin];
+
+    const images =
+      getCollectionImages(viewerSkin);
+
+    if(!collection) return;
+
+
+    document
+      .getElementById("viewer-title")
+      .textContent =
+      collection.name;
+
+
+    const image =
+      images[viewerIndex];
+
+
+    const mainImg =
+      document.getElementById(
+        "viewer-image"
+      );
+
+
+    if(image){
+
+      mainImg.src = image;
+
+      mainImg.style.opacity = "1";
+
+      document
+        .getElementById(
+          "viewer-counter"
+        )
+        .textContent =
+        `${viewerIndex + 1} / ${images.length}`;
+
+    }else{
+
+      mainImg.removeAttribute("src");
+
+      mainImg.style.opacity = "0";
+
+      document
+        .getElementById(
+          "viewer-counter"
+        )
+        .textContent =
+        "No artwork yet";
+
+    }
+
+
+    const thumbs =
+      document.getElementById(
+        "adult-thumb-grid"
+      );
+
+    thumbs.innerHTML = "";
+
+
+    images.forEach((src,index) => {
+
+      const img =
+        document.createElement("img");
+
+      img.src = src;
+
+      img.className =
+        "adult-thumb" +
+        (
+          index === viewerIndex
+            ? " active"
+            : ""
+        );
+
+      img.alt =
+        `${collection.name} ${index + 1}`;
+
+
+      img.addEventListener(
+        "click",
+        () => {
+
+          viewerIndex = index;
+
+          resetAdultViewerTransform();
+
+          renderAdultViewer();
+
+        }
+      );
+
+      thumbs.appendChild(img);
+
+    });
+
+
+    updateUseArtworkButton();
+
+  }
+
+
+  function updateUseArtworkButton(){
+
+    const btn =
+      document.getElementById(
+        "viewer-use"
+      );
+
+    if(!btn) return;
+
+
+    const images =
+      getCollectionImages(
+        viewerSkin
+      );
+
+    const image =
+      images[viewerIndex];
+
+    const current =
+      getArtworkForSkin(
+        viewerSkin
+      );
+
+
+    const active =
+      image &&
+      image === current;
+
+
+    btn.classList.toggle(
+      "active",
+      !!active
+    );
+
+    btn.textContent =
+      active
+        ? "Selected ✓"
+        : "Use in Game";
+
+  }
+
+
+  function changeViewerImage(direction){
+
+    const images =
+      getCollectionImages(
+        viewerSkin
+      );
+
+    if(!images.length) return;
+
+
+    viewerIndex =
+      (
+        viewerIndex +
+        direction +
+        images.length
+      ) % images.length;
+
+
+    resetAdultViewerTransform();
+
+    renderAdultViewer();
+
+  }
+
+
+  document
+    .getElementById(
+      "viewer-close"
+    )
+    ?.addEventListener(
+      "click",
+      closeAdultGallery
+    );
+
+
+  document
+    .getElementById(
+      "viewer-prev"
+    )
+    ?.addEventListener(
+      "click",
+      () => changeViewerImage(-1)
+    );
+
+
+  document
+    .getElementById(
+      "viewer-next"
+    )
+    ?.addEventListener(
+      "click",
+      () => changeViewerImage(1)
+    );
+
+
+  document
+    .getElementById(
+      "viewer-zoom-in"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+
+        viewerScale =
+          Math.min(
+            4,
+            viewerScale + .25
+          );
+
+        updateViewerTransform();
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "viewer-zoom-out"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+
+        viewerScale =
+          Math.max(
+            .5,
+            viewerScale - .25
+          );
+
+        updateViewerTransform();
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "viewer-rotate-left"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+
+        viewerRotation -= 90;
+
+        updateViewerTransform();
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "viewer-rotate-right"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+
+        viewerRotation += 90;
+
+        updateViewerTransform();
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "viewer-reset"
+    )
+    ?.addEventListener(
+      "click",
+      resetAdultViewerTransform
+    );
+
+
+  document
+    .getElementById(
+      "viewer-use"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+
+        const images =
+          getCollectionImages(
+            viewerSkin
+          );
+
+        const image =
+          images[viewerIndex];
+
+        if(!image) return;
+
+
+        setArtworkForSkin(
+          viewerSkin,
+          image
+        );
+
+
+        if(
+          getCurrentSkinId() !==
+          viewerSkin
+        ){
+          applySkin(
+            viewerSkin
+          );
+        }
+
+
+        render();
+
+        updateUseArtworkButton();
+
+        setStatus(
+          `${ADULT_COLLECTIONS[viewerSkin].name} artwork applied.`
+        );
+
+      }
+    );
+
+
+  const viewerImage =
+    document.getElementById(
+      "viewer-image"
+    );
+
+
+  viewerImage
+    ?.addEventListener(
+      "wheel",
+      e => {
+
+        e.preventDefault();
+
+        viewerScale +=
+          e.deltaY < 0
+            ? .15
+            : -.15;
+
+        viewerScale =
+          Math.max(
+            .5,
+            Math.min(
+              4,
+              viewerScale
+            )
+          );
+
+        updateViewerTransform();
+
+      },
+      {
+        passive:false
+      }
+    );
+
+
+  viewerImage
+    ?.addEventListener(
+      "mousedown",
+      e => {
+
+        if(viewerScale <= 1)
+          return;
+
+        viewerDragging = true;
+
+        viewerDragStartX =
+          e.clientX -
+          viewerOffsetX;
+
+        viewerDragStartY =
+          e.clientY -
+          viewerOffsetY;
+
+      }
+    );
+
+
+  window.addEventListener(
+    "mousemove",
+    e => {
+
+      if(!viewerDragging)
+        return;
+
+      viewerOffsetX =
+        e.clientX -
+        viewerDragStartX;
+
+      viewerOffsetY =
+        e.clientY -
+        viewerDragStartY;
+
+      updateViewerTransform();
+
+    }
+  );
+
+
+  window.addEventListener(
+    "mouseup",
+    () => {
+
+      viewerDragging = false;
+
+    }
+  );
+
+
   /* ---------- Wire up UI ---------- */
   let selectedSuits = 4;
 
@@ -2957,8 +4027,7 @@ const SKINS = [
     document.getElementById("win-overlay").classList.add("hidden");
   });
   document.getElementById("gallery-btn").addEventListener("click", ()=>{
-    renderGallery();
-    document.getElementById("gallery-overlay").classList.remove("hidden");
+    openAdultGallery();
   });
   document.getElementById("gallery-close").addEventListener("click", ()=>{
     document.getElementById("gallery-overlay").classList.add("hidden");

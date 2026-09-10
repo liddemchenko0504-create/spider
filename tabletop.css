@@ -4972,3 +4972,484 @@
   }
 
 }
+
+
+/* ==========================================================
+   SPIDER YARD — REAL PAGE OPEN EFFECT V6
+   ========================================================== */
+
+@media(min-width:701px){
+
+  /* Base book stays as the background / cover */
+  #skins-overlay .after-dark-modal{
+    perspective:1800px !important;
+    transform-style:preserve-3d !important;
+  }
+
+
+  /* --------------------------------------------------------
+     TWO PAGE PANELS
+     -------------------------------------------------------- */
+
+  #skins-overlay .after-dark-modal
+  .sy-book-page{
+    position:absolute;
+
+    top:11%;
+    bottom:9%;
+
+    width:39.5%;
+
+    z-index:5;
+
+    background-image:
+      url("/assets/tabletop/theme-book.webp");
+
+    background-repeat:no-repeat;
+
+    backface-visibility:hidden;
+
+    transform-style:preserve-3d;
+
+    pointer-events:none;
+
+    will-change:transform, filter, opacity;
+  }
+
+
+  /* LEFT PAGE */
+  #skins-overlay .after-dark-modal
+  .sy-book-page-left{
+
+    left:10.5%;
+
+    transform-origin:
+      100% 50%;
+
+    background-size:
+      252% 100%;
+
+    background-position:
+      left center;
+  }
+
+
+  /* RIGHT PAGE */
+  #skins-overlay .after-dark-modal
+  .sy-book-page-right{
+
+    right:10.5%;
+
+    transform-origin:
+      0% 50%;
+
+    background-size:
+      252% 100%;
+
+    background-position:
+      right center;
+  }
+
+
+
+  /* --------------------------------------------------------
+     CENTER GUTTER / PAGE SHADOW
+     -------------------------------------------------------- */
+
+  #skins-overlay .after-dark-modal
+  .sy-book-gutter{
+
+    position:absolute;
+
+    top:10%;
+    bottom:9%;
+
+    left:50%;
+
+    width:7%;
+
+    transform:
+      translateX(-50%);
+
+    z-index:8;
+
+    pointer-events:none;
+
+    background:
+      radial-gradient(
+        ellipse at center,
+        rgba(38,20,10,.28),
+        rgba(38,20,10,.10) 32%,
+        transparent 72%
+      );
+
+    opacity:.9;
+  }
+
+
+
+  /* --------------------------------------------------------
+     OPEN SEQUENCE
+     -------------------------------------------------------- */
+
+  #skins-overlay:not(.sy-book-closing)
+  .sy-book-page-left{
+
+    animation:
+      syLeftPageOpen
+      780ms
+      cubic-bezier(.15,.82,.22,1)
+      both;
+  }
+
+
+  #skins-overlay:not(.sy-book-closing)
+  .sy-book-page-right{
+
+    animation:
+      syRightPageOpen
+      860ms
+      cubic-bezier(.15,.82,.22,1)
+      both;
+  }
+
+
+  @keyframes syLeftPageOpen{
+
+    0%{
+      opacity:.92;
+
+      transform:
+        rotateY(84deg)
+        rotateZ(-2deg)
+        translateX(6px);
+
+      filter:
+        brightness(.68);
+    }
+
+
+    32%{
+      transform:
+        rotateY(48deg)
+        rotateZ(-1deg);
+
+      filter:
+        brightness(.82);
+    }
+
+
+    68%{
+      transform:
+        rotateY(10deg)
+        rotateZ(-.3deg);
+
+      filter:
+        brightness(.97);
+    }
+
+
+    100%{
+      opacity:1;
+
+      transform:
+        rotateY(0deg)
+        rotateZ(0deg);
+
+      filter:
+        brightness(1);
+    }
+
+  }
+
+
+  @keyframes syRightPageOpen{
+
+    0%{
+      opacity:.92;
+
+      transform:
+        rotateY(-88deg)
+        rotateZ(2deg)
+        translateX(-6px);
+
+      filter:
+        brightness(.65);
+    }
+
+
+    35%{
+      transform:
+        rotateY(-52deg)
+        rotateZ(1deg);
+
+      filter:
+        brightness(.80);
+    }
+
+
+    72%{
+      transform:
+        rotateY(-12deg)
+        rotateZ(.4deg);
+
+      filter:
+        brightness(.96);
+    }
+
+
+    100%{
+      opacity:1;
+
+      transform:
+        rotateY(0deg)
+        rotateZ(0deg);
+
+      filter:
+        brightness(1);
+    }
+
+  }
+
+
+
+  /* --------------------------------------------------------
+     PAGE SHADOW DURING OPEN
+     -------------------------------------------------------- */
+
+  #skins-overlay:not(.sy-book-closing)
+  .sy-book-gutter{
+
+    animation:
+      syGutterOpen
+      850ms
+      ease
+      both;
+  }
+
+
+  @keyframes syGutterOpen{
+
+    0%{
+      opacity:.1;
+
+      transform:
+        translateX(-50%)
+        scaleX(.25);
+    }
+
+
+    45%{
+      opacity:1;
+
+      transform:
+        translateX(-50%)
+        scaleX(1.25);
+    }
+
+
+    100%{
+      opacity:.72;
+
+      transform:
+        translateX(-50%)
+        scaleX(1);
+    }
+
+  }
+
+
+
+  /* --------------------------------------------------------
+     CONTENT WAITS FOR PAGES
+     -------------------------------------------------------- */
+
+  #skins-overlay:not(.sy-book-closing)
+  .collection-header,
+
+  #skins-overlay:not(.sy-book-closing)
+  .unlock-cta,
+
+  #skins-overlay:not(.sy-book-closing)
+  #skins-grid,
+
+  #skins-overlay:not(.sy-book-closing)
+  #skins-close{
+
+    animation:
+      syPageContentIn
+      300ms
+      600ms
+      ease
+      both
+      !important;
+  }
+
+
+  @keyframes syPageContentIn{
+
+    from{
+      opacity:0;
+
+      transform:
+        translateY(7px);
+    }
+
+    to{
+      opacity:1;
+
+      transform:
+        translateY(0);
+    }
+
+  }
+
+
+
+  /* --------------------------------------------------------
+     CLOSE SEQUENCE
+     CONTENT GOES FIRST
+     THEN PAGES FOLD
+     -------------------------------------------------------- */
+
+  #skins-overlay.sy-book-closing
+  .collection-header,
+
+  #skins-overlay.sy-book-closing
+  .unlock-cta,
+
+  #skins-overlay.sy-book-closing
+  #skins-grid,
+
+  #skins-overlay.sy-book-closing
+  #skins-close{
+
+    opacity:0 !important;
+
+    transition:
+      opacity 100ms ease
+      !important;
+  }
+
+
+  #skins-overlay.sy-book-closing
+  .sy-book-page-left{
+
+    animation:
+      syLeftPageClose
+      520ms
+      cubic-bezier(.55,.01,.76,.28)
+      both
+      !important;
+  }
+
+
+  #skins-overlay.sy-book-closing
+  .sy-book-page-right{
+
+    animation:
+      syRightPageClose
+      560ms
+      cubic-bezier(.55,.01,.76,.28)
+      both
+      !important;
+  }
+
+
+  @keyframes syLeftPageClose{
+
+    0%{
+      transform:
+        rotateY(0deg);
+
+      filter:
+        brightness(1);
+    }
+
+
+    48%{
+      transform:
+        rotateY(36deg);
+
+      filter:
+        brightness(.87);
+    }
+
+
+    100%{
+      transform:
+        rotateY(84deg)
+        rotateZ(-2deg);
+
+      filter:
+        brightness(.64);
+    }
+
+  }
+
+
+  @keyframes syRightPageClose{
+
+    0%{
+      transform:
+        rotateY(0deg);
+
+      filter:
+        brightness(1);
+    }
+
+
+    46%{
+      transform:
+        rotateY(-39deg);
+
+      filter:
+        brightness(.85);
+    }
+
+
+    100%{
+      transform:
+        rotateY(-88deg)
+        rotateZ(2deg);
+
+      filter:
+        brightness(.62);
+    }
+
+  }
+
+
+  #skins-overlay.sy-book-closing
+  .sy-book-gutter{
+
+    animation:
+      syGutterClose
+      450ms
+      ease
+      both
+      !important;
+  }
+
+
+  @keyframes syGutterClose{
+
+    from{
+      opacity:.72;
+
+      transform:
+        translateX(-50%)
+        scaleX(1);
+    }
+
+    to{
+      opacity:.08;
+
+      transform:
+        translateX(-50%)
+        scaleX(.18);
+    }
+
+  }
+
+}

@@ -660,3 +660,97 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 })();
+
+
+/* ==========================================================
+   SPIDER YARD — REAL PAGE DOM V6
+   ========================================================== */
+
+(() => {
+
+  function buildBookPages(){
+
+    const modal =
+      document.querySelector(
+        "#skins-overlay .after-dark-modal"
+      );
+
+
+    if(!modal) return;
+
+
+    if(
+      modal.querySelector(
+        ".sy-book-page-left"
+      )
+    ){
+      return;
+    }
+
+
+    const left =
+      document.createElement("div");
+
+
+    left.className =
+      "sy-book-page sy-book-page-left";
+
+
+    const right =
+      document.createElement("div");
+
+
+    right.className =
+      "sy-book-page sy-book-page-right";
+
+
+    const gutter =
+      document.createElement("div");
+
+
+    gutter.className =
+      "sy-book-gutter";
+
+
+    /*
+      Decorative page layers should sit
+      under the real HTML content.
+    */
+
+    modal.prepend(gutter);
+    modal.prepend(right);
+    modal.prepend(left);
+
+  }
+
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    buildBookPages
+  );
+
+
+  /*
+    If your theme modal is created dynamically,
+    this catches the first open.
+  */
+
+  document.addEventListener(
+    "click",
+    event => {
+
+      if(
+        event.target.closest(
+          "#skins-btn, #mobile-themes-btn, [data-open-themes]"
+        )
+      ){
+        requestAnimationFrame(
+          buildBookPages
+        );
+      }
+
+    }
+  );
+
+
+})();

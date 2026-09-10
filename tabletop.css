@@ -8901,3 +8901,153 @@
   }
 
 }
+
+
+/* ==========================================================
+   SPIDER YARD — DEAL NEXT ROW HINT
+   Physical deck animation
+   ========================================================== */
+
+@keyframes syDeckHintDeal{
+
+  0%{
+    transform:
+      rotate(-1.1deg)
+      translateY(0);
+
+    filter:
+      brightness(1);
+
+    box-shadow:
+      -2px 3px 0 #f1e8d8,
+      -4px 5px 0 #ddd2bd,
+      -6px 7px 0 #c6b9a3,
+      0 14px 19px rgba(0,0,0,.30);
+  }
+
+
+  18%{
+    transform:
+      rotate(-.6deg)
+      translateY(-8px)
+      scale(1.025);
+
+    filter:
+      brightness(1.10);
+
+    box-shadow:
+      -2px 4px 0 #f1e8d8,
+      -4px 7px 0 #ddd2bd,
+      -6px 10px 0 #c6b9a3,
+      0 22px 28px rgba(0,0,0,.34),
+      0 0 0 1px rgba(226,188,99,.42),
+      0 0 22px rgba(226,188,99,.18);
+  }
+
+
+  36%{
+    transform:
+      rotate(-1deg)
+      translateY(0)
+      scale(1);
+
+    filter:
+      brightness(1);
+  }
+
+
+  54%{
+    transform:
+      rotate(-.6deg)
+      translateY(-8px)
+      scale(1.025);
+
+    filter:
+      brightness(1.10);
+
+    box-shadow:
+      -2px 4px 0 #f1e8d8,
+      -4px 7px 0 #ddd2bd,
+      -6px 10px 0 #c6b9a3,
+      0 22px 28px rgba(0,0,0,.34),
+      0 0 0 1px rgba(226,188,99,.42),
+      0 0 22px rgba(226,188,99,.18);
+  }
+
+
+  72%,
+  100%{
+    transform:
+      rotate(-1.1deg)
+      translateY(0)
+      scale(1);
+
+    filter:
+      brightness(1);
+
+    box-shadow:
+      -2px 3px 0 #f1e8d8,
+      -4px 5px 0 #ddd2bd,
+      -6px 7px 0 #c6b9a3,
+      0 14px 19px rgba(0,0,0,.30);
+  }
+
+}
+
+
+.stock-pile.hint-deal-next{
+  animation:
+    syDeckHintDeal
+    1.65s
+    cubic-bezier(.2,.7,.2,1)
+    both
+    !important;
+}
+
+
+/*
+  Tiny contextual label that appears only
+  while the deck is the recommended action.
+*/
+
+.stock-pile.hint-deal-next::after{
+  content:
+    "Deal next row" !important;
+
+  color:
+    #f0d994 !important;
+
+  font-weight:
+    600;
+
+  letter-spacing:
+    .15px;
+
+  text-shadow:
+    0 2px 5px
+    rgba(0,0,0,.45);
+}
+
+
+@media(max-width:700px){
+
+  .stock-pile.hint-deal-next{
+    animation-duration:
+      1.4s !important;
+  }
+
+}
+
+
+@media(prefers-reduced-motion:reduce){
+
+  .stock-pile.hint-deal-next{
+    animation:none !important;
+
+    box-shadow:
+      0 0 0 2px
+      rgba(226,188,99,.45)
+      !important;
+  }
+
+}

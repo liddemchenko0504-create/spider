@@ -11246,28 +11246,553 @@ function getArtworkForCard(card, skinId){
     dragData = null;
   }
 
-  function hint(){
-    for(let fromCol=0; fromCol<10; fromCol++){
-      const col = state.columns[fromCol];
-      for(let idx=0; idx<col.length; idx++){
-        if(!col[idx].faceUp) continue;
-        const stack = getMovableStack(fromCol, idx);
-        if(!stack) continue;
-        for(let toCol=0; toCol<10; toCol++){
-          if(toCol === fromCol) continue;
-          if(canPlace(stack, toCol)){
-            setStatus(`Hint: move ${stack[0].rank}${stack[0].suit} from column ${fromCol+1} to column ${toCol+1}.`);
-            animateHintMove(fromCol, idx, toCol);
-            return;
-          }
-        }
-      }
+  /* ========================================================
+     SMART HINT ENGINE
+     ======================================================== */
+
+  let shownHintKeys = new Set();
+  let lastHintBoardSignature = "";
+
+
+  function getHintBoardSignature(){
+
+    if(!state) return "";
+
+    return JSON.stringify({
+      columns:
+        state.columns.map(col =>
+          col.map(card => [
+            card.id,
+            card.faceUp ? 1 : 0
+          ])
+        ),
+
+      stock:
+        state.stock.length,
+
+      foundations:
+        state.foundations.length
+    });
+
+  }
+
+
+  function resetHintMemoryIfBoardChanged(){
+
+    const signature =
+      getHintBoardSignature();
+
+
+    if(
+      signature !==
+      lastHintBoardSignature
+    ){
+      shownHintKeys.clear();
+
+      lastHintBoardSignature =
+        signature;
     }
-    setStatus("No obvious moves found — try dealing cards from the deck.");
+
+  }
+
+
+  function getDestinationTop(toCol){
+
+    const dest =
+      state.columns[toCol];
+
+    if(!dest.length)
+      return null;
+
+    return dest[
+      dest.length - 1
+    ];
+  }
+
+
+  /*
+    Two moves are strategically equivalent when
+    the same visible stack is moved onto the same
+    destination RANK.
+
+    Example:
+      A♠ -> 2♥
+      A♠ -> 2♣
+
+    These become one hint group.
+
+    We still choose the BEST destination inside
+    that group, e.g. same-suit when possible.
+  */
+
+  function hintGroupKey(move){
+
+    const first =
+      move.stack[0];
+
+    const destination =
+      getDestinationTop(
+        move.toCol
+      );
+
+
+    const stackShape =
+      move.stack
+        .map(card =>
+          `${card.rankIdx}:${card.suit}`
+        )
+        .join(",");
+
+
+    const destinationShape =
+      destination
+        ? `rank:${destination.rankIdx}`
+        : "empty";
+
+
+    return [
+      move.fromCol,
+      move.cardIdx,
+      first.rankIdx,
+      stackShape,
+      destinationShape
+    ].join("|");
+
+  }
+
+
+  function scoreHintMove(move){
+
+    const sourceCol =
+      state.columns[
+        move.fromCol
+      ];
+
+    const destination =
+      getDestinationTop(
+        move.toCol
+      );
+
+    const first =
+      move.stack[0];
+
+    let score = 0;
+
+
+    /*
+      BEST:
+      moving this stack reveals a face-down card.
+    */
+
+    const cardUnderStack =
+      sourceCol[
+        move.cardIdx - 1
+      ];
+
+    if(
+      cardUnderStack &&
+      !cardUnderStack.faceUp
+    ){
+      score += 1000;
+    }
+
+
+    /*
+      Strongly prefer continuing same suit.
+    */
+
+    if(
+      destination &&
+      destination.suit ===
+      first.suit
+    ){
+      score += 420;
+    }
+
+
+    /*
+      Longer ordered stacks are valuable.
+    */
+
+    score +=
+      move.stack.length * 42;
+
+
+    /*
+      Emptying a column can be very powerful.
+    */
+
+    if(
+      move.cardIdx === 0
+    ){
+      score += 230;
+    }
+
+
+    /*
+      Avoid wasting empty columns on tiny,
+      otherwise ordinary moves when possible.
+    */
+
+    if(!destination){
+
+      score -= 80;
+
+      if(
+        move.cardIdx === 0
+      ){
+        score += 180;
+      }
+
+    }
+
+
+    /*
+      Small preference for a destination that
+      already has more cards; generally avoids
+      scattering equivalent moves.
+    */
+
+    score += Math.min(
+      state.columns[
+        move.toCol
+      ].length,
+      12
+    );
+
+
+    return score;
+
+  }
+
+
+  function collectMeaningfulHints(){
+
+    const allMoves = [];
+
+
+    for(
+      let fromCol = 0;
+      fromCol < 10;
+      fromCol++
+    ){
+
+      const col =
+        state.columns[
+          fromCol
+        ];
+
+
+      for(
+        let idx = 0;
+        idx < col.length;
+        idx++
+      ){
+
+        if(
+          !col[idx].faceUp
+        ){
+          continue;
+        }
+
+
+        const stack =
+          getMovableStack(
+            fromCol,
+            idx
+          );
+
+
+        if(!stack)
+          continue;
+
+
+        for(
+          let toCol = 0;
+          toCol < 10;
+          toCol++
+        ){
+
+          if(
+            toCol ===
+            fromCol
+          ){
+            continue;
+          }
+
+
+          if(
+            !canPlace(
+              stack,
+              toCol
+            )
+          ){
+            continue;
+          }
+
+
+          const move = {
+            fromCol,
+            cardIdx:idx,
+            toCol,
+            stack
+          };
+
+
+          move.groupKey =
+            hintGroupKey(move);
+
+          move.score =
+            scoreHintMove(move);
+
+
+          allMoves.push(
+            move
+          );
+
+        }
+
+      }
+
+    }
+
+
+    /*
+      DEDUPE:
+      keep only the highest-scoring destination
+      for each strategically equivalent move.
+    */
+
+    const bestByGroup =
+      new Map();
+
+
+    allMoves.forEach(
+      move => {
+
+        const existing =
+          bestByGroup.get(
+            move.groupKey
+          );
+
+
+        if(
+          !existing ||
+          move.score >
+          existing.score
+        ){
+          bestByGroup.set(
+            move.groupKey,
+            move
+          );
+        }
+
+      }
+    );
+
+
+    return [
+      ...bestByGroup.values()
+    ].sort(
+      (a,b) =>
+        b.score - a.score
+    );
+
+  }
+
+
+  function canDealNextRow(){
+
+    return (
+      state &&
+      state.stock.length >= 10 &&
+      !state.columns.some(
+        col =>
+          col.length === 0
+      )
+    );
+
+  }
+
+
+  function clearDeckHint(){
+
+    const deck =
+      document.getElementById(
+        "stock-pile"
+      );
+
+    if(!deck) return;
+
+
+    deck.classList.remove(
+      "hint-deal-next"
+    );
+
+
+    clearTimeout(
+      clearDeckHint._timer
+    );
+
+  }
+
+
+  function animateDeckHint(){
+
+    const deck =
+      document.getElementById(
+        "stock-pile"
+      );
+
+    if(!deck) return;
+
+
+    clearDeckHint();
+
+
+    /*
+      Force animation restart.
+    */
+
+    void deck.offsetWidth;
+
+
+    deck.classList.add(
+      "hint-deal-next"
+    );
+
+
+    clearDeckHint._timer =
+      setTimeout(
+        () => {
+          deck.classList.remove(
+            "hint-deal-next"
+          );
+        },
+        1900
+      );
+
+  }
+
+
+  function hint(){
+
+    if(!state)
+      return;
+
+
+    resetHintMemoryIfBoardChanged();
+
+    clearDeckHint();
+
+
+    const hints =
+      collectMeaningfulHints();
+
+
+    /*
+      Find best meaningful move the player
+      has not already been shown on this board.
+    */
+
+    const next =
+      hints.find(
+        move =>
+          !shownHintKeys.has(
+            move.groupKey
+          )
+      );
+
+
+    if(next){
+
+      shownHintKeys.add(
+        next.groupKey
+      );
+
+
+      const card =
+        next.stack[0];
+
+
+      setStatus(
+        `Hint: move ${card.rank}${card.suit} from column ${next.fromCol + 1} to column ${next.toCol + 1}.`
+      );
+
+
+      animateHintMove(
+        next.fromCol,
+        next.cardIdx,
+        next.toCol
+      );
+
+
+      return;
+    }
+
+
+    /*
+      No NEW meaningful moves remain.
+      If Spider rules allow dealing,
+      the deck becomes the next action.
+    */
+
+    if(
+      canDealNextRow()
+    ){
+
+      setStatus(
+        "No more useful moves — deal the next row."
+      );
+
+
+      animateDeckHint();
+
+      return;
+    }
+
+
+    /*
+      Stock exists, but an empty column blocks dealing.
+    */
+
+    if(
+      state.stock.length >= 10 &&
+      state.columns.some(
+        col =>
+          col.length === 0
+      )
+    ){
+
+      setStatus(
+        "Fill the empty column before dealing the next row."
+      );
+
+      return;
+    }
+
+
+    if(
+      state.stock.length === 0
+    ){
+
+      setStatus(
+        "No more useful moves and the deck is empty."
+      );
+
+      return;
+    }
+
+
+    setStatus(
+      "No useful move is available."
+    );
+
   }
 
 
   /* ---------- Premium visual hint ---------- */
+
 
   function animateHintMove(fromCol, cardIdx, toCol){
 

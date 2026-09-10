@@ -1,0 +1,87 @@
+const { app, BrowserWindow, shell, ipcMain } = require("electron");
+const path = require("path");
+
+const PROTOCOL = "spideryard";
+
+let mainWindow = null;
+
+function createWindow() {
+  mainWindow = new BrowserWindow({
+    width: 1280,
+    height: 860,
+    minWidth: 1000,
+    minHeight: 700,
+    backgroundColor: "#10221c",
+    title: "Паучий Двор",
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+      contextIsolation: true,
+      nodeIntegration: false
+    }
+  });
+
+  mainWindow.setMenuBarVisibility(false);
+  mainWindow.loadFile(path.join(__dirname, "index.html"));
+}
+
+function handleDeepLink(url) {
+  if (!url || !url.startsWith(PROTOCOL + "://")) return;
+  let sessionId = null;
+  try {
+    const parsed = new URL(url);
+    sessionId = parsed.searchParams.get("session_id");
+  } catch (e) {
+    console.error("Could not parse deep link:", url, e);
+    return;
+  }
+  if (!mainWindow) return;
+  if (mainWindow.isMinimized()) mainWindow.restore();
+  mainWindow.focus();
+  if (sessionId) {
+    mainWindow.webContents.send("checkout-return", { sessionId });
+  }
+}
+
+const gotLock = app.requestSingleInstanceLock();
+if (!gotLock) {
+  app.quit();
+} else {
+  app.on("second-instance", (event, argv) => {
+    const url = argv.find((a) => a.startsWith(PROTOCOL + "://"));
+    if (url) handleDeepLink(url);
+  });
+
+  app.whenReady().then(() => {
+    if (process.defaultApp) {
+      if (process.argv.length >= 2) {
+        app.setAsDefaultProtocolClient(PROTOCOL, process.execPath, [
+          path.resolve(process.argv[1])
+        ]);
+      }
+    } else {
+      app.setAsDefaultProtocolClient(PROTOCOL);
+    }
+
+    createWindow();
+
+    const startupUrl = process.argv.find((a) => a.startsWith(PROTOCOL + "://"));
+    if (startupUrl) setTimeout(() => handleDeepLink(startupUrl), 1000);
+
+    app.on("activate", () => {
+      if (BrowserWindow.getAllWindows().length === 0) createWindow();
+    });
+  });
+}
+
+app.on("open-url", (event, url) => {
+  event.preventDefault();
+  handleDeepLink(url);
+});
+
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") app.quit();
+});
+
+ipcMain.handle("open-external", async (_event, url) => {
+  await shell.openExternal(url);
+});

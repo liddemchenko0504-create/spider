@@ -1,0 +1,9 @@
+const { contextBridge, ipcRenderer } = require("electron");
+
+contextBridge.exposeInMainWorld("electronAPI", {
+  isElectron: true,
+  openExternal: (url) => ipcRenderer.invoke("open-external", url),
+  onCheckoutReturn: (callback) => {
+    ipcRenderer.on("checkout-return", (_event, data) => callback(data));
+  }
+});

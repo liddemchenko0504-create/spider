@@ -1,0 +1,29 @@
+{
+  "name": "spider-yard-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Паучий Двор — Spider Solitaire, Electron desktop wrapper",
+  "main": "main.js",
+  "scripts": {
+    "sync": "node build.js",
+    "start": "node build.js && electron .",
+    "predist": "node build.js",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.spideryard.app",
+    "productName": "Паучий Двор",
+    "files": ["main.js", "preload.js", "index.html"],
+    "protocols": {
+      "name": "Spider Yard Protocol",
+      "schemes": ["spideryard"]
+    },
+    "mac": { "category": "public.app-category.card-games" },
+    "win": { "target": "nsis" },
+    "linux": { "target": "AppImage" }
+  }
+}

@@ -2116,6 +2116,238 @@ body.custom-cursor-active .difficulty-option{
 
 }
 
+
+/* =========================================================
+   VIEWER UX V2
+   ========================================================= */
+
+/* Custom cursor must ALWAYS stay above every modal/viewer */
+.themed-cursor{
+  z-index:2147483647 !important;
+}
+
+/* Keep native cursor hidden only when custom cursor is active */
+body.custom-cursor-active .adult-viewer,
+body.custom-cursor-active .adult-viewer *,
+body.custom-cursor-active .overlay,
+body.custom-cursor-active .overlay *{
+  cursor:none !important;
+}
+
+
+/* ---------- Orientation tabs ---------- */
+
+.viewer-orientation-tabs{
+  width:100%;
+  max-width:620px;
+
+  margin:0 auto 16px;
+
+  padding:4px;
+
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+
+  gap:3px;
+
+  border-radius:13px;
+
+  border:1px solid rgba(232,217,160,.11);
+
+  background:rgba(255,255,255,.025);
+}
+
+.viewer-orientation-tab{
+  min-height:38px;
+
+  border:0;
+
+  border-radius:10px;
+
+  background:transparent;
+
+  color:rgba(243,234,216,.47);
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    "Segoe UI",
+    sans-serif;
+
+  font-size:11px;
+  font-weight:500;
+
+  letter-spacing:.15px;
+
+  transition:
+    background .15s ease,
+    color .15s ease,
+    box-shadow .15s ease;
+}
+
+.viewer-orientation-tab:hover{
+  background:rgba(255,255,255,.04);
+
+  color:rgba(243,234,216,.83);
+}
+
+.viewer-orientation-tab.active{
+  color:#f3ead8;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(232,217,160,.13),
+      rgba(232,217,160,.07)
+    );
+
+  box-shadow:
+    inset 0 0 0 1px rgba(232,217,160,.14),
+    0 4px 12px rgba(0,0,0,.12);
+}
+
+
+/* ---------- Premium control bar ---------- */
+
+.viewer-tools{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  gap:7px;
+
+  margin:10px auto 12px;
+}
+
+.viewer-icon-btn{
+  width:42px;
+  height:42px;
+
+  padding:0;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:11px;
+
+  border:1px solid rgba(232,217,160,.11);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.045),
+      rgba(255,255,255,.018)
+    );
+
+  color:rgba(243,234,216,.76);
+
+  box-shadow:
+    inset 0 1px rgba(255,255,255,.025);
+
+  transition:
+    transform .14s ease,
+    background .14s ease,
+    border-color .14s ease,
+    color .14s ease;
+}
+
+.viewer-icon-btn:hover{
+  transform:translateY(-1px);
+
+  background:rgba(255,255,255,.065);
+
+  border-color:rgba(232,217,160,.20);
+
+  color:#f3ead8;
+}
+
+.viewer-icon-btn:active{
+  transform:scale(.96);
+}
+
+.viewer-icon-btn svg{
+  width:18px;
+  height:18px;
+
+  fill:none;
+
+  stroke:currentColor;
+  stroke-width:1.7;
+
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+.viewer-reset-btn{
+  width:auto;
+  min-width:60px;
+
+  padding:0 13px;
+
+  font-size:10px;
+
+  letter-spacing:.2px;
+}
+
+
+/* Keyboard hint */
+.viewer-escape-hint{
+  margin-left:auto;
+
+  color:rgba(243,234,216,.28);
+
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    sans-serif;
+
+  font-size:9px;
+}
+
+.viewer-escape-hint kbd{
+  padding:3px 6px;
+
+  margin-right:5px;
+
+  border-radius:5px;
+
+  border:1px solid rgba(255,255,255,.10);
+
+  background:rgba(255,255,255,.035);
+
+  color:rgba(243,234,216,.48);
+
+  font-family:inherit;
+  font-size:9px;
+}
+
+
+@media(max-width:700px){
+
+  .viewer-escape-hint{
+    display:none;
+  }
+
+  .viewer-orientation-tabs{
+    max-width:100%;
+    margin-bottom:10px;
+  }
+
+  .viewer-orientation-tab{
+    min-height:36px;
+    font-size:10px;
+  }
+
+  .viewer-icon-btn{
+    width:39px;
+    height:39px;
+  }
+
+}
+
 </style>
 </head>
 <body>
@@ -2360,6 +2592,39 @@ body.custom-cursor-active .difficulty-option{
   </div>
 
 
+  
+  <div
+    class="viewer-orientation-tabs"
+    id="viewer-orientation-tabs"
+  >
+
+    <button
+      type="button"
+      class="viewer-orientation-tab active"
+      data-viewer-skin="midnight"
+    >
+      Straight
+    </button>
+
+    <button
+      type="button"
+      class="viewer-orientation-tab"
+      data-viewer-skin="gay"
+    >
+      Gay
+    </button>
+
+    <button
+      type="button"
+      class="viewer-orientation-tab"
+      data-viewer-skin="lesbian"
+    >
+      Lesbian
+    </button>
+
+  </div>
+
+
   <div class="viewer-stage">
 
     <button
@@ -2407,38 +2672,55 @@ body.custom-cursor-active .difficulty-option{
       id="viewer-zoom-out"
       type="button"
       title="Zoom out"
-    >
-      −
+     class="viewer-icon-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="10.5" cy="10.5" r="6.5"/>
+        <path d="M15.5 15.5L21 21"/>
+        <path d="M7.5 10.5h6"/>
+      </svg>
     </button>
 
     <button
       id="viewer-zoom-in"
       type="button"
       title="Zoom in"
-    >
-      +
+     class="viewer-icon-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="10.5" cy="10.5" r="6.5"/>
+        <path d="M15.5 15.5L21 21"/>
+        <path d="M7.5 10.5h6"/>
+        <path d="M10.5 7.5v6"/>
+      </svg>
     </button>
 
     <button
       id="viewer-rotate-left"
       type="button"
       title="Rotate left"
-    >
-      ↺
+     class="viewer-icon-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 8V3"/>
+        <path d="M4 3h5"/>
+        <path d="M4.8 7.3A8 8 0 1 1 4 15"/>
+      </svg>
     </button>
 
     <button
       id="viewer-rotate-right"
       type="button"
       title="Rotate right"
-    >
-      ↻
+     class="viewer-icon-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M20 8V3"/>
+        <path d="M20 3h-5"/>
+        <path d="M19.2 7.3A8 8 0 1 0 20 15"/>
+      </svg>
     </button>
 
     <button
       id="viewer-reset"
       type="button"
-    >
+     class="viewer-icon-btn viewer-reset-btn">
       Reset
     </button>
 
@@ -3583,6 +3865,9 @@ function getCollectionImages(skinId){
 
   function renderAdultViewer(){
 
+    syncViewerOrientationTabs();
+
+
     const collection =
       ADULT_COLLECTIONS[viewerSkin];
 
@@ -4002,6 +4287,63 @@ function getCollectionImages(skinId){
   );
 
 
+
+  /* VIEWER ORIENTATION TABS */
+
+  function syncViewerOrientationTabs(){
+
+    document
+      .querySelectorAll(
+        ".viewer-orientation-tab"
+      )
+      .forEach(btn => {
+
+        btn.classList.toggle(
+          "active",
+          btn.dataset.viewerSkin === viewerSkin
+        );
+
+      });
+
+  }
+
+
+  document
+    .querySelectorAll(
+      ".viewer-orientation-tab"
+    )
+    .forEach(btn => {
+
+      btn.addEventListener(
+        "click",
+        () => {
+
+          const nextSkin =
+            btn.dataset.viewerSkin;
+
+          if(
+            !ADULT_COLLECTIONS[
+              nextSkin
+            ]
+          ){
+            return;
+          }
+
+          viewerSkin = nextSkin;
+          viewerIndex = 0;
+
+          resetAdultViewerTransform();
+
+          renderAdultViewer();
+
+          syncViewerOrientationTabs();
+
+        }
+      );
+
+    });
+
+
   /* ---------- Wire up UI ---------- */
   let selectedSuits = 4;
 
@@ -4229,6 +4571,115 @@ function getCollectionImages(skinId){
 
 
   syncMobileDifficulty(selectedSuits);
+
+
+
+  /* GLOBAL ESCAPE CLOSE */
+
+  document.addEventListener(
+    "keydown",
+    e => {
+
+      if(e.key !== "Escape")
+        return;
+
+
+      const adultViewer =
+        document.getElementById(
+          "adult-viewer"
+        );
+
+      if(
+        adultViewer &&
+        !adultViewer.classList.contains(
+          "hidden"
+        )
+      ){
+
+        closeAdultGallery();
+
+        return;
+      }
+
+
+      const skinsOverlay =
+        document.getElementById(
+          "skins-overlay"
+        );
+
+      if(
+        skinsOverlay &&
+        !skinsOverlay.classList.contains(
+          "hidden"
+        )
+      ){
+
+        skinsOverlay.classList.add(
+          "hidden"
+        );
+
+        return;
+      }
+
+
+      const galleryOverlay =
+        document.getElementById(
+          "gallery-overlay"
+        );
+
+      if(
+        galleryOverlay &&
+        !galleryOverlay.classList.contains(
+          "hidden"
+        )
+      ){
+
+        galleryOverlay.classList.add(
+          "hidden"
+        );
+
+        return;
+      }
+
+
+      const winOverlay =
+        document.getElementById(
+          "win-overlay"
+        );
+
+      if(
+        winOverlay &&
+        !winOverlay.classList.contains(
+          "hidden"
+        )
+      ){
+
+        winOverlay.classList.add(
+          "hidden"
+        );
+
+        return;
+      }
+
+
+      const mobileSheet =
+        document.getElementById(
+          "mobile-sheet"
+        );
+
+      if(
+        mobileSheet &&
+        !mobileSheet.classList.contains(
+          "hidden"
+        )
+      ){
+
+        closeMobileSheet();
+
+      }
+
+    }
+  );
 
 
   applySkin(localStorage.getItem(SKIN_KEY) || "emerald");

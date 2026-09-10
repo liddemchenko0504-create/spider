@@ -441,15 +441,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 /* ==========================================================
-   SPIDER YARD — CINEMATIC BOOK CLOSE CONTROLLER V5
+   SPIDER YARD — BOOK EXPERIENCE V8
+   One controller only.
    ========================================================== */
 
 (() => {
 
-  const CLOSE_DURATION = 740;
+  const OPEN_CLASS =
+    "sy-v8-opening";
+
+  const CLOSE_CLASS =
+    "sy-v8-closing";
+
+  const CLOSE_DURATION =
+    1320;
 
 
-  function getBookOverlay(){
+  let closeTimer = null;
+
+
+  function overlay(){
 
     return document.getElementById(
       "skins-overlay"
@@ -458,57 +469,226 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  function bookIsOpen(){
+  function modal(){
 
-    const overlay =
-      getBookOverlay();
-
-
-    return (
-      overlay &&
-      !overlay.classList.contains(
-        "hidden"
-      )
+    return document.querySelector(
+      "#skins-overlay .after-dark-modal"
     );
 
   }
 
 
 
-  function animatedCloseBook(){
+  /* ========================================================
+     CREATE PHYSICAL BOOK PARTS
+     ======================================================== */
 
-    const overlay =
-      getBookOverlay();
+  function buildV8Book(){
 
+    const m = modal();
 
-    if(!overlay) return;
+    if(!m){
+      return;
+    }
 
 
     if(
-      overlay.classList.contains(
-        "hidden"
+      m.querySelector(
+        ".sy-v8-book-stage"
       )
     ){
       return;
     }
 
 
-    if(
-      overlay.classList.contains(
-        "sy-book-closing"
-      )
-    ){
+    const stage =
+      document.createElement("div");
+
+
+    stage.className =
+      "sy-v8-book-stage";
+
+
+    stage.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+
+    const closed =
+      document.createElement("img");
+
+
+    closed.className =
+      "sy-v8-closed";
+
+
+    closed.src =
+      "/assets/tabletop/leather-book.webp";
+
+
+    closed.alt = "";
+
+    closed.draggable = false;
+
+
+
+    const open =
+      document.createElement("div");
+
+
+    open.className =
+      "sy-v8-open";
+
+
+
+    const left =
+      document.createElement("div");
+
+
+    left.className =
+      "sy-v8-half sy-v8-left";
+
+
+
+    const right =
+      document.createElement("div");
+
+
+    right.className =
+      "sy-v8-half sy-v8-right";
+
+
+
+    const spine =
+      document.createElement("div");
+
+
+    spine.className =
+      "sy-v8-spine";
+
+
+
+    open.appendChild(left);
+
+    open.appendChild(right);
+
+    open.appendChild(spine);
+
+
+    stage.appendChild(open);
+
+    stage.appendChild(closed);
+
+
+    m.prepend(stage);
+
+  }
+
+
+
+  /* ========================================================
+     OPEN ANIMATION
+     Existing application still decides WHEN overlay opens.
+     We only animate that change.
+     ======================================================== */
+
+  function startOpen(){
+
+    const o = overlay();
+
+    if(!o){
       return;
     }
+
+
+    buildV8Book();
+
+
+    if(closeTimer){
+
+      clearTimeout(
+        closeTimer
+      );
+
+      closeTimer = null;
+
+    }
+
+
+    o.classList.remove(
+      CLOSE_CLASS
+    );
 
 
     /*
-      Step 1
-      Keep overlay visible.
+      Remove/re-add opening class so
+      every Themes click restarts animation.
     */
 
-    overlay.classList.add(
-      "sy-book-closing"
+    o.classList.remove(
+      OPEN_CLASS
+    );
+
+
+    void o.offsetWidth;
+
+
+    o.classList.add(
+      OPEN_CLASS
+    );
+
+
+    document.body.classList.add(
+      "skins-open"
+    );
+
+  }
+
+
+
+  /* ========================================================
+     CLOSE ANIMATION
+     ======================================================== */
+
+  function startClose(){
+
+    const o = overlay();
+
+
+    if(
+      !o ||
+      o.classList.contains("hidden") ||
+      o.classList.contains(CLOSE_CLASS)
+    ){
+      return;
+    }
+
+
+    if(closeTimer){
+
+      clearTimeout(
+        closeTimer
+      );
+
+    }
+
+
+    o.classList.remove(
+      OPEN_CLASS
+    );
+
+
+    /*
+      Freeze current visual state for one frame
+      before folding.
+    */
+
+    void o.offsetWidth;
+
+
+    o.classList.add(
+      CLOSE_CLASS
     );
 
 
@@ -517,37 +697,110 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
 
-    /*
-      Step 2
-      After animation ends,
-      actually hide it.
-    */
+    closeTimer =
+      window.setTimeout(
+        () => {
 
-    window.setTimeout(
-      () => {
-
-        overlay.classList.add(
-          "hidden"
-        );
+          o.classList.add(
+            "hidden"
+          );
 
 
-        overlay.classList.remove(
-          "sy-book-closing"
-        );
+          o.classList.remove(
+            CLOSE_CLASS
+          );
 
-      },
-      CLOSE_DURATION
-    );
+
+          closeTimer = null;
+
+        },
+        CLOSE_DURATION
+      );
 
   }
 
 
 
   /* ========================================================
-     ESCAPE
+     WATCH EXISTING APP OPEN
+     ======================================================== */
 
-     capture:true is important:
-     we intercept BEFORE the old game Escape handler.
+  function initialise(){
+
+    const o = overlay();
+
+
+    if(!o){
+      return;
+    }
+
+
+    buildV8Book();
+
+
+    let wasHidden =
+      o.classList.contains(
+        "hidden"
+      );
+
+
+    const observer =
+      new MutationObserver(
+        () => {
+
+          const isHidden =
+            o.classList.contains(
+              "hidden"
+            );
+
+
+          /*
+            hidden -> visible
+          */
+          if(
+            wasHidden &&
+            !isHidden
+          ){
+            startOpen();
+          }
+
+
+          wasHidden =
+            isHidden;
+
+        }
+      );
+
+
+    observer.observe(
+      o,
+      {
+        attributes:true,
+        attributeFilter:[
+          "class"
+        ]
+      }
+    );
+
+
+    /*
+      If page somehow loads with Themes open.
+    */
+    if(!wasHidden){
+
+      requestAnimationFrame(
+        startOpen
+      );
+
+    }
+
+  }
+
+
+
+  /* ========================================================
+     ESC
+     Capture before original app handler.
      ======================================================== */
 
   document.addEventListener(
@@ -562,8 +815,14 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
 
+      const o = overlay();
+
+
       if(
-        !bookIsOpen()
+        !o ||
+        o.classList.contains(
+          "hidden"
+        )
       ){
         return;
       }
@@ -576,7 +835,7 @@ document.addEventListener("DOMContentLoaded", () => {
       event.stopImmediatePropagation();
 
 
-      animatedCloseBook();
+      startClose();
 
     },
     true
@@ -585,26 +844,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* ========================================================
-     CLOSE BUTTON
+     CLOSE X
      ======================================================== */
 
   document.addEventListener(
     "click",
     event => {
 
-      const close =
+      const button =
         event.target.closest(
           "#skins-close"
         );
 
 
-      if(!close){
+      if(!button){
         return;
       }
 
 
+      const o = overlay();
+
+
       if(
-        !bookIsOpen()
+        !o ||
+        o.classList.contains(
+          "hidden"
+        )
       ){
         return;
       }
@@ -617,7 +882,7 @@ document.addEventListener("DOMContentLoaded", () => {
       event.stopImmediatePropagation();
 
 
-      animatedCloseBook();
+      startClose();
 
     },
     true
@@ -625,201 +890,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 
-  /* ========================================================
-     PREPARE EVERY NEW OPEN
+  if(
+    document.readyState ===
+    "loading"
+  ){
 
-     When old app removes .hidden,
-     clear stale closing state.
-     ======================================================== */
-
-  document.addEventListener(
-    "click",
-    () => {
-
-      const overlay =
-        getBookOverlay();
-
-
-      if(!overlay) return;
-
-
-      if(
-        !overlay.classList.contains(
-          "hidden"
-        )
-      ){
-
-        overlay.classList.remove(
-          "sy-book-closing"
-        );
-
+    document.addEventListener(
+      "DOMContentLoaded",
+      initialise,
+      {
+        once:true
       }
+    );
 
-    }
-  );
+  }else{
 
-
-})();
-
-
-/* ==========================================================
-   SPIDER YARD — REAL PAGE DOM V6
-   ========================================================== */
-
-(() => {
-
-  function buildBookPages(){
-
-    const modal =
-      document.querySelector(
-        "#skins-overlay .after-dark-modal"
-      );
-
-
-    if(!modal) return;
-
-
-    if(
-      modal.querySelector(
-        ".sy-book-page-left"
-      )
-    ){
-      return;
-    }
-
-
-    const left =
-      document.createElement("div");
-
-
-    left.className =
-      "sy-book-page sy-book-page-left";
-
-
-    const right =
-      document.createElement("div");
-
-
-    right.className =
-      "sy-book-page sy-book-page-right";
-
-
-    const gutter =
-      document.createElement("div");
-
-
-    gutter.className =
-      "sy-book-gutter";
-
-
-    /*
-      Decorative page layers should sit
-      under the real HTML content.
-    */
-
-    modal.prepend(gutter);
-    modal.prepend(right);
-    modal.prepend(left);
+    initialise();
 
   }
 
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    buildBookPages
-  );
-
-
-  /*
-    If your theme modal is created dynamically,
-    this catches the first open.
-  */
-
-  document.addEventListener(
-    "click",
-    event => {
-
-      if(
-        event.target.closest(
-          "#skins-btn, #mobile-themes-btn, [data-open-themes]"
-        )
-      ){
-        requestAnimationFrame(
-          buildBookPages
-        );
-      }
-
-    }
-  );
-
-
 })();
-
-
-
-/* ==========================================================
-   SPIDER YARD — CLOSED BOOK LAYER V7
-   ========================================================== */
-
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-    const modal =
-      document.querySelector(
-        "#skins-overlay .after-dark-modal"
-      );
-
-
-    if(!modal){
-      return;
-    }
-
-
-    /*
-      Add closed leather book representation.
-    */
-
-    if(
-      !modal.querySelector(
-        ".sy-closed-book"
-      )
-    ){
-
-      const closedBook =
-        document.createElement(
-          "img"
-        );
-
-
-      closedBook.className =
-        "sy-closed-book";
-
-
-      closedBook.src =
-        "/assets/tabletop/leather-book.webp";
-
-
-      closedBook.alt =
-        "";
-
-
-      closedBook.draggable =
-        false;
-
-
-      closedBook.setAttribute(
-        "aria-hidden",
-        "true"
-      );
-
-
-      modal.appendChild(
-        closedBook
-      );
-
-    }
-
-  }
-);
-

@@ -6500,3 +6500,1425 @@
 
 
 }
+
+
+/* ==========================================================
+   SPIDER YARD — BOOK EXPERIENCE V8
+   One physical object.
+   Closed book -> real split image -> open book.
+   ========================================================== */
+
+@media(min-width:701px){
+
+  /* --------------------------------------------------------
+     KILL ALL OLD FAKE BOOK LAYERS
+     -------------------------------------------------------- */
+
+  #skins-overlay .sy-book-page,
+  #skins-overlay .sy-book-gutter,
+  #skins-overlay .sy-closed-book{
+    display:none !important;
+  }
+
+
+  /* --------------------------------------------------------
+     OVERLAY
+     -------------------------------------------------------- */
+
+  #skins-overlay{
+    position:fixed !important;
+    inset:0 !important;
+
+    z-index:9500 !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    padding:0 !important;
+
+    overflow:hidden !important;
+
+    background:
+      rgba(12,7,4,.52) !important;
+
+    backdrop-filter:
+      blur(7px)
+      brightness(.56)
+      saturate(.72)
+      !important;
+
+    perspective:2200px;
+
+    opacity:1;
+
+    transition:
+      background 300ms ease,
+      backdrop-filter 300ms ease;
+  }
+
+
+  #skins-overlay.hidden{
+    display:none !important;
+  }
+
+
+  #skins-overlay.sy-v8-closing{
+    display:flex !important;
+    pointer-events:none !important;
+  }
+
+
+
+  /* --------------------------------------------------------
+     MODAL IS NOW ONLY A STAGE
+     No image. No fake paper.
+     -------------------------------------------------------- */
+
+  #skins-overlay .after-dark-modal{
+    position:relative !important;
+
+    inset:auto !important;
+
+    width:
+      min(
+        92vw,
+        1350px,
+        135vh
+      ) !important;
+
+    height:auto !important;
+
+    aspect-ratio:
+      3 / 2 !important;
+
+    max-width:none !important;
+    max-height:90vh !important;
+
+    margin:0 !important;
+    padding:0 !important;
+
+    overflow:visible !important;
+
+    border:0 !important;
+    border-radius:0 !important;
+
+    background:none !important;
+
+    box-shadow:none !important;
+
+    transform:none !important;
+
+    animation:none !important;
+
+    perspective:2000px;
+    transform-style:preserve-3d;
+  }
+
+
+  #skins-overlay
+  .after-dark-modal::before,
+
+  #skins-overlay
+  .after-dark-modal::after{
+    display:none !important;
+  }
+
+
+
+  /* ========================================================
+     PHYSICAL BOOK STAGE
+     ======================================================== */
+
+  .sy-v8-book-stage{
+    position:absolute;
+
+    inset:0;
+
+    z-index:1;
+
+    pointer-events:none;
+
+    perspective:2000px;
+
+    transform-style:preserve-3d;
+
+    filter:
+      drop-shadow(
+        0 34px 32px
+        rgba(0,0,0,.42)
+      );
+  }
+
+
+
+  /* --------------------------------------------------------
+     CLOSED BOOK
+     -------------------------------------------------------- */
+
+  .sy-v8-closed{
+    position:absolute;
+
+    left:50%;
+    top:50%;
+
+    width:34%;
+
+    height:auto;
+
+    z-index:20;
+
+    object-fit:contain;
+
+    transform-origin:center;
+
+    backface-visibility:hidden;
+
+    will-change:
+      transform,
+      opacity,
+      filter;
+
+    pointer-events:none;
+
+    filter:
+      drop-shadow(
+        0 22px 20px
+        rgba(0,0,0,.42)
+      );
+
+    opacity:0;
+  }
+
+
+
+  /* --------------------------------------------------------
+     OPEN BOOK = TWO HALVES OF ONE IMAGE
+     -------------------------------------------------------- */
+
+  .sy-v8-open{
+    position:absolute;
+
+    inset:0;
+
+    z-index:10;
+
+    transform-style:preserve-3d;
+
+    pointer-events:none;
+  }
+
+
+  .sy-v8-half{
+    position:absolute;
+
+    top:0;
+
+    width:50%;
+    height:100%;
+
+    background-image:
+      url("/assets/tabletop/theme-book.webp");
+
+    background-repeat:no-repeat;
+
+    background-size:
+      200% 100%;
+
+    backface-visibility:hidden;
+
+    transform-style:preserve-3d;
+
+    will-change:
+      transform,
+      filter,
+      opacity;
+  }
+
+
+  .sy-v8-left{
+    left:0;
+
+    background-position:
+      left center;
+
+    transform-origin:
+      100% 50%;
+  }
+
+
+  .sy-v8-right{
+    right:0;
+
+    background-position:
+      right center;
+
+    transform-origin:
+      0% 50%;
+  }
+
+
+
+  /* --------------------------------------------------------
+     CENTER SHADOW
+     -------------------------------------------------------- */
+
+  .sy-v8-spine{
+    position:absolute;
+
+    top:9%;
+    bottom:8%;
+
+    left:50%;
+
+    width:5.5%;
+
+    z-index:14;
+
+    transform:
+      translateX(-50%);
+
+    pointer-events:none;
+
+    background:
+      radial-gradient(
+        ellipse at center,
+        rgba(35,18,8,.35),
+        rgba(53,29,13,.17) 28%,
+        rgba(60,34,17,.05) 52%,
+        transparent 72%
+      );
+
+    mix-blend-mode:multiply;
+
+    opacity:0;
+  }
+
+
+
+  /* ========================================================
+     OPENING SEQUENCE
+     ======================================================== */
+
+
+  /* Closed leather book flies in from actual desk book */
+  #skins-overlay.sy-v8-opening
+  .sy-v8-closed{
+    animation:
+      syV8ClosedArrive
+      560ms
+      cubic-bezier(.17,.78,.22,1)
+      both;
+  }
+
+
+  @keyframes syV8ClosedArrive{
+
+    0%{
+      opacity:.15;
+
+      transform:
+        translate(
+          -205%,
+          118%
+        )
+        rotate(-10deg)
+        scale(.34);
+
+      filter:
+        brightness(.66)
+        blur(1px)
+        drop-shadow(
+          0 10px 10px
+          rgba(0,0,0,.25)
+        );
+    }
+
+
+    42%{
+      opacity:1;
+
+      transform:
+        translate(
+          -80%,
+          15%
+        )
+        rotate(-6deg)
+        scale(.72);
+    }
+
+
+    78%{
+      opacity:1;
+
+      transform:
+        translate(
+          -50%,
+          -50%
+        )
+        rotate(-2deg)
+        scale(.96);
+    }
+
+
+    100%{
+      opacity:0;
+
+      transform:
+        translate(
+          -50%,
+          -50%
+        )
+        rotate(0)
+        scale(1.05);
+
+      filter:
+        brightness(1);
+    }
+  }
+
+
+
+  /* Open-book halves are invisible initially */
+  #skins-overlay.sy-v8-opening
+  .sy-v8-left{
+    animation:
+      syV8LeftOpen
+      680ms
+      390ms
+      cubic-bezier(.16,.82,.22,1)
+      both;
+  }
+
+
+  #skins-overlay.sy-v8-opening
+  .sy-v8-right{
+    animation:
+      syV8RightOpen
+      720ms
+      350ms
+      cubic-bezier(.16,.82,.22,1)
+      both;
+  }
+
+
+
+  @keyframes syV8LeftOpen{
+
+    0%{
+      opacity:0;
+
+      transform:
+        translateX(49%)
+        rotateY(-86deg)
+        scale(.48,.86);
+
+      filter:
+        brightness(.58);
+    }
+
+
+    12%{
+      opacity:1;
+    }
+
+
+    40%{
+      transform:
+        translateX(29%)
+        rotateY(-55deg)
+        scale(.68,.93);
+
+      filter:
+        brightness(.72);
+    }
+
+
+    72%{
+      transform:
+        translateX(5%)
+        rotateY(-12deg)
+        scale(.96,.99);
+
+      filter:
+        brightness(.94);
+    }
+
+
+    90%{
+      transform:
+        translateX(-.8%)
+        rotateY(2deg)
+        scale(1.01);
+    }
+
+
+    100%{
+      opacity:1;
+
+      transform:
+        translateX(0)
+        rotateY(0)
+        scale(1);
+
+      filter:
+        brightness(1);
+    }
+  }
+
+
+
+  @keyframes syV8RightOpen{
+
+    0%{
+      opacity:0;
+
+      transform:
+        translateX(-49%)
+        rotateY(86deg)
+        scale(.48,.86);
+
+      filter:
+        brightness(.56);
+    }
+
+
+    12%{
+      opacity:1;
+    }
+
+
+    40%{
+      transform:
+        translateX(-29%)
+        rotateY(55deg)
+        scale(.68,.93);
+
+      filter:
+        brightness(.72);
+    }
+
+
+    72%{
+      transform:
+        translateX(-5%)
+        rotateY(12deg)
+        scale(.96,.99);
+
+      filter:
+        brightness(.94);
+    }
+
+
+    90%{
+      transform:
+        translateX(.8%)
+        rotateY(-2deg)
+        scale(1.01);
+    }
+
+
+    100%{
+      opacity:1;
+
+      transform:
+        translateX(0)
+        rotateY(0)
+        scale(1);
+
+      filter:
+        brightness(1);
+    }
+  }
+
+
+
+  #skins-overlay.sy-v8-opening
+  .sy-v8-spine{
+    animation:
+      syV8SpineIn
+      450ms
+      570ms
+      ease
+      both;
+  }
+
+
+  @keyframes syV8SpineIn{
+
+    from{
+      opacity:0;
+
+      transform:
+        translateX(-50%)
+        scaleX(.2);
+    }
+
+    55%{
+      opacity:.9;
+
+      transform:
+        translateX(-50%)
+        scaleX(1.22);
+    }
+
+    to{
+      opacity:.72;
+
+      transform:
+        translateX(-50%)
+        scaleX(1);
+    }
+  }
+
+
+
+  /* ========================================================
+     ACTUAL UI INSIDE BOOK
+     ======================================================== */
+
+  #skins-overlay
+  .collection-header{
+
+    position:absolute !important;
+
+    top:16.2% !important;
+
+    left:20% !important;
+    right:20% !important;
+
+    width:auto !important;
+
+    z-index:40 !important;
+
+    margin:0 !important;
+
+    text-align:center !important;
+
+    opacity:1;
+  }
+
+
+  #skins-overlay
+  .collection-eyebrow{
+
+    margin:0 0 4px !important;
+
+    font-size:
+      clamp(8px,.7vw,11px)
+      !important;
+
+    line-height:1 !important;
+
+    letter-spacing:
+      2px !important;
+
+    color:
+      rgba(73,45,25,.56)
+      !important;
+  }
+
+
+  #skins-overlay
+  .collection-header h2{
+
+    margin:
+      5px 0 5px
+      !important;
+
+    font-size:
+      clamp(26px,2.15vw,38px)
+      !important;
+
+    line-height:1 !important;
+
+    color:
+      #352216 !important;
+  }
+
+
+  #skins-overlay
+  .collection-subtitle{
+
+    max-width:
+      630px !important;
+
+    margin:
+      0 auto !important;
+
+    font-size:
+      clamp(10px,.78vw,13px)
+      !important;
+
+    line-height:
+      1.35 !important;
+
+    color:
+      rgba(59,37,21,.60)
+      !important;
+  }
+
+
+
+  /* CTA */
+  #skins-overlay .unlock-cta{
+
+    position:absolute !important;
+
+    top:28.8% !important;
+
+    left:50% !important;
+
+    transform:
+      translateX(-50%)
+      !important;
+
+    z-index:45 !important;
+
+    min-width:
+      235px !important;
+
+    height:
+      42px !important;
+
+    min-height:
+      42px !important;
+
+    margin:0 !important;
+
+    font-size:
+      12px !important;
+
+    border-radius:
+      999px !important;
+  }
+
+
+
+  /* Themes 2 x 2 */
+  #skins-grid{
+
+    position:absolute !important;
+
+    top:37% !important;
+
+    left:17.3% !important;
+    right:17.3% !important;
+
+    bottom:15.5% !important;
+
+    width:auto !important;
+    height:auto !important;
+
+    margin:0 !important;
+
+    z-index:40 !important;
+
+    display:grid !important;
+
+    grid-template-columns:
+      repeat(2,minmax(0,1fr))
+      !important;
+
+    grid-template-rows:
+      repeat(2,minmax(0,1fr))
+      !important;
+
+    column-gap:
+      8.7% !important;
+
+    row-gap:
+      5.5% !important;
+  }
+
+
+
+  #skins-overlay
+  .skin-card{
+
+    position:relative !important;
+
+    width:100% !important;
+    height:100% !important;
+
+    min-width:0 !important;
+    min-height:0 !important;
+
+    margin:0 !important;
+
+    padding:
+      8px !important;
+
+    overflow:hidden !important;
+
+    border:
+      1px solid
+      rgba(83,51,28,.16)
+      !important;
+
+    border-radius:
+      8px !important;
+
+    background:
+      rgba(255,248,230,.12)
+      !important;
+
+    box-shadow:
+      0 4px 10px
+      rgba(57,33,17,.11)
+      !important;
+
+    transform:none !important;
+
+    transition:
+      transform 160ms ease,
+      box-shadow 160ms ease
+      !important;
+  }
+
+
+  #skins-overlay
+  .skin-card:hover{
+
+    transform:
+      translateY(-5px)
+      scale(1.015)
+      !important;
+
+    box-shadow:
+      0 13px 22px
+      rgba(55,31,16,.19)
+      !important;
+
+    z-index:60;
+  }
+
+
+
+  #skins-overlay
+  .skin-card .swatch{
+
+    position:relative !important;
+
+    width:100% !important;
+
+    height:68% !important;
+
+    margin:
+      0 0 7px !important;
+
+    border-radius:
+      7px !important;
+
+    overflow:hidden !important;
+  }
+
+
+  #skins-overlay
+  .skin-preview-image{
+
+    width:100% !important;
+    height:100% !important;
+
+    object-fit:cover !important;
+  }
+
+
+  #skins-overlay .sname{
+
+    margin:0 !important;
+
+    font-size:
+      clamp(11px,.92vw,15px)
+      !important;
+
+    line-height:1.1 !important;
+
+    color:
+      #352216 !important;
+  }
+
+
+
+  #skins-overlay
+  .skin-description,
+
+  #skins-overlay
+  .skin-note,
+
+  #skins-overlay
+  .skin-action-text,
+
+  #skins-overlay
+  .locked-copy{
+
+    display:none !important;
+  }
+
+
+
+  /* lock */
+  #skins-overlay
+  .skin-preview-lock{
+
+    position:absolute !important;
+
+    left:50% !important;
+    top:50% !important;
+
+    transform:
+      translate(-50%,-50%)
+      !important;
+
+    min-width:
+      82px !important;
+
+    min-height:
+      56px !important;
+
+    padding:
+      8px 11px
+      !important;
+
+    border-radius:
+      13px !important;
+  }
+
+
+  #skins-overlay
+  .skin-preview-lock svg{
+
+    width:
+      15px !important;
+
+    height:
+      15px !important;
+  }
+
+
+  #skins-overlay
+  .skin-preview-lock-label{
+
+    font-size:
+      8px !important;
+
+    letter-spacing:
+      1.15px !important;
+  }
+
+
+
+  /* no duplicate labels when locked */
+  #skins-overlay
+  .skin-card.locked
+  .skin-audience-badge{
+
+    display:none !important;
+  }
+
+
+
+  /* unlocked audience */
+  #skins-overlay
+  .skin-card:not(.locked)
+  .skin-audience-badge{
+
+    position:absolute !important;
+
+    left:
+      8px !important;
+
+    bottom:
+      8px !important;
+
+    display:flex !important;
+
+    padding:
+      4px 8px
+      !important;
+
+    min-height:
+      18px !important;
+
+    border-radius:
+      999px !important;
+
+    font-size:
+      8px !important;
+  }
+
+
+
+  #skins-overlay
+  .skin-badge{
+
+    position:absolute !important;
+
+    right:
+      8px !important;
+
+    bottom:
+      8px !important;
+
+    padding:
+      4px 8px
+      !important;
+
+    font-size:
+      8px !important;
+  }
+
+
+
+  #skins-overlay
+  .apply-theme-btn{
+
+    position:absolute !important;
+
+    left:
+      8px !important;
+
+    bottom:
+      8px !important;
+
+    min-height:
+      25px !important;
+
+    padding:
+      4px 8px
+      !important;
+
+    font-size:
+      8px !important;
+  }
+
+
+
+  /* close */
+  #skins-close{
+
+    position:absolute !important;
+
+    top:
+      11% !important;
+
+    right:
+      12% !important;
+
+    left:auto !important;
+    bottom:auto !important;
+
+    z-index:
+      100 !important;
+
+    width:
+      37px !important;
+
+    height:
+      37px !important;
+
+    min-width:
+      37px !important;
+
+    min-height:
+      37px !important;
+
+    padding:0 !important;
+
+    border-radius:
+      50% !important;
+
+    font-size:
+      0 !important;
+
+    background:
+      rgba(47,29,16,.78)
+      !important;
+
+    border:
+      1px solid
+      rgba(231,198,122,.34)
+      !important;
+
+    box-shadow:
+      0 5px 12px
+      rgba(0,0,0,.20)
+      !important;
+  }
+
+
+  #skins-close::before{
+
+    content:"×";
+
+    font-family:
+      Georgia,
+      serif;
+
+    font-size:
+      24px;
+
+    line-height:1;
+
+    color:
+      #f0d7a4;
+  }
+
+
+
+  /* ========================================================
+     CONTENT APPEARS ONLY AFTER PAGES OPEN
+     ======================================================== */
+
+  #skins-overlay.sy-v8-opening
+  .collection-header,
+
+  #skins-overlay.sy-v8-opening
+  .unlock-cta,
+
+  #skins-overlay.sy-v8-opening
+  #skins-grid,
+
+  #skins-overlay.sy-v8-opening
+  #skins-close{
+
+    animation:
+      syV8ContentIn
+      320ms
+      880ms
+      ease
+      both
+      !important;
+  }
+
+
+  @keyframes syV8ContentIn{
+
+    from{
+      opacity:0;
+
+      transform:
+        translateY(8px);
+    }
+
+    to{
+      opacity:1;
+
+      transform:
+        translateY(0);
+    }
+  }
+
+
+
+  /* CTA needs its own X transform */
+  #skins-overlay.sy-v8-opening
+  .unlock-cta{
+
+    animation:
+      syV8CtaIn
+      320ms
+      880ms
+      ease
+      both
+      !important;
+  }
+
+
+  @keyframes syV8CtaIn{
+
+    from{
+      opacity:0;
+
+      transform:
+        translateX(-50%)
+        translateY(8px);
+    }
+
+    to{
+      opacity:1;
+
+      transform:
+        translateX(-50%)
+        translateY(0);
+    }
+  }
+
+
+
+  /* ========================================================
+     CLOSING
+     ======================================================== */
+
+
+  /* content disappears first */
+  #skins-overlay.sy-v8-closing
+  .collection-header,
+
+  #skins-overlay.sy-v8-closing
+  .unlock-cta,
+
+  #skins-overlay.sy-v8-closing
+  #skins-grid,
+
+  #skins-overlay.sy-v8-closing
+  #skins-close{
+
+    opacity:0 !important;
+
+    transition:
+      opacity 120ms ease
+      !important;
+  }
+
+
+
+  /* Fold left */
+  #skins-overlay.sy-v8-closing
+  .sy-v8-left{
+
+    animation:
+      syV8LeftClose
+      560ms
+      100ms
+      cubic-bezier(.55,.01,.76,.25)
+      both
+      !important;
+  }
+
+
+  /* Fold right */
+  #skins-overlay.sy-v8-closing
+  .sy-v8-right{
+
+    animation:
+      syV8RightClose
+      600ms
+      70ms
+      cubic-bezier(.55,.01,.76,.25)
+      both
+      !important;
+  }
+
+
+
+  @keyframes syV8LeftClose{
+
+    0%{
+      opacity:1;
+
+      transform:
+        translateX(0)
+        rotateY(0)
+        scale(1);
+    }
+
+
+    35%{
+      transform:
+        translateX(4%)
+        rotateY(-15deg)
+        scale(.96,.99);
+    }
+
+
+    70%{
+      transform:
+        translateX(28%)
+        rotateY(-57deg)
+        scale(.69,.93);
+
+      filter:
+        brightness(.72);
+    }
+
+
+    100%{
+      opacity:.12;
+
+      transform:
+        translateX(49%)
+        rotateY(-87deg)
+        scale(.46,.86);
+
+      filter:
+        brightness(.54);
+    }
+  }
+
+
+
+  @keyframes syV8RightClose{
+
+    0%{
+      opacity:1;
+
+      transform:
+        translateX(0)
+        rotateY(0)
+        scale(1);
+    }
+
+
+    35%{
+      transform:
+        translateX(-4%)
+        rotateY(15deg)
+        scale(.96,.99);
+    }
+
+
+    70%{
+      transform:
+        translateX(-28%)
+        rotateY(57deg)
+        scale(.69,.93);
+
+      filter:
+        brightness(.72);
+    }
+
+
+    100%{
+      opacity:.12;
+
+      transform:
+        translateX(-49%)
+        rotateY(87deg)
+        scale(.46,.86);
+
+      filter:
+        brightness(.54);
+    }
+  }
+
+
+
+  /* Spine disappears */
+  #skins-overlay.sy-v8-closing
+  .sy-v8-spine{
+
+    animation:
+      syV8SpineOut
+      420ms
+      ease
+      both;
+  }
+
+
+  @keyframes syV8SpineOut{
+
+    from{
+      opacity:.72;
+    }
+
+    to{
+      opacity:0;
+
+      transform:
+        translateX(-50%)
+        scaleX(.18);
+    }
+  }
+
+
+
+  /* Closed book appears after page fold,
+     then flies back to bottom-left */
+  #skins-overlay.sy-v8-closing
+  .sy-v8-closed{
+
+    animation:
+      syV8ClosedReturn
+      850ms
+      430ms
+      cubic-bezier(.48,.02,.74,.28)
+      both
+      !important;
+  }
+
+
+  @keyframes syV8ClosedReturn{
+
+    0%{
+      opacity:0;
+
+      transform:
+        translate(-50%,-50%)
+        rotate(0deg)
+        scale(1.02);
+    }
+
+
+    20%{
+      opacity:1;
+
+      transform:
+        translate(-50%,-50%)
+        rotate(-2deg)
+        scale(.96);
+    }
+
+
+    55%{
+      opacity:1;
+
+      transform:
+        translate(-92%,8%)
+        rotate(-6deg)
+        scale(.70);
+    }
+
+
+    85%{
+      opacity:.95;
+
+      transform:
+        translate(-180%,95%)
+        rotate(-10deg)
+        scale(.40);
+    }
+
+
+    100%{
+      opacity:0;
+
+      transform:
+        translate(-215%,125%)
+        rotate(-12deg)
+        scale(.31);
+    }
+  }
+
+
+
+  /* --------------------------------------------------------
+     REDUCED MOTION
+     -------------------------------------------------------- */
+
+  @media(prefers-reduced-motion:reduce){
+
+    .sy-v8-closed,
+    .sy-v8-half,
+    .sy-v8-spine,
+
+    #skins-overlay
+    .collection-header,
+
+    #skins-overlay
+    .unlock-cta,
+
+    #skins-grid,
+
+    #skins-close{
+
+      animation-duration:
+        1ms !important;
+
+      animation-delay:
+        0ms !important;
+    }
+
+  }
+
+}
